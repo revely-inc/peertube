@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	<data>
+		<variable
+				name="instance"
+				type="co.revely.peertube.api.peertube.response.AboutInstanceResponse.Instance"
+				/>
+	</data>
+<ScrollView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		>
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp"
+			>
+
+		<TextView
+				android:id="@+id/instance_description"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{String.format(@string/about_instance, instance.name)}"
+				android:textColor="@color/text_high_emphasis"
+				android:textSize="20sp"
+				android:textStyle="bold"
+				tools:text="About Test instance"
+				/>
+
+		<TextView
+				android:id="@+id/about_instance"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{instance.shortDescription}"
+				tools:text="Personal instance of Peertube"
+				/>
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/description"
+				android:textColor="@color/text_high_emphasis"
+				android:textSize="20sp"
+				android:labelFor="@+id/instance_short_description"
+				/>
+
+		<TextView
+				android:id="@+id/instance_short_description"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{instance.description}"
+				tools:text="PeerTube is a federated (with ActivityPub) video streaming platform using P2P (BitTorrent) directly in the web browser with WebTorrent and Angular."
+				/>
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/terms"
+				android:textColor="@color/text_high_emphasis"
+				android:textSize="20sp"
+				android:labelFor="@+id/instance_terms"
+				/>
+
+		<TextView
+				android:id="@+id/instance_terms"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{instance.terms}"
+				tools:text="No terms."
+				/>
+	</LinearLayout>
+</ScrollView>
+</layout>

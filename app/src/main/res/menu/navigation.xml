@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+			android:id="@+id/navigation_overview"
+			android:icon="@drawable/ic_overview"
+			android:title="@string/title_overview"
+			/>
+
+	<item
+			android:id="@+id/navigation_trending"
+			android:icon="@drawable/ic_trending"
+			android:title="@string/title_trending"
+			/>
+
+	<item
+			android:id="@+id/navigation_recent"
+			android:icon="@drawable/ic_recent"
+			android:title="@string/title_recently_added"
+			/>
+
+	<item
+			android:id="@+id/navigation_local"
+			android:icon="@drawable/ic_local"
+			android:title="@string/title_local"
+			/>
+
+	<item
+			android:id="@+id/navigation_about"
+			android:icon="@drawable/ic_about"
+			android:title="@string/title_about"
+			/>
+</menu>

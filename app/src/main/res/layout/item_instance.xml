@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	<data>
+		<variable
+				name="instance"
+				type="co.revely.peertube.db.instances.entity.Instance"/>
+	</data>
+<com.google.android.material.card.MaterialCardView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:cardPreventCornerOverlap="true"
+		>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+			android:background="?selectableItemBackground"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			>
+
+		<View
+				android:id="@+id/health"
+				android:layout_width="6dp"
+				android:layout_height="6dp"
+				android:background="@drawable/ic_circle"
+				android:backgroundTint="@color/colorAccent"
+				app:layout_constraintTop_toTopOf="@+id/name"
+				app:layout_constraintBottom_toBottomOf="@+id/name"
+				app:layout_constraintStart_toStartOf="parent"
+				/>
+
+		<TextView
+				android:id="@+id/name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="8dp"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				android:textColor="@color/text_high_emphasis"
+				android:text="@{instance.name}"
+				tools:text="Name"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/health"
+				/>
+
+		<TextView
+				android:id="@+id/host"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="8dp"
+				android:text="@{instance.host}"
+				tools:text="co.revely.peertube"
+				app:layout_constraintBottom_toBottomOf="@+id/name"
+				app:layout_constraintStart_toEndOf="@+id/name"
+				/>
+
+		<TextView
+				android:id="@+id/description"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="@{instance.shortDescription}"
+				tools:text="L’hébergement de vidéos décentralisé, en réseau, basé sur du logiciel libre"
+				app:layout_constraintTop_toBottomOf="@+id/name"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
+</layout>

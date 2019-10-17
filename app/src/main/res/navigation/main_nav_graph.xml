@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:id="@+id/main_nav_graph"
+		app:startDestination="@id/navigation_instances"
+		>
+
+	<fragment
+			android:id="@+id/navigation_instances"
+			android:name="co.revely.peertube.ui.instances.InstancesFragment"
+			android:label="@string/instances"
+			tools:layout="@layout/fragment_instances"
+			>
+
+		<action
+				android:id="@+id/action_instances_to_instance"
+				app:destination="@+id/instance_nav_graph"
+				app:popUpTo="@id/main_nav_graph"
+				app:launchSingleTop="true"
+				>
+
+			<argument
+					android:name="host"
+					app:argType="string"
+					/>
+		</action>
+	</fragment>
+
+	<include app:graph="@navigation/instance_nav_graph"/>
+</navigation>
