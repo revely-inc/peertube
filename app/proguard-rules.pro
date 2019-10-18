@@ -259,3 +259,11 @@
 -keepnames class android.arch.lifecycle.ViewModel -keepclassmembers public class * extends android.arch.lifecycle.ViewModel { public <init>(...); }
 -keepclassmembers class com.lebao.app.domain.** { public <init>(...); }
 -keepclassmembers class * { public <init>(...); }
+
+##########
+# TorrentStream-Android
+##########
+-keepclasseswithmembernames,includedescriptorclasses class com.frostwire.jlibtorrent.swig.libtorrent_jni {
+  native <methods>;
+}
+-keep class com.frostwire.jlibtorrent.swig.** { *; }

@@ -1,0 +1,2 @@
+json_key_file("./keys/api-project-882325167609-ce14954d37ca.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("co.revely.peertube") # e.g. com.krausefx.app

@@ -53,9 +53,10 @@ class VideosAdapter(
 	override fun bind(binding: ItemVideoBinding, item: Video) {
 		binding.video = item
 
+		val ctx = binding.root.context
 		var info = "${item.account?.name}"
 		item.views?.also {
-			info += " • ${it.humanReadableBigNumber()} ${binding.root.context.getString(R.string.views)}"
+			info += " • ${it.humanReadableBigNumber()} ${ctx.getString(R.string.views)}"
 		}
 		item.publishedAt?.time?.also {
 			info += " • ${DateUtils.getRelativeTimeSpanString(it, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)}"
@@ -63,12 +64,12 @@ class VideosAdapter(
 		binding.info.text = info
 
 		item.previewPath?.also {
-			Glide.with(binding.root.context).load("https://$host$it").into(binding.thumbnails)
+			Glide.with(ctx).load("https://$host$it").into(binding.thumbnails)
 		}
 
-		Glide.with(binding.root.context)
+		Glide.with(ctx)
 			.load(item.account?.avatar?.path?.let { "https://$host$it" })
-			.thumbnail(Glide.with(binding.root.context)
+			.thumbnail(Glide.with(ctx)
 				.load("https://$host/client/assets/images/default-avatar.png")
 				.apply(RequestOptions.circleCropTransform())
 			)
