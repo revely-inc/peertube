@@ -59,7 +59,6 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 			(activity as? AppCompatActivity)?.supportActionBar?.hide()
-			activity?.navigation?.invisible()
 		}
 
 		player.requestFocus()

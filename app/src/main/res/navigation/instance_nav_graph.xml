@@ -7,6 +7,23 @@
 		app:startDestination="@id/navigation_overview"
 		>
 
+	<action
+			android:id="@+id/action_global_navigation_video"
+			app:destination="@id/navigation_video"
+			>
+
+		<argument android:name="host" app:argType="string" />
+		<argument android:name="video_id" app:argType="string" />
+	</action>
+
+	<action
+			android:id="@+id/action_global_navigation_account"
+			app:destination="@+id/account_nav_graph"
+			>
+
+		<argument android:name="host" app:argType="string" />
+	</action>
+
 	<fragment
 			android:id="@+id/navigation_overview"
 			android:name="co.revely.peertube.ui.videos.overview.OverviewFragment"
@@ -15,15 +32,6 @@
 			>
 
 		<argument android:name="host" app:argType="string" />
-
-		<action
-				android:id="@+id/action_overview_to_video"
-				app:destination="@id/navigation_video"
-				>
-
-			<argument android:name="host" app:argType="string" />
-			<argument android:name="video_id" app:argType="string" />
-		</action>
 	</fragment>
 
 	<fragment
@@ -34,15 +42,6 @@
 			>
 
 		<argument android:name="host" app:argType="string" />
-
-		<action
-				android:id="@+id/action_trending_to_video"
-				app:destination="@id/navigation_video"
-				>
-
-			<argument android:name="host" app:argType="string" />
-			<argument android:name="video_id" app:argType="string" />
-		</action>
 	</fragment>
 
 	<fragment
@@ -53,15 +52,6 @@
 			>
 
 		<argument android:name="host" app:argType="string" />
-
-		<action
-				android:id="@+id/action_recent_to_video"
-				app:destination="@id/navigation_video"
-				>
-
-			<argument android:name="host" app:argType="string" />
-			<argument android:name="video_id" app:argType="string" />
-		</action>
 	</fragment>
 
 	<fragment
@@ -72,15 +62,6 @@
 			>
 
 		<argument android:name="host" app:argType="string" />
-
-		<action
-				android:id="@+id/action_local_to_video"
-				app:destination="@id/navigation_video"
-				>
-
-			<argument android:name="host" app:argType="string" />
-			<argument android:name="video_id" app:argType="string" />
-		</action>
 	</fragment>
 
 	<fragment
@@ -103,4 +84,6 @@
 		<argument android:name="host" app:argType="string" />
 		<argument android:name="video_id" app:argType="string" />
 	</fragment>
+
+	<include app:graph="@navigation/account_nav_graph"/>
 </navigation>

@@ -19,4 +19,6 @@
 	<string name="download_start_error">Error</string>
 	<string name="share">Share</string>
 	<string name="download">Download</string>
+	<string name="account">Account</string>
+	<string name="login">Login</string>
 </resources>

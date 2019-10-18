@@ -41,14 +41,12 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 			PreferencesHelper.defaultHost.set(instance.host)
 			val directions = InstancesFragmentDirections.actionInstancesToInstance(instance.host)
 			findNavController().navigate(directions)
-			activity?.navigation?.visible()
 		}
 		instances_list.adapter = adapter
 		instances_list.layoutManager = LinearLayoutManager(context)
 		instances_list.addItemDecoration(MarginItemDecoration(context!!.dip(8)))
 		progress_bar.progress(true)
 		initInstances()
-		activity?.navigation?.invisible()
 	}
 
 	private fun initInstances()
