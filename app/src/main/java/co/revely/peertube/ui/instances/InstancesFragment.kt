@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentInstancesBinding
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,6 +38,7 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 		setHasOptionsMenu(true)
 
 		adapter = InstancesAdapter(appExecutors) { instance ->
+			PreferencesHelper.defaultHost.set(instance.host)
 			val directions = InstancesFragmentDirections.actionInstancesToInstance(instance.host)
 			findNavController().navigate(directions)
 			activity?.navigation?.visible()

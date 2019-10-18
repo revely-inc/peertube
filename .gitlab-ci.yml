@@ -40,7 +40,7 @@ ensureContainer:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   stage: build
   before_script:
-    - wget --output-document=artifacts.zip --quiet "https://gitlab.com/gitlab-org/gitter/webapp/-/jobs/artifacts/master/download?job=mobile-asset-build"
+    - wget --output-document=artifacts.zip --quiet "https://gitlab.com/gitlab-org/gitter/webapp/-/jobs/artifacts/master/download?job=mobile-asset-build" || wget --output-document=artifacts.zip --quiet "https://gitlab.com/gitlab-org/gitter/webapp/-/jobs/324680852/artifacts/download"
     - unzip artifacts.zip
     - mkdir -p app/src/main/assets/www
     - mv output/android/www/* app/src/main/assets/www/

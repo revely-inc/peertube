@@ -3,6 +3,8 @@ package co.revely.peertube.helper
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 /**
@@ -12,9 +14,9 @@ import timber.log.Timber
  */
 class PreferencesHelper
 {
-	class Pref<T>(val name: String, private val defaultValue: T): MutableLiveData<T>()
+	class Pref<T>(val name: String, private val defaultValue: T): MutableLiveData<T>(), KoinComponent
 	{
-		private lateinit var sharedPreferences: SharedPreferences
+		private val sharedPreferences: SharedPreferences by inject()
 
 		init
 		{
@@ -56,6 +58,6 @@ class PreferencesHelper
 
 	companion object
 	{
-
+		val defaultHost by lazy { Pref("DEFAULT_HOST", "") }
 	}
 }
