@@ -1,1 +1,1 @@
-Add en-GB metadata
+Update .gitlab-ci, change keystore path
