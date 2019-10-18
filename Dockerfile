@@ -14,7 +14,7 @@ ENV PATH="${PATH}:/android-sdk-linux/platform-tools/"
 
 # install OS packages
 RUN apt-get --quiet update --yes
-RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 build-essential ruby2.6 ruby2.6-dev
+RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 build-essential ruby ruby-dev
 # We use this for xxd hex->binary
 RUN apt-get --quiet install --yes vim-common
 # install Android SDK
