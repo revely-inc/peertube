@@ -16,10 +16,10 @@ if (secretsPropertiesFile.exists()) {
 }
 // Otherwise read from environment variables, this happens in CI
 else {
-    secretProperties.setProperty("oauth_client_id", "\"${System.getenv('oauth_client_id')}\"")
-    secretProperties.setProperty("oauth_client_secret", "\"${System.getenv('oauth_client_secret')}\"")
-    secretProperties.setProperty("oauth_redirect_uri", "\"${System.getenv('oauth_redirect_uri')}\"")
-    secretProperties.setProperty("google_project_id", "\"${System.getenv('google_project_id') ?: "null"}\"")
+    secretProperties.setProperty("oauth_client_id", "${System.getenv('oauth_client_id')}")
+    secretProperties.setProperty("oauth_client_secret", "${System.getenv('oauth_client_secret')}")
+    secretProperties.setProperty("oauth_redirect_uri", "${System.getenv('oauth_redirect_uri')}")
+    secretProperties.setProperty("google_project_id", "${System.getenv('google_project_id') ?: "null"}")
     secretProperties.setProperty("signing_keystore_password", "${System.getenv('signing_keystore_password')}")
     secretProperties.setProperty("signing_key_password", "${System.getenv('signing_key_password')}")
     secretProperties.setProperty("signing_key_alias", "${System.getenv('signing_key_alias')}")
