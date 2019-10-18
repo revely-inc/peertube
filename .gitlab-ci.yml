@@ -46,6 +46,7 @@ ensureContainer:
     - mv output/android/www/* app/src/main/assets/www/
     # We store this binary file in a variable as hex with this command, `xxd -p gitter-android-app.jks`
     # Then we convert the hex back to a binary file
+    - mkdir -p ./keys
     - echo "$signing_jks_file_hex" | xxd -r -p - > ./keys/android-signing-keystore.jks
     # We add 100 to get this high enough above current versionCodes that are published
     - "export VERSION_CODE=$((100 + $CI_PIPELINE_IID)) && echo $VERSION_CODE"
