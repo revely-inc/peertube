@@ -2,11 +2,7 @@ stages:
   - environment
   - build
   - test
-  - internal
-  - alpha
-  - beta
-  - production
-
+  - publish
 
 .updateContainerJob:
   image: docker:stable
@@ -84,9 +80,9 @@ testDebug:
   script:
     - bundle exec fastlane test
 
-publishInternal:
+.publish:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  stage: internal
+  stage: publish
   dependencies:
     - buildRelease
   when: manual
@@ -94,37 +90,25 @@ publishInternal:
     - echo $google_play_service_account_api_key_json > ~/google_play_api_key.json
   after_script:
     - rm -f ~/google_play_api_key.json
+
+publishAlpha:
+  extends: .publish
+  only:
+    - alpha
   script:
-    - bundle exec fastlane internal
+    - bundle exec fastlane alpha
 
-.promote_job:
-  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  when: manual
-  dependencies: []
-  before_script:
-    - echo $google_play_service_account_api_key_json > ~/google_play_api_key.json
-  after_script:
-    - rm -f ~/google_play_api_key.json
-
-promoteAlpha:
-  extends: .promote_job
-  stage: alpha
+publishBeta:
+  extends: .publish
+  only:
+    - beta
   script:
-    - bundle exec fastlane promote_internal_to_alpha
+    - bundle exec fastlane beta
 
-promoteBeta:
-  extends: .promote_job
-  stage: beta
-  script:
-    - bundle exec fastlane promote_alpha_to_beta
-
-promoteProduction:
-  extends: .promote_job
-  stage: production
-  # We only allow production promotion on `master` because
-  # it has its own production scoped secret variables
+publishProduction:
+  extends: .publish
   only:
     - master
     - tags
   script:
-    - bundle exec fastlane promote_beta_to_production
+    - bundle exec fastlane production

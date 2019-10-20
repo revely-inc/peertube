@@ -37,18 +37,18 @@ platform :android do
     upload_to_play_store(track: 'internal', apk: 'app/build/outputs/apk/release/app-release.apk')
   end
 
-  desc "Promote Internal to Alpha"
-  lane :promote_internal_to_alpha do
-    upload_to_play_store(track: 'internal', track_promote_to: 'alpha')
+  desc "Submit a new Alpha Build to Play Store"
+  lane :alpha do
+    upload_to_play_store(track: 'alpha', apk: 'app/build/outputs/apk/release/app-release.apk')
   end
 
-  desc "Promote Alpha to Beta"
-  lane :promote_alpha_to_beta do
-    upload_to_play_store(track: 'alpha', track_promote_to: 'beta')
+  desc "Submit a new Beta Build to Play Store"
+  lane :beta do
+    upload_to_play_store(track: 'beta', apk: 'app/build/outputs/apk/release/app-release.apk')
   end
 
-  desc "Promote Beta to Production"
-  lane :promote_beta_to_production do
-    upload_to_play_store(track: 'beta', track_promote_to: 'production')
+  desc "Submit a new Production Build to Play Store"
+  lane :production do
+    upload_to_play_store(track: 'production', apk: 'app/build/outputs/apk/release/app-release.apk')
   end
 end
