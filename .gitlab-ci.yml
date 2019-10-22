@@ -87,9 +87,9 @@ testDebug:
     - buildRelease
 #  when: manual
   before_script:
-    - echo $google_play_service_account_api_key_json > ~/google_play_api_key.json
+    - echo $google_play_service_account_api_key_json > ./keys/google_play_api_key.json
   after_script:
-    - rm -f ~/google_play_api_key.json
+    - rm -f ./keys/google_play_api_key.json
 
 publishAlpha:
   extends: .publish
