@@ -12,8 +12,10 @@ import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentInstancesBinding
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.LayoutFragment
-import co.revely.peertube.utils.*
-import kotlinx.android.synthetic.main.activity_main.*
+import co.revely.peertube.utils.AppExecutors
+import co.revely.peertube.utils.MarginItemDecoration
+import co.revely.peertube.utils.autoCleared
+import co.revely.peertube.utils.progress
 import kotlinx.android.synthetic.main.fragment_instances.*
 import org.jetbrains.anko.dip
 import org.koin.android.ext.android.inject
@@ -70,7 +72,8 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 				instancesViewModel.instances.value?.data?.filter {
 					it.name.contains(newText.toString(), ignoreCase = true) || it.host.contains(newText.toString(), ignoreCase = true)
 				}?.also {
-					adapter.submitList(it)
+					if (isVisible)
+						adapter.submitList(it)
 				}
 				return false
 			}

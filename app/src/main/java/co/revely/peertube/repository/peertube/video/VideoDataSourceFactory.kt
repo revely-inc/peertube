@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.api.peertube.query.VideoQuery
-import co.revely.peertube.db.peertube.entity.Video
+import co.revely.peertube.api.peertube.response.Video
 import java.util.concurrent.Executor
 
 /**

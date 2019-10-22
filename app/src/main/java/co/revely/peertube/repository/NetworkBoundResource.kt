@@ -33,7 +33,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 		result.addSource(dbSource) { data ->
 			result.removeSource(dbSource)
 			if (shouldFetch(data))
-				fetchFromNetwork(dbSource)
+				fetchFromNetwork(data, dbSource)
 			else
 			{
 				result.addSource(dbSource) { newData ->
@@ -50,9 +50,9 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 			result.value = newValue
 	}
 
-	private fun fetchFromNetwork(dbSource: LiveData<ResultType>)
+	private fun fetchFromNetwork(data: ResultType?, dbSource: LiveData<ResultType>)
 	{
-		val apiResponse = createCall()
+		val apiResponse = createCall(data)
 		// we re-attach dbSource as a instance source, it will dispatch its latest value quickly
 		result.addSource(dbSource) { newData ->
 			setValue(Resource.loading(newData))
@@ -115,5 +115,5 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 	protected abstract fun loadFromDb(): LiveData<ResultType>
 
 	@MainThread
-	protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>
+	protected abstract fun createCall(data: ResultType?): LiveData<ApiResponse<RequestType>>
 }

@@ -2,23 +2,27 @@ package co.revely.peertube.ui.video
 
 import androidx.lifecycle.ViewModel
 import co.revely.peertube.repository.peertube.video.VideoRepository
-import co.revely.peertube.utils.AppExecutors
+import com.google.android.exoplayer2.SimpleExoPlayer
 
 /**
  * Created at 16/04/2019
  *
  * @author rbenjami
  */
-class VideoViewModel(host: String, id: String, appExecutors: AppExecutors) : ViewModel()
+class VideoViewModel(id: String, videoRepository: VideoRepository) : ViewModel()
 {
-	private val videoRepository = VideoRepository.instance(host, appExecutors)
+	var exoPlayer: SimpleExoPlayer? = null
+//	private var mediaSource: MediaSource? = null
 
 	val video = videoRepository.getVideoById(id)
 	val rating = videoRepository.getMyRating(id)
 
-	var startAutoPlay: Boolean = true
-	var startWindow: Int = 0
-	var startPosition: Long = 0
+	override fun onCleared()
+	{
+		super.onCleared()
+		exoPlayer?.release()
+		exoPlayer = null
+	}
 
 	fun onLikeVideoClicked()
 	{

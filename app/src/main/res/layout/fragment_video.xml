@@ -5,7 +5,7 @@
 	<data>
 		<variable
 				name="video"
-				type="co.revely.peertube.db.peertube.entity.Video"/>
+				type="co.revely.peertube.api.peertube.response.Video"/>
 		<variable
 				name="viewModel"
 				type="co.revely.peertube.ui.video.VideoViewModel" />

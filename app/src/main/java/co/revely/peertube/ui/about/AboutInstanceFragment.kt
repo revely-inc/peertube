@@ -1,5 +1,6 @@
 package co.revely.peertube.ui.about
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -8,6 +9,8 @@ import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * Created at 2019-06-20
@@ -16,6 +19,10 @@ import co.revely.peertube.ui.LayoutFragment
  */
 class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.layout.fragment_about_instance)
 {
+	private val peerTubeService: PeerTubeService by inject(parameters = { parametersOf(arguments!!.getString("host")!!)})
+
+	override fun title(context: Context): String = context.getString(R.string.title_about)
+
 	companion object
 	{
 		fun newInstance(host: String): AboutInstanceFragment
@@ -30,8 +37,7 @@ class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.lay
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		val host = arguments!!.getString("host")!!
-		PeerTubeService.instance(host).configAbout().observe(this, Observer {
+		peerTubeService.configAbout().observe(this, Observer {
 			if (it is ApiSuccessResponse)
 				binding.instance = it.body.instance
 		})

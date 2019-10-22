@@ -3,7 +3,7 @@
 	<data>
 		<variable
 				name="video"
-				type="co.revely.peertube.db.peertube.entity.Video"/>
+				type="co.revely.peertube.api.peertube.response.Video"/>
 	</data>
 <com.google.android.material.card.MaterialCardView
 		xmlns:android="http://schemas.android.com/apk/res/android"

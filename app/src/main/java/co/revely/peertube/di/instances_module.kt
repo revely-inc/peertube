@@ -1,9 +1,6 @@
 package co.revely.peertube.di
 
-import androidx.room.Room
 import co.revely.peertube.api.instances.InstancesService
-import co.revely.peertube.db.instances.InstancesDatabase
-import co.revely.peertube.repository.instances.InstancesRepository
 import co.revely.peertube.utils.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -37,17 +34,5 @@ val instancesModule = module {
 				.addCallAdapterFactory(LiveDataCallAdapterFactory())
 				.build()
 				.create(InstancesService::class.java)
-	}
-
-	single {
-		Room.databaseBuilder(get(), InstancesDatabase::class.java, "instances.db")
-				.fallbackToDestructiveMigration()
-				.build()
-	}
-
-	single { InstancesRepository(get(), get(), get()) }
-
-	single {
-		get<InstancesDatabase>().instanceDao()
 	}
 }

@@ -1,9 +1,7 @@
 package co.revely.peertube
 
 import android.app.Application
-import co.revely.peertube.di.appModule
-import co.revely.peertube.di.instancesModule
-import co.revely.peertube.di.viewModelModule
+import co.revely.peertube.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -26,7 +24,10 @@ class PeerTubeApp : Application()
 			modules(listOf(
 					appModule,
 					viewModelModule,
-					instancesModule
+					instancesModule,
+					peertubeModule,
+					oauthModule,
+					databaseModule
 			))
 		}
 	}

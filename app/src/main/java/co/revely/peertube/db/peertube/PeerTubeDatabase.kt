@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import co.revely.peertube.db.peertube.entity.Video
+import co.revely.peertube.api.peertube.response.OAuthClient
+import co.revely.peertube.api.peertube.response.OAuthToken
 
 /**
  * Created at 17/04/2019
@@ -13,9 +13,9 @@ import co.revely.peertube.db.peertube.entity.Video
  * @author rbenjami
  */
 @Database(entities = [
-	Video::class
-], version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
+	OAuthToken::class,
+	OAuthClient::class
+], version = 2, exportSchema = false)
 abstract class PeerTubeDatabase : RoomDatabase()
 {
 	companion object
@@ -35,5 +35,6 @@ abstract class PeerTubeDatabase : RoomDatabase()
 		}
 	}
 
-	abstract fun videoDao(): Video.Dao
+	abstract fun oAuthTokenDao(): OAuthToken.Dao
+	abstract fun oAuthClientDao(): OAuthClient.Dao
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.api.peertube.query.VideoQuery
-import co.revely.peertube.db.peertube.entity.Video
+import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.utils.enqueue
 import java.io.IOException
@@ -96,7 +96,7 @@ class PageKeyedVideoDataSource(
 				videoQuery?.start,
 				videoQuery?.tagsAllOf,
 				videoQuery?.tagsOneOf
-		).enqueue { call, response, t ->
+		).enqueue { _, response, t ->
 			if (response == null)
 			{
 				retry = { loadAfter(params, callback) }

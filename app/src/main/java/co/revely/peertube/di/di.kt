@@ -15,7 +15,9 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import java.io.File
 
@@ -25,6 +27,8 @@ import java.io.File
  *
  * @author rbenjami
  */
+inline fun <reified T> Scope.getWithParams(vararg params: Any?) = this.get<T>(parameters = { parametersOf(*params) })
+
 val appModule = module {
 	single {
 		val app = get<Application>()

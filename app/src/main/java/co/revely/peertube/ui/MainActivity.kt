@@ -5,6 +5,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
+import androidx.navigation.ui.setupWithNavController
 import co.revely.peertube.R
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.instances.InstancesFragmentDirections
@@ -28,19 +30,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 		setContentView(R.layout.activity_main)
 		setSupportActionBar(toolbar)
 
-		navController.addOnDestinationChangedListener { _, _, _ ->
+		navController.addOnDestinationChangedListener { _, d, a ->
 			navigation?.invisible()
 		}
 
-		PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
-			val directions = InstancesFragmentDirections.actionInstancesToInstance(host)
-			navController.navigate(directions)
+		if (savedInstanceState == null)
+		{
+			PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
+				val directions = InstancesFragmentDirections.actionInstancesToInstance(host)
+				navController.navigate(directions)
+			}
 		}
 
+		navigation.setupWithNavController(navController)
 		navigation.setOnNavigationItemSelectedListener { menuItem ->
+			if (navController.currentDestination?.id == menuItem.itemId)
+				return@setOnNavigationItemSelectedListener false
 			val args = main_nav_host_fragment?.childFragmentManager?.fragments?.getOrNull(0)?.arguments
 			args?.getString("host")?.also {
-				navController.navigate(menuItem.itemId, Bundle().apply { putString("host", it) })
+				navController.navigate(menuItem.itemId, Bundle().apply { putString("host", it) }, navOptions { launchSingleTop = true })
 			} ?: Timber.e("Args 'host' is null")
 			return@setOnNavigationItemSelectedListener true
 		}

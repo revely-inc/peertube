@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.duration
 import co.revely.peertube.utils.humanReadableBigNumber
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 /**
@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 @BindingAdapter("url", "circleCrop", requireAll = false)
 fun loadImage(view: ImageView, circleCrop: Boolean, imageUrl: String)
 {
-	val builder = Glide.with(view.context).load(imageUrl)
+	val builder = GlideApp.with(view.context).load(imageUrl)
 	if (circleCrop) builder.apply(RequestOptions().circleCrop())
 	builder.into(view)
 }

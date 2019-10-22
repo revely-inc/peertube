@@ -27,6 +27,6 @@ class InstancesRepository(
 			override fun saveCallResult(item: ArrayResponse<Instance>) = instanceDao.insert(*item.data.toTypedArray())
 			override fun shouldFetch(data: List<Instance>?) = data == null || data.isEmpty() || instancesRateLimit.shouldFetch("instances")
 			override fun loadFromDb() = instanceDao.load()
-			override fun createCall() = instancesService.instances()
+			override fun createCall(data: List<Instance>?) = instancesService.instances()
 		}.asLiveData()
 }

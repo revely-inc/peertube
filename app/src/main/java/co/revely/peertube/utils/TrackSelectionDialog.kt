@@ -140,8 +140,8 @@ class TrackSelectionDialog : DialogFragment()
 		viewPager.adapter = FragmentAdapter(childFragmentManager)
 		tabLayout.setupWithViewPager(viewPager)
 		tabLayout.visibility = if (tabFragments.size() > 1) View.VISIBLE else View.GONE
-		cancelButton.setOnClickListener { view -> dismiss() }
-		okButton.setOnClickListener { view ->
+		cancelButton.setOnClickListener { dismiss() }
+		okButton.setOnClickListener {
 			onClickListener!!.onClick(dialog, DialogInterface.BUTTON_POSITIVE)
 			dismiss()
 		}
@@ -270,32 +270,31 @@ class TrackSelectionDialog : DialogFragment()
 			val trackSelectionDialog = TrackSelectionDialog()
 			val parameters = trackSelector.parameters
 			trackSelectionDialog.init(
-					R.string.track_selection_title,
-					mappedTrackInfo,
-					parameters,
-					true,
-					false,
-					DialogInterface.OnClickListener { dialog, which ->
-						val builder = parameters.buildUpon()
-						for (i in 0 until mappedTrackInfo.rendererCount)
-						{
-							builder
-									.clearSelectionOverrides(i)
-									.setRendererDisabled(
-											i,
-											trackSelectionDialog.getIsDisabled(i))
-							val overrides = trackSelectionDialog.getOverrides(i)
-							if (overrides.isNotEmpty())
-							{
-								builder.setSelectionOverride(
-										i,
-										mappedTrackInfo.getTrackGroups(i),
-										overrides[0])
-							}
+				R.string.track_selection_title,
+				mappedTrackInfo,
+				parameters,
+				allowAdaptiveSelections = true,
+				allowMultipleOverrides = false,
+				onClickListener = DialogInterface.OnClickListener { _, _ ->
+					val builder = parameters.buildUpon()
+					for (i in 0 until mappedTrackInfo.rendererCount) {
+						builder
+							.clearSelectionOverrides(i)
+							.setRendererDisabled(
+								i,
+								trackSelectionDialog.getIsDisabled(i))
+						val overrides = trackSelectionDialog.getOverrides(i)
+						if (overrides.isNotEmpty()) {
+							builder.setSelectionOverride(
+								i,
+								mappedTrackInfo.getTrackGroups(i),
+								overrides[0])
 						}
-						trackSelector.setParameters(builder)
-					},
-					onDismissListener)
+					}
+					trackSelector.setParameters(builder)
+				},
+				onDismissListener = onDismissListener
+			)
 			return trackSelectionDialog
 		}
 
@@ -345,24 +344,16 @@ class TrackSelectionDialog : DialogFragment()
 			return isSupportedTrackType(trackType)
 		}
 
-		private fun isSupportedTrackType(trackType: Int): Boolean
-		{
-			when (trackType)
-			{
-				C.TRACK_TYPE_VIDEO, C.TRACK_TYPE_AUDIO, C.TRACK_TYPE_TEXT -> return true
-				else -> return false
-			}
+		private fun isSupportedTrackType(trackType: Int) = when (trackType) {
+			C.TRACK_TYPE_VIDEO, C.TRACK_TYPE_AUDIO, C.TRACK_TYPE_TEXT -> true
+			else -> false
 		}
 
-		private fun getTrackTypeString(resources: Resources, trackType: Int): String
-		{
-			when (trackType)
-			{
-				C.TRACK_TYPE_VIDEO -> return resources.getString(R.string.exo_track_selection_title_video)
-				C.TRACK_TYPE_AUDIO -> return resources.getString(R.string.exo_track_selection_title_audio)
-				C.TRACK_TYPE_TEXT -> return resources.getString(R.string.exo_track_selection_title_text)
-				else -> throw IllegalArgumentException()
-			}
+		private fun getTrackTypeString(resources: Resources, trackType: Int) = when (trackType) {
+			C.TRACK_TYPE_VIDEO -> resources.getString(R.string.exo_track_selection_title_video)
+			C.TRACK_TYPE_AUDIO -> resources.getString(R.string.exo_track_selection_title_audio)
+			C.TRACK_TYPE_TEXT -> resources.getString(R.string.exo_track_selection_title_text)
+			else -> throw IllegalArgumentException()
 		}
 	}
 }

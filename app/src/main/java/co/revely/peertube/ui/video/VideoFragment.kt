@@ -10,13 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
+import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
-import co.revely.peertube.db.peertube.entity.Video
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.DownloadTracker
+import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.invisible
 import co.revely.peertube.utils.progress
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.offline.DownloadHelper
@@ -31,7 +31,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,9 +48,6 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()
 
-	private var exoPlayer: SimpleExoPlayer? = null
-	private var mediaSource: MediaSource? = null
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -61,55 +57,29 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			(activity as? AppCompatActivity)?.supportActionBar?.hide()
 		}
 
+		initializePlayer()
 		player.requestFocus()
 	}
 
 	private fun initializePlayer()
 	{
-		if (exoPlayer != null)
-			return
-		exoPlayer = ExoPlayerFactory.newSimpleInstance(context,
+		if (videoViewModel.exoPlayer == null)
+		{
+			videoViewModel.exoPlayer = ExoPlayerFactory.newSimpleInstance(context,
 				DefaultRenderersFactory(context),
 				DefaultTrackSelector(),
 				DefaultLoadControl())
-		player.player = exoPlayer
-		player.setPlaybackPreparer { exoPlayer?.retry() }
-		exoPlayer?.addListener(this)
-		exoPlayer?.playWhenReady = videoViewModel.startAutoPlay
-		videoViewModel.video.observe(this, Observer { when (it) {
-			is ApiSuccessResponse -> onVideo(it.body)
-		} })
-		videoViewModel.rating.observe(this, Observer { when (it) {
-			is ApiSuccessResponse -> it.body.rating
-		} })
-	}
-
-	private fun releasePlayer()
-	{
-		if (exoPlayer != null)
-		{
-			updateStartPosition()
-			exoPlayer?.release()
-			exoPlayer = null
-			mediaSource = null
+			videoViewModel.exoPlayer?.addListener(this)
+			videoViewModel.exoPlayer?.playWhenReady = true
+			videoViewModel.video.observe(this, Observer { when (it) {
+				is ApiSuccessResponse -> onVideo(it.body)
+			} })
+			videoViewModel.rating.observe(this, Observer { when (it) {
+				is ApiSuccessResponse -> it.body.rating
+			} })
 		}
-	}
-
-	private fun updateStartPosition()
-	{
-		if (exoPlayer != null)
-		{
-			videoViewModel.startAutoPlay = exoPlayer!!.playWhenReady
-			videoViewModel.startWindow = exoPlayer!!.currentWindowIndex
-			videoViewModel.startPosition = exoPlayer!!.contentPosition.coerceAtLeast(0)
-		}
-	}
-
-	private fun clearStartPosition()
-	{
-		videoViewModel.startAutoPlay = true
-		videoViewModel.startWindow = C.INDEX_UNSET
-		videoViewModel.startPosition = C.TIME_UNSET
+		player.player = videoViewModel.exoPlayer
+		player.setPlaybackPreparer { videoViewModel.exoPlayer?.retry() }
 	}
 
 	private fun buildMediaSource(uri: Uri, overrideExtension: String? = null): MediaSource
@@ -131,14 +101,14 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 //		if (isVisible.not()) return
 		binding.video = video
 		video.previewPath?.also {
-			Glide.with(preview).load("https://${args.host}$it").into(binding.preview)
+			GlideApp.with(preview).load("https://${args.host}$it").into(binding.preview)
 		}
-		mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
+		val mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
 
-		val haveStartPosition = videoViewModel.startWindow != C.INDEX_UNSET
-		if (haveStartPosition)
-			exoPlayer?.seekTo(videoViewModel.startWindow, videoViewModel.startPosition)
-		exoPlayer?.prepare(mediaSource, !haveStartPosition, false)
+//		val haveStartPosition = videoViewModel.startWindow != C.INDEX_UNSET
+//		if (haveStartPosition)
+//			videoViewModel.exoPlayer?.seekTo(videoViewModel.startWindow, videoViewModel.startPosition)
+		videoViewModel.exoPlayer?.prepare(mediaSource)//, !haveStartPosition, false)
 	}
 
 	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
@@ -176,10 +146,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	override fun onPlayerError(error: ExoPlaybackException)
 	{
 		if (isBehindLiveWindow(error))
-		{
-			clearStartPosition()
 			initializePlayer()
-		}
 	}
 	override fun onLoadingChanged(isLoading: Boolean) {}
 	override fun onPositionDiscontinuity(reason: Int) {}
@@ -187,45 +154,31 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
 	override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
 
-	override fun onSaveInstanceState(outState: Bundle)
-	{
-		super.onSaveInstanceState(outState)
-		updateStartPosition()
-	}
-
 	override fun onStart()
 	{
 		super.onStart()
-		if (Util.SDK_INT > 23) {
-			initializePlayer()
+		if (Util.SDK_INT > 23)
 			player?.onResume()
-		}
 	}
 
 	override fun onResume()
 	{
 		super.onResume()
-		if (Util.SDK_INT <= 23 || player == null) {
-			initializePlayer()
+		if (Util.SDK_INT <= 23 || videoViewModel.exoPlayer == null)
 			player?.onResume()
-		}
 	}
 
-	override fun onPause()
-	{
-		super.onPause()
-		if (Util.SDK_INT <= 23) {
-			player?.onPause()
-			releasePlayer()
-		}
-	}
-
-	override fun onStop()
-	{
-		super.onStop()
-		if (Util.SDK_INT > 23) {
-			player?.onPause()
-			releasePlayer()
-		}
-	}
+//	override fun onPause()
+//	{
+//		super.onPause()
+//		if (Util.SDK_INT <= 23)
+//			releasePlayer()
+//	}
+//
+//	override fun onStop()
+//	{
+//		super.onStop()
+//		if (Util.SDK_INT > 23)
+//			releasePlayer()
+//	}
 }

@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import co.revely.peertube.R
+import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.ItemVideoBinding
-import co.revely.peertube.db.peertube.entity.Video
 import co.revely.peertube.ui.common.DataBoundPagedListAdapter
 import co.revely.peertube.utils.AppExecutors
+import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.humanReadableBigNumber
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 
@@ -64,12 +64,12 @@ class VideosAdapter(
 		binding.info.text = info
 
 		item.previewPath?.also {
-			Glide.with(ctx).load("https://$host$it").into(binding.thumbnails)
+			GlideApp.with(ctx).load("https://$host$it").into(binding.thumbnails)
 		}
 
-		Glide.with(ctx)
+		GlideApp.with(ctx)
 			.load(item.account?.avatar?.path?.let { "https://$host$it" })
-			.thumbnail(Glide.with(ctx)
+			.thumbnail(GlideApp.with(ctx)
 				.load("https://$host/client/assets/images/default-avatar.png")
 				.apply(RequestOptions.circleCropTransform())
 			)

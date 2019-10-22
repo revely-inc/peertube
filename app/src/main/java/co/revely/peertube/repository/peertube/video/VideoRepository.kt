@@ -5,7 +5,7 @@ import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.api.peertube.query.VideoQuery
-import co.revely.peertube.db.peertube.entity.Video
+import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.utils.AppExecutors
 import co.revely.peertube.utils.Rate
 
@@ -14,7 +14,7 @@ import co.revely.peertube.utils.Rate
  *
  * @author rbenjami
  */
-class VideoRepository private constructor(
+class VideoRepository(
 	private val peerTubeService: PeerTubeService,
 	private val appExecutors: AppExecutors
 )
@@ -22,20 +22,6 @@ class VideoRepository private constructor(
 	companion object
 	{
 		private const val PAGE_SIZE = 10
-
-		private val repositories = HashMap<String, VideoRepository>()
-
-		fun instance(host: String, appExecutors: AppExecutors): VideoRepository
-		{
-			if (repositories.containsKey(host))
-				return repositories[host]!!
-			val repository = VideoRepository(
-					PeerTubeService.instance(host),
-					appExecutors
-			)
-			repositories[host] = repository
-			return repository
-		}
 	}
 
 	fun getVideos(videoQuery: VideoQuery?): LiveData<PagedList<Video>>

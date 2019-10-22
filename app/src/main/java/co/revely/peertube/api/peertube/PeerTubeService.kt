@@ -3,22 +3,14 @@ package co.revely.peertube.api.peertube
 import androidx.lifecycle.LiveData
 import co.revely.peertube.api.ApiResponse
 import co.revely.peertube.api.ArrayResponse
-import co.revely.peertube.api.peertube.response.AboutInstanceResponse
-import co.revely.peertube.api.peertube.response.ClientResponse
-import co.revely.peertube.api.peertube.response.RateResponse
-import co.revely.peertube.api.peertube.response.TokenResponse
-import co.revely.peertube.db.peertube.entity.Video
-import co.revely.peertube.utils.LiveDataCallAdapterFactory
+import co.revely.peertube.api.peertube.response.*
 import co.revely.peertube.utils.Rate
-import com.google.gson.GsonBuilder
-import okhttp3.OkHttpClient
+import co.revely.peertube.viewmodel.OAuthViewModel
+import okhttp3.Interceptor
+import okhttp3.Response
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import timber.log.Timber
 
 /**
  * Created at 16/04/2019
@@ -27,41 +19,28 @@ import timber.log.Timber
  */
 interface PeerTubeService
 {
-	companion object
+	class OAuthInterceptor(oAuthViewModel: OAuthViewModel) : Interceptor
 	{
-		const val API_VERSION = "api/v1"
+		private var token: OAuthToken? = null
 
-		private val services = HashMap<String, PeerTubeService>()
-
-		fun instance(host: String): PeerTubeService
+		init
 		{
-			if (services.containsKey(host))
-				return services[host]!!
-			val service = Retrofit.Builder()
-				.baseUrl("https://$host/$API_VERSION/")
-				.client(OkHttpClient.Builder()
-					.addInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-						override fun log(message: String) {
-							Timber.tag("OkHttp $host").d(message)
-						}
-					}).apply {
-						level = HttpLoggingInterceptor.Level.BODY
-					})
-					.build())
-				.addConverterFactory(GsonConverterFactory.create(GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
-				.addCallAdapterFactory(LiveDataCallAdapterFactory())
-				.build()
-				.create(PeerTubeService::class.java)
-			services[host] = service
-			return service
+			oAuthViewModel.token().observeForever { token = it?.data }
+		}
+
+		override fun intercept(chain: Interceptor.Chain): Response
+		{
+			val builder = chain.request().newBuilder()
+
+			if (token != null)
+				builder.header("Authorization", "${token!!.tokenType} ${token!!.accessToken}")
+
+			return chain.proceed(builder.build())
 		}
 	}
 
-	@GET("oauth-clients/local")
-	fun getClient(): Call<ClientResponse>
-
-	@POST("users/token")
-	fun getToken(@Field("id_client") idClient: String): Call<TokenResponse>
+	@GET("users/me")
+	fun me(): LiveData<ApiResponse<User>>
 
 	@GET("videos")
 	fun videos(

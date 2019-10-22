@@ -59,5 +59,9 @@ class PreferencesHelper
 	companion object
 	{
 		val defaultHost by lazy { Pref("DEFAULT_HOST", "") }
+
+		val clientIds by lazy { Pref("CLIENT_IDS", null as? String?) }
+		val clientSecrets by lazy { Pref("CLIENT_SECRETS", null as? String?) }
+		val token by lazy { Pref("TOKEN", null as? String?) }
 	}
 }
