@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.InstanceNavGraphDirections
 import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.UserMenuFragment
 import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +31,7 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): U
 
 	protected var adapter: VideosAdapter by autoCleared()
 
-	protected abstract fun videos(): LiveData<PagedList<Video>>
+	protected abstract fun videos(): Listing<Video>
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
@@ -52,9 +51,21 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): U
 
 	private fun initVideos()
 	{
-		videos().observe(this, Observer {
-			adapter.submitList(it)
-			progress_bar.progress(false)
-		})
+		videos().apply {
+			pagedList.observe(this@VideosFragment) {
+				adapter.submitList(it)
+				progress_bar.progress(false)
+			}
+			refreshState.observe(this@VideosFragment) {
+				activity?.swipe_refresh?.isRefreshing = it == NetworkState.LOADING
+			}
+//			networkState.observe(this@VideosFragment) {
+//			}
+
+			activity?.swipe_refresh?.apply {
+				isEnabled = true
+				setOnRefreshListener { refresh() }
+			}
+		}
 	}
 }

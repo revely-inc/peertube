@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -36,7 +37,7 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		activity?.setTitle(R.string.instances)
+		(activity as? AppCompatActivity)?.supportActionBar?.setTitle(R.string.instances)
 		setHasOptionsMenu(true)
 
 		adapter = InstancesAdapter(appExecutors) { instance ->

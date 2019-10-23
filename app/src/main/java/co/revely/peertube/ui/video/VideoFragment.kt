@@ -13,10 +13,7 @@ import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
 import co.revely.peertube.ui.LayoutFragment
-import co.revely.peertube.utils.DownloadTracker
-import co.revely.peertube.utils.GlideApp
-import co.revely.peertube.utils.invisible
-import co.revely.peertube.utils.progress
+import co.revely.peertube.utils.*
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.offline.DownloadHelper
@@ -50,13 +47,14 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
+		binding.viewModel = videoViewModel
 		if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 		{
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-			(activity as? AppCompatActivity)?.supportActionBar?.hide()
 		}
 
+		(activity as? AppCompatActivity)?.supportActionBar?.hide()
 		initializePlayer()
 		player.requestFocus()
 	}
@@ -69,15 +67,17 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 				DefaultRenderersFactory(context),
 				DefaultTrackSelector(),
 				DefaultLoadControl())
-			videoViewModel.exoPlayer?.addListener(this)
 			videoViewModel.exoPlayer?.playWhenReady = true
 			videoViewModel.video.observe(this, Observer { when (it) {
 				is ApiSuccessResponse -> onVideo(it.body)
 			} })
-			videoViewModel.rating.observe(this, Observer { when (it) {
-				is ApiSuccessResponse -> it.body.rating
-			} })
+			videoViewModel.rating.observe(this, Observer { rating ->
+				//TODO: increment/decrement likes/dislike
+				likes.setDrawableTint(if (rating == Rate.LIKE) R.color.colorPrimary else android.R.color.darker_gray)
+				dislikes.setDrawableTint(if (rating == Rate.DISLIKE) R.color.colorPrimary else android.R.color.darker_gray)
+			})
 		}
+		videoViewModel.exoPlayer?.addListener(this)
 		player.player = videoViewModel.exoPlayer
 		player.setPlaybackPreparer { videoViewModel.exoPlayer?.retry() }
 	}
@@ -98,17 +98,12 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 
 	private fun onVideo(video: Video)
 	{
-//		if (isVisible.not()) return
 		binding.video = video
 		video.previewPath?.also {
 			GlideApp.with(preview).load("https://${args.host}$it").into(binding.preview)
 		}
 		val mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
-
-//		val haveStartPosition = videoViewModel.startWindow != C.INDEX_UNSET
-//		if (haveStartPosition)
-//			videoViewModel.exoPlayer?.seekTo(videoViewModel.startWindow, videoViewModel.startPosition)
-		videoViewModel.exoPlayer?.prepare(mediaSource)//, !haveStartPosition, false)
+		videoViewModel.exoPlayer?.prepare(mediaSource)
 	}
 
 	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
@@ -158,7 +153,10 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	{
 		super.onStart()
 		if (Util.SDK_INT > 23)
+		{
 			player?.onResume()
+			videoViewModel.exoPlayer?.playWhenReady = true
+		}
 	}
 
 	override fun onResume()
@@ -168,17 +166,10 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			player?.onResume()
 	}
 
-//	override fun onPause()
-//	{
-//		super.onPause()
-//		if (Util.SDK_INT <= 23)
-//			releasePlayer()
-//	}
-//
-//	override fun onStop()
-//	{
-//		super.onStop()
-//		if (Util.SDK_INT > 23)
-//			releasePlayer()
-//	}
+	override fun onPause()
+	{
+		super.onPause()
+		player.onPause()
+		videoViewModel.exoPlayer?.playWhenReady = false
+	}
 }

@@ -1,20 +1,26 @@
 package co.revely.peertube.utils
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import co.revely.peertube.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import kotlin.math.ln
 import kotlin.math.pow
+
+
 
 /**
  *
@@ -36,7 +42,7 @@ fun ImageView.progress(visible: Boolean)
 {
 	if (visible)
 	{
-		AnimatedVectorDrawableCompat.create(context, R.drawable.progress_anim)?.apply {
+		AnimatedVectorDrawableCompat.create(context, co.revely.peertube.R.drawable.progress_anim)?.apply {
 			setImageDrawable(this)
 			registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
 				override fun onAnimationEnd(drawable: Drawable?) {
@@ -48,6 +54,15 @@ fun ImageView.progress(visible: Boolean)
 	}
 	else
 		setImageDrawable(null)
+}
+
+fun TextView.setDrawableTint(@ColorRes color: Int)
+{
+	for (drawable in this.compoundDrawables)
+	{
+		if (drawable != null)
+			drawable.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_IN)
+	}
 }
 
 fun <T> Call<T>.enqueue(function: (call: Call<T>, response: Response<T>?, t: Throwable?) -> Unit) =

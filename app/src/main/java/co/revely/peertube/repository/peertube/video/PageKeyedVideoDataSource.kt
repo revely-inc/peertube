@@ -48,13 +48,13 @@ class PageKeyedVideoDataSource(
 	{
 		val request = peerTubeService.videos(
 				videoQuery?.categoryOneOf,
-				videoQuery?.count,
+				params.requestedLoadSize,
 				videoQuery?.filter,
 				videoQuery?.languageOneOf,
 				videoQuery?.licenceOneOf,
 				videoQuery?.nsfw,
 				videoQuery?.sort,
-				videoQuery?.start,
+				0,
 				videoQuery?.tagsAllOf,
 				videoQuery?.tagsOneOf
 		)
@@ -87,13 +87,13 @@ class PageKeyedVideoDataSource(
 		networkState.postValue(NetworkState.LOADING)
 		peerTubeService.videos(
 				videoQuery?.categoryOneOf,
-				videoQuery?.count,
+				params.requestedLoadSize,
 				videoQuery?.filter,
 				videoQuery?.languageOneOf,
 				videoQuery?.licenceOneOf,
 				videoQuery?.nsfw,
 				videoQuery?.sort,
-				videoQuery?.start,
+				params.key,
 				videoQuery?.tagsAllOf,
 				videoQuery?.tagsOneOf
 		).enqueue { _, response, t ->

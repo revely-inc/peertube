@@ -9,7 +9,7 @@ data class VideoQuery(
 	//category id of the video
 	val categoryOneOf: List<Int>? = null,
 	//Number of items
-	val count: Int? = null,
+//	val count: Int? = null,
 	//Special filters (local for instance) which might require special rights:
 	val filter: String? = null,
 	//language id of the video
@@ -21,7 +21,7 @@ data class VideoQuery(
 	//Sort videos by criteria ("-name" "-duration" "-createdAt" "-publishedAt" "-views" "-likes" "-trending")
 	val sort: String? = null,
 	//Offset
-	val start: Int? = null,
+//	val start: Int? = null,
 	//tag(s) of the video, where all should be present in the video
 	val tagsAllOf: List<String>? = null,
 	//tag(s) of the video

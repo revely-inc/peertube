@@ -79,9 +79,10 @@ interface PeerTubeService
 			@Path("id") id: String
 	): LiveData<ApiResponse<RateResponse>>
 
+	@FormUrlEncoded
 	@PUT("videos/{id}/rate")
 	fun rateVideo(
 			@Path("id") id: String,
 			@Field("rating") @Rate rating: String
-	): ResponseBody
+	): Call<ResponseBody>
 }

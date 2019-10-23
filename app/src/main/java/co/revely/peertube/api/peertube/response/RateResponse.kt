@@ -9,5 +9,5 @@ import co.revely.peertube.utils.Rate
  */
 data class RateResponse(
 		val id: String,
-		val rating: Rate
+		@Rate val rating: String
 )
