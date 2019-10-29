@@ -6,12 +6,12 @@ import android.view.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import co.revely.peertube.InstanceNavGraphDirections
 import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.utils.GlideApp
+import co.revely.peertube.utils.observe
 import co.revely.peertube.viewmodel.OAuthViewModel
 import co.revely.peertube.viewmodel.UserViewModel
 import com.bumptech.glide.request.RequestOptions
@@ -41,7 +41,7 @@ open class UserMenuFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): Lay
 
 	private fun initUser()
 	{
-		userViewModel.me().observe(this) { response -> when (response) {
+		observe(userViewModel.me()) { response -> when (response) {
 			is ApiSuccessResponse -> {
 				val user = response.body
 				(activity as? AppCompatActivity?)?.also { activity ->

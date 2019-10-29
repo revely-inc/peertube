@@ -6,17 +6,13 @@ import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentInstancesBinding
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.LayoutFragment
-import co.revely.peertube.utils.AppExecutors
-import co.revely.peertube.utils.MarginItemDecoration
-import co.revely.peertube.utils.autoCleared
-import co.revely.peertube.utils.progress
+import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.fragment_instances.*
 import org.jetbrains.anko.dip
 import org.koin.android.ext.android.inject
@@ -54,10 +50,10 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 
 	private fun initInstances()
 	{
-		instancesViewModel.instances.observe(this, Observer {
-			adapter.submitList(it?.data)
+		observe(instancesViewModel.instances) {
+			adapter.submitList(it.data)
 			progress_bar.progress(false)
-		})
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)

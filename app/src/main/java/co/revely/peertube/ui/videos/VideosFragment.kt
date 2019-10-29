@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.InstanceNavGraphDirections
@@ -52,14 +51,14 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): U
 	private fun initVideos()
 	{
 		videos().apply {
-			pagedList.observe(this@VideosFragment) {
+			observe(pagedList) {
 				adapter.submitList(it)
 				progress_bar.progress(false)
 			}
-			refreshState.observe(this@VideosFragment) {
+			observe(refreshState) {
 				activity?.swipe_refresh?.isRefreshing = it == NetworkState.LOADING
 			}
-//			networkState.observe(this@VideosFragment) {
+//			observe(networkState) {
 //			}
 
 			activity?.swipe_refresh?.apply {

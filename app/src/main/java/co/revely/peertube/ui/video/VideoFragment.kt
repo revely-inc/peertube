@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import co.revely.peertube.R
-import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
 import co.revely.peertube.ui.LayoutFragment
@@ -68,14 +66,11 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 				DefaultTrackSelector(),
 				DefaultLoadControl())
 			videoViewModel.exoPlayer?.playWhenReady = true
-			videoViewModel.video.observe(this, Observer { when (it) {
-				is ApiSuccessResponse -> onVideo(it.body)
-			} })
-			videoViewModel.rating.observe(this, Observer { rating ->
-				//TODO: increment/decrement likes/dislike
-				likes.setDrawableTint(if (rating == Rate.LIKE) R.color.colorPrimary else android.R.color.darker_gray)
-				dislikes.setDrawableTint(if (rating == Rate.DISLIKE) R.color.colorPrimary else android.R.color.darker_gray)
-			})
+			observe(videoViewModel.video) { onVideo(it) }
+			observe(videoViewModel.rating) { rating ->
+				likes.setDrawableTint(if (rating == Rate.LIKE) R.color.colorAccent else android.R.color.darker_gray)
+				dislikes.setDrawableTint(if (rating == Rate.DISLIKE) R.color.colorAccent else android.R.color.darker_gray)
+			}
 		}
 		videoViewModel.exoPlayer?.addListener(this)
 		player.player = videoViewModel.exoPlayer
@@ -99,11 +94,13 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	private fun onVideo(video: Video)
 	{
 		binding.video = video
+		if (videoViewModel.mediaSource != null)
+			return
 		video.previewPath?.also {
 			GlideApp.with(preview).load("https://${args.host}$it").into(binding.preview)
 		}
-		val mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
-		videoViewModel.exoPlayer?.prepare(mediaSource)
+		videoViewModel.mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
+		videoViewModel.exoPlayer?.prepare(videoViewModel.mediaSource)
 	}
 
 	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)

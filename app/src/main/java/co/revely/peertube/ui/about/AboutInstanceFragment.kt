@@ -3,12 +3,12 @@ package co.revely.peertube.ui.about
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
+import co.revely.peertube.utils.observe
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
@@ -37,9 +37,9 @@ class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.lay
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		peerTubeService.configAbout().observe(this, Observer {
+		observe(peerTubeService.configAbout()) {
 			if (it is ApiSuccessResponse)
 				binding.instance = it.body.instance
-		})
+		}
 	}
 }

@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.observe
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import retrofit2.Call
@@ -74,6 +77,9 @@ fun <T> Call<T>.enqueue(function: (call: Call<T>, response: Response<T>?, t: Thr
 fun View.visible() { visibility = View.VISIBLE }
 fun View.invisible() { visibility = View.INVISIBLE }
 fun View.gone() { visibility = View.GONE }
+
+fun <T> Fragment.observe(liveData: LiveData<T>, onChanged: (T) -> Unit) =
+	liveData.observe(viewLifecycleOwner, onChanged)
 
 fun Long.duration(): String
 {
