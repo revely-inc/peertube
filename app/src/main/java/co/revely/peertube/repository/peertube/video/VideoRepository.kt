@@ -28,7 +28,7 @@ class VideoRepository(
 	@MainThread
 	fun getVideos(videoQuery: VideoQuery?): Listing<Video>
 	{
-		val sourceFactory = VideoDataSourceFactory(peerTubeService, appExecutors.networkIO(), videoQuery)
+		val sourceFactory = VideoDataSourceFactory(peerTubeService, videoQuery, appExecutors.networkIO())
 		val livePagedList = sourceFactory.toLiveData(pageSize = PAGE_SIZE, fetchExecutor = appExecutors.networkIO())
 		val refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) {
 			it.initialLoad

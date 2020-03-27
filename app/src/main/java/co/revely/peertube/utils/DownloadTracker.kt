@@ -24,7 +24,14 @@ import co.revely.peertube.R
 import co.revely.peertube.service.VideoDownloadService
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.RenderersFactory
-import com.google.android.exoplayer2.offline.*
+import com.google.android.exoplayer2.offline.Download
+import com.google.android.exoplayer2.offline.DownloadHelper
+import com.google.android.exoplayer2.offline.DownloadHelper.LiveContentUnsupportedException
+import com.google.android.exoplayer2.offline.DownloadIndex
+import com.google.android.exoplayer2.offline.DownloadManager
+import com.google.android.exoplayer2.offline.DownloadRequest
+import com.google.android.exoplayer2.offline.DownloadService
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.Log
@@ -42,6 +49,7 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 	private val downloadIndex: DownloadIndex = downloadManager.downloadIndex
 
 	private var startDownloadDialogHelper: StartDownloadDialogHelper? = null
+	private val trackSelectorParameters: DefaultTrackSelector.Parameters = DownloadHelper.getDefaultTrackSelectorParameters(context)
 
 	/** Listens for changes in the tracked downloads.  */
 	interface Listener
@@ -78,7 +86,7 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 		return if (download != null && download.state != Download.STATE_FAILED) download.request else null
 	}
 
-	fun toggleDownload(fragmentManager: FragmentManager, name: String, uri: Uri, extension: String, renderersFactory: RenderersFactory)
+	fun toggleDownload(fragmentManager: FragmentManager?, name: String?, uri: Uri, extension: String, renderersFactory: RenderersFactory)
 	{
 		val download = downloads[uri]
 		if (download != null)
@@ -107,68 +115,50 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 		{
 			Log.w(TAG, "Failed to query downloads", e)
 		}
-
 	}
 
-	private fun getDownloadHelper(
-			uri: Uri, extension: String, renderersFactory: RenderersFactory): DownloadHelper
+	private fun getDownloadHelper(uri: Uri, extension: String, renderersFactory: RenderersFactory): DownloadHelper
 	{
-		val type = Util.inferContentType(uri, extension)
-		when (type)
+		return when (val type = Util.inferContentType(uri, extension))
 		{
-			C.TYPE_DASH -> return DownloadHelper.forDash(uri, dataSourceFactory, renderersFactory)
-			C.TYPE_SS -> return DownloadHelper.forSmoothStreaming(uri, dataSourceFactory, renderersFactory)
-			C.TYPE_HLS -> return DownloadHelper.forHls(uri, dataSourceFactory, renderersFactory)
-			C.TYPE_OTHER -> return DownloadHelper.forProgressive(uri)
+			C.TYPE_DASH -> DownloadHelper.forDash(context, uri, dataSourceFactory, renderersFactory)
+			C.TYPE_SS -> DownloadHelper.forSmoothStreaming(context, uri, dataSourceFactory, renderersFactory)
+			C.TYPE_HLS -> DownloadHelper.forHls(context, uri, dataSourceFactory, renderersFactory)
+			C.TYPE_OTHER -> DownloadHelper.forProgressive(context, uri)
 			else -> throw IllegalStateException("Unsupported type: $type")
 		}
 	}
 
 	private inner class DownloadManagerListener : DownloadManager.Listener
 	{
-
-		override fun onDownloadChanged(downloadManager: DownloadManager?, download: Download?)
+		override fun onDownloadChanged(downloadManager: DownloadManager, download: Download)
 		{
-			downloads[download!!.request.uri] = download
+			downloads[download.request.uri] = download
 			for (listener in listeners)
-			{
 				listener.onDownloadsChanged()
-			}
 		}
 
-		override fun onDownloadRemoved(downloadManager: DownloadManager?, download: Download)
+		override fun onDownloadRemoved(downloadManager: DownloadManager, download: Download)
 		{
 			downloads.remove(download.request.uri)
 			for (listener in listeners)
-			{
 				listener.onDownloadsChanged()
-			}
 		}
 	}
 
-	private inner class StartDownloadDialogHelper(
-			private val fragmentManager: FragmentManager, private val downloadHelper: DownloadHelper, private val name: String) : DownloadHelper.Callback, DialogInterface.OnClickListener, DialogInterface.OnDismissListener
+	private inner class StartDownloadDialogHelper(private val fragmentManager: FragmentManager?, private val downloadHelper: DownloadHelper, private val name: String?) :
+		DownloadHelper.Callback, DialogInterface.OnClickListener, DialogInterface.OnDismissListener
 	{
-
 		private var trackSelectionDialog: TrackSelectionDialog? = null
 		private var mappedTrackInfo: MappedTrackInfo? = null
-
-		init
-		{
-			downloadHelper.prepare(this)
-		}
-
 		fun release()
 		{
 			downloadHelper.release()
 			if (trackSelectionDialog != null)
-			{
 				trackSelectionDialog!!.dismiss()
-			}
 		}
 
 		// DownloadHelper.Callback implementation.
-
 		override fun onPrepared(helper: DownloadHelper)
 		{
 			if (helper.periodCount == 0)
@@ -178,7 +168,7 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 				downloadHelper.release()
 				return
 			}
-			mappedTrackInfo = downloadHelper.getMappedTrackInfo(0)
+			mappedTrackInfo = downloadHelper.getMappedTrackInfo( 0)
 			if (!TrackSelectionDialog.willHaveContent(mappedTrackInfo!!))
 			{
 				Log.d(TAG, "No dialog content. Downloading entire stream.")
@@ -186,25 +176,26 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 				downloadHelper.release()
 				return
 			}
-			trackSelectionDialog = TrackSelectionDialog.createForMappedTrackInfoAndParameters(
+			trackSelectionDialog =
+				TrackSelectionDialog.createForMappedTrackInfoAndParameters(
 					R.string.exo_download_description,
 					mappedTrackInfo!!,
-					DownloadHelper.DEFAULT_TRACK_SELECTOR_PARAMETERS,
-					false,
-					true,
-					this,
-					this)
-			trackSelectionDialog!!.show(fragmentManager, null)
+					trackSelectorParameters,
+					allowAdaptiveSelections = false,
+					allowMultipleOverrides = true,
+					onClickListener = this,
+					onDismissListener = this
+				)
+			trackSelectionDialog!!.show(fragmentManager!!, null)
 		}
 
 		override fun onPrepareError(helper: DownloadHelper, e: IOException)
 		{
-			Toast.makeText(context.applicationContext, R.string.download_start_error, Toast.LENGTH_LONG).show()
-			Log.e(TAG, "Failed to start download", e)
+			Toast.makeText(context, R.string.download_start_error, Toast.LENGTH_LONG).show()
+			Log.e(TAG, if (e is LiveContentUnsupportedException) "Downloading live content unsupported" else "Failed to start download", e)
 		}
 
 		// DialogInterface.OnClickListener implementation.
-
 		override fun onClick(dialog: DialogInterface, which: Int)
 		{
 			for (periodIndex in 0 until downloadHelper.periodCount)
@@ -212,13 +203,14 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 				downloadHelper.clearTrackSelections(periodIndex)
 				for (i in 0 until mappedTrackInfo!!.rendererCount)
 				{
-					if (!/* rendererIndex= */trackSelectionDialog!!.getIsDisabled(i))
+					if (!trackSelectionDialog!!.getIsDisabled(i))
 					{
 						downloadHelper.addTrackSelectionForSingleRenderer(
-								periodIndex,
-								/* rendererIndex= */ i,
-								DownloadHelper.DEFAULT_TRACK_SELECTOR_PARAMETERS,
-								trackSelectionDialog!!.getOverrides(/* rendererIndex= */i))
+							periodIndex,
+							i,
+							trackSelectorParameters,
+							trackSelectionDialog!!.getOverrides(i)
+						)
 					}
 				}
 			}
@@ -232,28 +224,27 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 		}
 
 		// DialogInterface.OnDismissListener implementation.
-
 		override fun onDismiss(dialogInterface: DialogInterface)
 		{
 			trackSelectionDialog = null
 			downloadHelper.release()
 		}
 
-		private fun startDownload(downloadRequest: DownloadRequest = buildDownloadRequest())
-		{
-			DownloadService.sendAddDownload(
-					context, VideoDownloadService::class.java, downloadRequest, /* foreground= */ false)
-		}
+		// Internal methods.
+		private fun startDownload(downloadRequest: DownloadRequest = buildDownloadRequest()) =
+			DownloadService.sendAddDownload(context, VideoDownloadService::class.java, downloadRequest, false)
 
-		private fun buildDownloadRequest(): DownloadRequest
+		private fun buildDownloadRequest() =
+			downloadHelper.getDownloadRequest(Util.getUtf8Bytes(name!!))
+
+		init
 		{
-			return downloadHelper.getDownloadRequest(Util.getUtf8Bytes(name))
+			downloadHelper.prepare(this)
 		}
-	}// Internal methods.
+	}
 
 	companion object
 	{
-
-		private val TAG = "DownloadTracker"
+		private const val TAG = "DownloadTracker"
 	}
 }

@@ -13,5 +13,5 @@ import co.revely.peertube.ui.videos.VideosFragment
 class TrendingFragment : VideosFragment<FragmentTrendingBinding>(R.layout.fragment_trending)
 {
 	override fun videos() = videosViewModel.videosTrending
-	override fun title(context: Context): String = context.getString(R.string.title_trending)
+	override fun title(): String = getString(R.string.title_trending)
 }

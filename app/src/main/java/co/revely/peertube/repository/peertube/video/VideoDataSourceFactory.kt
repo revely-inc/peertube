@@ -14,15 +14,15 @@ import java.util.concurrent.Executor
  */
 class VideoDataSourceFactory(
 		private val peerTubeService: PeerTubeService,
-		private val retryExecutor: Executor,
-		private val videoQuery: VideoQuery?
+		private val videoQuery: VideoQuery?,
+		private val retryExecutor: Executor
 ) : DataSource.Factory<Int, Video>()
 {
 	val sourceLiveData = MutableLiveData<PageKeyedVideoDataSource>()
 
 	override fun create(): DataSource<Int, Video>
 	{
-		val source = PageKeyedVideoDataSource(peerTubeService, retryExecutor, videoQuery)
+		val source = PageKeyedVideoDataSource(peerTubeService, videoQuery, retryExecutor)
 		sourceLiveData.postValue(source)
 		return source
 	}

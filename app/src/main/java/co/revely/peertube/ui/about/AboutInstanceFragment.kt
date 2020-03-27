@@ -9,8 +9,10 @@ import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.observe
+import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 /**
  * Created at 2019-06-20
@@ -21,7 +23,7 @@ class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.lay
 {
 	private val peerTubeService: PeerTubeService by inject(parameters = { parametersOf(arguments!!.getString("host")!!)})
 
-	override fun title(context: Context): String = context.getString(R.string.title_about)
+	override fun title(): String = getString(R.string.title_about)
 
 	companion object
 	{
@@ -40,6 +42,10 @@ class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.lay
 		observe(peerTubeService.configAbout()) {
 			if (it is ApiSuccessResponse)
 				binding.instance = it.body.instance
+		}
+		observe(peerTubeService.serverStats()) {
+			if (it is ApiSuccessResponse)
+				binding.stats = it.body
 		}
 	}
 }

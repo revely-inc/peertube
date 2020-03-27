@@ -1,16 +1,13 @@
 package co.revely.peertube.utils
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
+import androidx.core.content.res.getTextOrThrow
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe
@@ -57,15 +54,6 @@ fun ImageView.progress(visible: Boolean)
 	}
 	else
 		setImageDrawable(null)
-}
-
-fun TextView.setDrawableTint(@ColorRes color: Int)
-{
-	for (drawable in this.compoundDrawables)
-	{
-		if (drawable != null)
-			drawable.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_IN)
-	}
 }
 
 fun <T> Call<T>.enqueue(function: (call: Call<T>, response: Response<T>?, t: Throwable?) -> Unit) =

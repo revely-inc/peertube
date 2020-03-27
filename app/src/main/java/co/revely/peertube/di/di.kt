@@ -9,7 +9,7 @@ import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.offline.*
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.FileDataSourceFactory
+import com.google.android.exoplayer2.upstream.FileDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
@@ -57,14 +57,14 @@ val appModule = module {
 	single { DefaultHttpDataSourceFactory(get(named("user_agent"))) }
 	single { DefaultDataSourceFactory(get(), get<DefaultHttpDataSourceFactory>()) }
 	single { CacheDataSourceFactory(
-			get(named("download_cache")),
+			get<SimpleCache>(named("download_cache")),
 			get<DefaultDataSourceFactory>(),
-			FileDataSourceFactory(),
+			FileDataSource.Factory(),
 			null,
 			CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
 			null)
 	}
-	single { DownloaderConstructorHelper(get(named("download_cache")), get<DefaultHttpDataSourceFactory>()) }
+	single { DownloaderConstructorHelper(get<SimpleCache>(named("download_cache")), get<DefaultHttpDataSourceFactory>()) }
 	single { DefaultDownloaderFactory(get()) }
 	single { DownloadManager(get(), get(), get<DefaultDownloaderFactory>()) }
 	single { DownloadTracker(get(), get<CacheDataSourceFactory>(), get()) }

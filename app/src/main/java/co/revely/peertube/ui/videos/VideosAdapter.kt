@@ -1,6 +1,5 @@
 package co.revely.peertube.ui.videos
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,9 +9,6 @@ import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.ItemVideoBinding
 import co.revely.peertube.ui.common.DataBoundPagedListAdapter
 import co.revely.peertube.utils.AppExecutors
-import co.revely.peertube.utils.GlideApp
-import co.revely.peertube.utils.humanReadableBigNumber
-import com.bumptech.glide.request.RequestOptions
 
 
 /**
@@ -51,29 +47,7 @@ class VideosAdapter(
 	}
 
 	override fun bind(binding: ItemVideoBinding, item: Video) {
+		binding.host = host
 		binding.video = item
-
-		val ctx = binding.root.context
-		var info = "${item.account?.name}"
-		item.views?.also {
-			info += " • ${it.humanReadableBigNumber()} ${ctx.getString(R.string.views)}"
-		}
-		item.publishedAt?.time?.also {
-			info += " • ${DateUtils.getRelativeTimeSpanString(it, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)}"
-		}
-		binding.info.text = info
-
-		item.previewPath?.also {
-			GlideApp.with(ctx).load("https://$host$it").into(binding.thumbnails)
-		}
-
-		GlideApp.with(ctx)
-			.load(item.account?.avatar?.path?.let { "https://$host$it" })
-			.thumbnail(GlideApp.with(ctx)
-				.load("https://$host/client/assets/images/default-avatar.png")
-				.apply(RequestOptions.circleCropTransform())
-			)
-			.apply(RequestOptions.circleCropTransform())
-			.into(binding.accountAvatar)
 	}
 }

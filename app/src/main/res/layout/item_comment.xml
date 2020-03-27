@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	<data>
+		<variable
+				name="comment"
+				type="co.revely.peertube.api.peertube.response.Comment"/>
+		<variable
+				name="host"
+				type="String"/>
+		<import type="android.view.View"/>
+	</data>
+<androidx.constraintlayout.widget.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		>
+
+	<ImageView
+			android:id="@+id/account_avatar"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			glideUrl="@{`https://` + host + comment.account.avatar.path}"
+			glideThumbnailUrl="@{`https://` + host + `/client/assets/images/default-avatar.png`}"
+			glideCircleCrop="@{true}"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:src="@tools:sample/avatars"
+			/>
+
+	<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/start"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			app:layout_constraintGuide_begin="48dp"
+			app:layout_constraintStart_toStartOf="parent"
+			/>
+
+	<TextView
+			android:id="@+id/author"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@{comment.account.name}"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="@+id/start"
+			app:layout_constraintEnd_toStartOf="@+id/separator"
+			tools:text="@tools:sample/full_names"
+			/>
+
+	<TextView
+			android:id="@+id/separator"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="2dp"
+			android:text="@string/dot_separator"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/author"
+			app:layout_constraintEnd_toStartOf="@+id/date"
+			/>
+
+	<TextView
+			android:id="@+id/date"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="2dp"
+			app:humanReadableDate="@{comment.createdAt}"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/separator"
+			tools:text="3 weeks ago"
+			/>
+
+	<TextView
+			android:id="@+id/text"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:textColor="@color/text_high_emphasis"
+			android:maxLines="5"
+			android:ellipsize="end"
+			app:html="@{comment.text}"
+			app:layout_constraintTop_toBottomOf="@+id/author"
+			app:layout_constraintStart_toStartOf="@+id/start"
+			app:layout_constraintEnd_toEndOf="parent"
+			tools:text="@tools:sample/lorem/random"
+			/>
+
+	<TextView
+			android:id="@+id/read_more"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:text="@string/read_more"
+			app:layout_constraintTop_toBottomOf="@+id/text"
+			app:layout_constraintStart_toStartOf="@+id/start"
+			/>
+
+	<TextView
+			android:id="@+id/view_replies"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:visibility="@{comment.totalReplies == 0 ? View.GONE : View.VISIBLE}"
+			android:text="@{@plurals/view_replies(comment.totalReplies)}"
+			android:textStyle="bold"
+			android:textColor="@color/colorAccent"
+			android:textAllCaps="true"
+			app:layout_constraintTop_toBottomOf="@+id/read_more"
+			app:layout_constraintStart_toStartOf="@+id/start"
+			/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -13,5 +13,5 @@ import co.revely.peertube.ui.videos.VideosFragment
 class RecentFragment : VideosFragment<FragmentRecentBinding>(R.layout.fragment_recent)
 {
 	override fun videos() = videosViewModel.videosRecent
-	override fun title(context: Context): String = context.getString(R.string.title_recently_added)
+	override fun title(): String = getString(R.string.title_recently_added)
 }

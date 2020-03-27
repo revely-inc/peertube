@@ -16,7 +16,7 @@ import co.revely.peertube.utils.AbsentLiveData
  */
 class UserViewModel(userRepository: UserRepository, oAuthViewModel: OAuthViewModel) : ViewModel()
 {
-	private val me: LiveData<ApiResponse<User>?> = Transformations.switchMap(oAuthViewModel.token()) {
+	private val me: LiveData<ApiResponse<User>?> = Transformations.switchMap(oAuthViewModel.token) {
 		if (it?.status == Status.SUCCESS && it.data != null)
 			userRepository.me()
 		else

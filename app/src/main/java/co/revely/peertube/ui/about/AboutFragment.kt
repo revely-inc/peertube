@@ -24,7 +24,7 @@ class AboutFragment : UserMenuFragment<FragmentAboutBinding>(R.layout.fragment_a
 
 	var adapter: AboutAdapter by autoCleared()
 
-	override fun title(context: Context): String = context.getString(R.string.title_about)
+	override fun title(): String = getString(R.string.title_about)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
@@ -33,8 +33,8 @@ class AboutFragment : UserMenuFragment<FragmentAboutBinding>(R.layout.fragment_a
 		view_pager.adapter = adapter
 		TabLayoutMediator(tab_layout, view_pager) { tab, position ->
 			view_pager.setCurrentItem(tab.position, true)
-			if (position == 1) tab.setText(R.string.instance)
-			if (position == 0) tab.setText(R.string.app_name)
+			if (position == 0) tab.setText(R.string.instance)
+			if (position == 1) tab.setText(R.string.app_name)
 		}.attach()
 	}
 }

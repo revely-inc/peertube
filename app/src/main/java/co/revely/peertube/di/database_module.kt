@@ -4,6 +4,7 @@ import androidx.room.Room
 import co.revely.peertube.db.instances.InstancesDatabase
 import co.revely.peertube.db.peertube.PeerTubeDatabase
 import co.revely.peertube.repository.instances.InstancesRepository
+import co.revely.peertube.repository.peertube.comment.CommentRepository
 import co.revely.peertube.repository.peertube.oauth.OAuthRepository
 import co.revely.peertube.repository.peertube.user.UserRepository
 import co.revely.peertube.repository.peertube.video.VideoRepository
@@ -23,6 +24,7 @@ val databaseModule = module {
 	}
 
 	single { (host: String) -> VideoRepository(getWithParams(host), get()) }
+	single { (host: String) -> CommentRepository(getWithParams(host), get()) }
 
 	single { get<InstancesDatabase>().instanceDao() }
 	single { InstancesRepository(get(), get(), get()) }

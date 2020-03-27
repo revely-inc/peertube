@@ -13,5 +13,5 @@ import co.revely.peertube.ui.videos.VideosFragment
 class OverviewFragment : VideosFragment<FragmentOverviewBinding>(R.layout.fragment_overview)
 {
 	override fun videos() = videosViewModel.videos
-	override fun title(context: Context): String = context.getString(R.string.title_overview)
+	override fun title(): String = getString(R.string.title_overview)
 }

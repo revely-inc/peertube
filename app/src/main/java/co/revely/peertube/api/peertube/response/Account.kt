@@ -9,12 +9,12 @@ data class Account(
 		val name: String?,
 		val host: String?,
 		val hostRedundancyAllowed: Boolean?,
-		val followingCount: Long?,
-		val followersCount: Long?,
+		val followingCount: Int?,
+		val followersCount: Int?,
 		val avatar: Avatar?,
 		val createdAt: Date?,
 		val updatedAt: Date?,
 		val displayName: String?,
 		val description: String?,
-		val userId: Long?
+		val userId: Int?
 )

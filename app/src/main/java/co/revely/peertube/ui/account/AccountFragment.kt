@@ -27,7 +27,7 @@ class AccountFragment : LayoutFragment<FragmentAccountBinding>(R.layout.fragment
 	private val oAuthViewModel: OAuthViewModel by sharedViewModel(parameters = { parametersOf(args.host) })
 	private val userViewModel: UserViewModel by sharedViewModel(parameters = { parametersOf(args.host, oAuthViewModel) })
 
-	override fun title(context: Context): String = context.getString(R.string.account)
+	override fun title(): String = getString(R.string.account)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{

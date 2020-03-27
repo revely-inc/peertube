@@ -17,7 +17,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
 	viewModel { InstancesViewModel(get()) }
 	viewModel { (host: String) -> VideosViewModel(getWithParams(host)) }
-	viewModel { (host: String, videoId: String) -> VideoViewModel(videoId, getWithParams(host)) }
+	viewModel { (host: String, videoId: String) -> VideoViewModel(videoId, getWithParams(host), getWithParams(host)) }
 	viewModel { (host: String) -> LoginViewModel(host) }
 	viewModel { (host: String) -> OAuthViewModel(getWithParams(host)) }
 	viewModel { (host: String, oAuthViewModel: OAuthViewModel) -> UserViewModel(getWithParams(host), oAuthViewModel) }

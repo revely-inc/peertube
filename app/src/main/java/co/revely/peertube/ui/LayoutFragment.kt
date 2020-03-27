@@ -1,6 +1,5 @@
 package co.revely.peertube.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +21,15 @@ open class LayoutFragment<DB : ViewDataBinding>(@LayoutRes val layoutId: Int) : 
 {
 	protected lateinit var binding: DB
 
-	open fun title(context: Context) = ""
+	open fun title(): String? = null
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
 		binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+		binding.lifecycleOwner = viewLifecycleOwner
 		(activity as? AppCompatActivity)?.apply {
 			supportActionBar?.apply {
-				title = title(binding.root.context)
+				title()?.also { title = it }
 				show()
 			}
 			swipe_refresh?.apply {

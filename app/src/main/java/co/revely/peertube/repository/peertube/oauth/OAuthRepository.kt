@@ -36,6 +36,9 @@ class OAuthRepository(
 				)
 			}.asLiveData()
 
+	fun refresh(clientId: String, clientSecret: String, refreshToken: String) =
+			oAuthService.refreshToken(clientId, clientSecret, refreshToken)
+
 	fun client() =
 			object : NetworkBoundResource<OAuthClient, OAuthClient>(appExecutors) {
 				override fun saveCallResult(item: OAuthClient) = oAuthClientDao.insert(item)

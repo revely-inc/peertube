@@ -12,5 +12,5 @@ import co.revely.peertube.ui.LayoutFragment
  */
 class AboutPeertubeFragment : LayoutFragment<FragmentAboutPeertubeBinding>(R.layout.fragment_about_peertube)
 {
-	override fun title(context: Context): String = context.getString(R.string.title_about)
+	override fun title(): String = getString(R.string.title_about)
 }

@@ -32,10 +32,12 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import co.revely.peertube.R
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.SelectionOverride
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.ui.TrackSelectionView
+import com.google.android.exoplayer2.ui.TrackSelectionView.TrackSelectionListener
 import com.google.android.exoplayer2.util.Assertions
 import com.google.android.material.tabs.TabLayout
 import java.util.*
@@ -45,8 +47,7 @@ class TrackSelectionDialog : DialogFragment()
 {
 	private val tabFragments: SparseArray<TrackSelectionViewFragment> = SparseArray()
 	private val tabTrackTypes: ArrayList<Int> = ArrayList()
-
-	private var titleId: Int = 0
+	private var titleId = 0
 	private var onClickListener: DialogInterface.OnClickListener? = null
 	private var onDismissListener: DialogInterface.OnDismissListener? = null
 
@@ -57,13 +58,14 @@ class TrackSelectionDialog : DialogFragment()
 	}
 
 	private fun init(
-			titleId: Int,
-			mappedTrackInfo: MappedTrackInfo,
-			initialParameters: DefaultTrackSelector.Parameters,
-			allowAdaptiveSelections: Boolean,
-			allowMultipleOverrides: Boolean,
-			onClickListener: DialogInterface.OnClickListener,
-			onDismissListener: DialogInterface.OnDismissListener)
+		titleId: Int,
+		mappedTrackInfo: MappedTrackInfo,
+		initialParameters: DefaultTrackSelector.Parameters,
+		allowAdaptiveSelections: Boolean,
+		allowMultipleOverrides: Boolean,
+		onClickListener: DialogInterface.OnClickListener,
+		onDismissListener: DialogInterface.OnDismissListener
+	)
 	{
 		this.titleId = titleId
 		this.onClickListener = onClickListener
@@ -96,7 +98,7 @@ class TrackSelectionDialog : DialogFragment()
 	 */
 	fun getIsDisabled(rendererIndex: Int): Boolean
 	{
-		val rendererView = tabFragments.get(rendererIndex)
+		val rendererView = tabFragments[rendererIndex]
 		return rendererView != null && rendererView.isDisabled
 	}
 
@@ -109,8 +111,8 @@ class TrackSelectionDialog : DialogFragment()
 	 */
 	fun getOverrides(rendererIndex: Int): List<SelectionOverride>
 	{
-		val rendererView = tabFragments.get(rendererIndex)
-		return rendererView?.overrides ?: emptyList()
+		val rendererView = tabFragments[rendererIndex]
+		return (if (rendererView == null) Collections.emptyList() else rendererView.overrides)!!
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
@@ -131,7 +133,6 @@ class TrackSelectionDialog : DialogFragment()
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
-
 		val dialogView = inflater.inflate(R.layout.track_selection_dialog, container, false)
 		val tabLayout = dialogView.findViewById<TabLayout>(R.id.track_selection_dialog_tab_layout)
 		val viewPager = dialogView.findViewById<ViewPager>(R.id.track_selection_dialog_view_pager)
@@ -150,7 +151,6 @@ class TrackSelectionDialog : DialogFragment()
 
 	private inner class FragmentAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager)
 	{
-
 		override fun getItem(position: Int): Fragment
 		{
 			return tabFragments.valueAt(position)
@@ -170,21 +170,16 @@ class TrackSelectionDialog : DialogFragment()
 	/** Fragment to show a track selection in tab of the track selection dialog.  */
 	class TrackSelectionViewFragment : Fragment(), TrackSelectionView.TrackSelectionListener
 	{
-
 		private var mappedTrackInfo: MappedTrackInfo? = null
-		private var rendererIndex: Int = 0
-		private var allowAdaptiveSelections: Boolean = false
-		private var allowMultipleOverrides: Boolean = false
+		private var rendererIndex = 0
+		private var allowAdaptiveSelections = false
+		private var allowMultipleOverrides = false
 
-		internal var isDisabled: Boolean = false
-		internal var overrides: List<SelectionOverride>? = null
+		/* package */
+		var isDisabled = false
 
-		init
-		{
-			// Retain instance across activity re-creation to prevent losing access to init data.
-			retainInstance = true
-		}
-
+		/* package */
+		var overrides: List<SelectionOverride>? = null
 		fun init(
 				mappedTrackInfo: MappedTrackInfo,
 				rendererIndex: Int,
@@ -195,11 +190,11 @@ class TrackSelectionDialog : DialogFragment()
 		{
 			this.mappedTrackInfo = mappedTrackInfo
 			this.rendererIndex = rendererIndex
-			this.isDisabled = initialIsDisabled
-			this.overrides = if (initialOverride == null)
-				emptyList()
-			else
-				listOf(initialOverride)
+			isDisabled = initialIsDisabled
+			overrides =
+				if (initialOverride == null) Collections.emptyList() else Collections.singletonList(
+					initialOverride
+				)
 			this.allowAdaptiveSelections = allowAdaptiveSelections
 			this.allowMultipleOverrides = allowMultipleOverrides
 		}
@@ -210,13 +205,16 @@ class TrackSelectionDialog : DialogFragment()
 				savedInstanceState: Bundle?): View?
 		{
 			val rootView = inflater.inflate(
-					R.layout.exo_track_selection_dialog, container, /* attachToRoot= */ false)
-			val trackSelectionView = rootView.findViewById<TrackSelectionView>(R.id.exo_track_selection_view)
+				R.layout.exo_track_selection_dialog, container,  /* attachToRoot= */false
+			)
+			val trackSelectionView: TrackSelectionView =
+				rootView.findViewById(R.id.exo_track_selection_view)
 			trackSelectionView.setShowDisableOption(true)
 			trackSelectionView.setAllowMultipleOverrides(allowMultipleOverrides)
 			trackSelectionView.setAllowAdaptiveSelections(allowAdaptiveSelections)
 			trackSelectionView.init(
-					mappedTrackInfo, rendererIndex, isDisabled, overrides, /* listener= */ this)
+				mappedTrackInfo!!, rendererIndex, isDisabled, overrides!!,  /* listener= */this
+			)
 			return rootView
 		}
 
@@ -225,11 +223,16 @@ class TrackSelectionDialog : DialogFragment()
 			this.isDisabled = isDisabled
 			this.overrides = overrides
 		}
+
+		init
+		{
+			// Retain instance across activity re-creation to prevent losing access to init data.
+			retainInstance = true
+		}
 	}
 
 	companion object
 	{
-
 		/**
 		 * Returns whether a track selection dialog will have content to display if initialized with the
 		 * specified [DefaultTrackSelector] in its current state.
@@ -266,7 +269,8 @@ class TrackSelectionDialog : DialogFragment()
 		 */
 		fun createForTrackSelector(trackSelector: DefaultTrackSelector, onDismissListener: DialogInterface.OnDismissListener): TrackSelectionDialog
 		{
-			val mappedTrackInfo = Assertions.checkNotNull(trackSelector.currentMappedTrackInfo)
+			val mappedTrackInfo =
+				Assertions.checkNotNull(trackSelector.currentMappedTrackInfo)
 			val trackSelectionDialog = TrackSelectionDialog()
 			val parameters = trackSelector.parameters
 			trackSelectionDialog.init(
@@ -277,7 +281,8 @@ class TrackSelectionDialog : DialogFragment()
 				allowMultipleOverrides = false,
 				onClickListener = DialogInterface.OnClickListener { _, _ ->
 					val builder = parameters.buildUpon()
-					for (i in 0 until mappedTrackInfo.rendererCount) {
+					for (i in 0 until mappedTrackInfo.rendererCount)
+					{
 						builder
 							.clearSelectionOverrides(i)
 							.setRendererDisabled(
@@ -313,30 +318,35 @@ class TrackSelectionDialog : DialogFragment()
 		 * dismissed.
 		 */
 		fun createForMappedTrackInfoAndParameters(
-				titleId: Int,
-				mappedTrackInfo: MappedTrackInfo,
-				initialParameters: DefaultTrackSelector.Parameters,
-				allowAdaptiveSelections: Boolean,
-				allowMultipleOverrides: Boolean,
-				onClickListener: DialogInterface.OnClickListener,
-				onDismissListener: DialogInterface.OnDismissListener): TrackSelectionDialog
+			titleId: Int,
+			mappedTrackInfo: MappedTrackInfo,
+			initialParameters: DefaultTrackSelector.Parameters,
+			allowAdaptiveSelections: Boolean,
+			allowMultipleOverrides: Boolean,
+			onClickListener: DialogInterface.OnClickListener,
+			onDismissListener: DialogInterface.OnDismissListener
+		): TrackSelectionDialog
 		{
 			val trackSelectionDialog = TrackSelectionDialog()
 			trackSelectionDialog.init(
-					titleId,
-					mappedTrackInfo,
-					initialParameters,
-					allowAdaptiveSelections,
-					allowMultipleOverrides,
-					onClickListener,
-					onDismissListener)
+				titleId,
+				mappedTrackInfo,
+				initialParameters,
+				allowAdaptiveSelections,
+				allowMultipleOverrides,
+				onClickListener,
+				onDismissListener
+			)
 			return trackSelectionDialog
 		}
 
-		private fun showTabForRenderer(mappedTrackInfo: MappedTrackInfo, rendererIndex: Int): Boolean
+		private fun showTabForRenderer(
+			mappedTrackInfo: MappedTrackInfo,
+			rendererIndex: Int
+		): Boolean
 		{
-			val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
-			if (trackGroupArray.length == 0)
+			val trackGroupArray: TrackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
+			if (trackGroupArray.length === 0)
 			{
 				return false
 			}
@@ -344,16 +354,27 @@ class TrackSelectionDialog : DialogFragment()
 			return isSupportedTrackType(trackType)
 		}
 
-		private fun isSupportedTrackType(trackType: Int) = when (trackType) {
-			C.TRACK_TYPE_VIDEO, C.TRACK_TYPE_AUDIO, C.TRACK_TYPE_TEXT -> true
-			else -> false
+		private fun isSupportedTrackType(trackType: Int): Boolean
+		{
+			return when (trackType)
+			{
+				C.TRACK_TYPE_VIDEO, C.TRACK_TYPE_AUDIO, C.TRACK_TYPE_TEXT -> true
+				else -> false
+			}
 		}
 
-		private fun getTrackTypeString(resources: Resources, trackType: Int) = when (trackType) {
-			C.TRACK_TYPE_VIDEO -> resources.getString(R.string.exo_track_selection_title_video)
-			C.TRACK_TYPE_AUDIO -> resources.getString(R.string.exo_track_selection_title_audio)
-			C.TRACK_TYPE_TEXT -> resources.getString(R.string.exo_track_selection_title_text)
-			else -> throw IllegalArgumentException()
+		private fun getTrackTypeString(
+			resources: Resources,
+			trackType: Int
+		): String
+		{
+			return when (trackType)
+			{
+				C.TRACK_TYPE_VIDEO -> resources.getString(R.string.exo_track_selection_title_video)
+				C.TRACK_TYPE_AUDIO -> resources.getString(R.string.exo_track_selection_title_audio)
+				C.TRACK_TYPE_TEXT -> resources.getString(R.string.exo_track_selection_title_text)
+				else -> throw IllegalArgumentException()
+			}
 		}
 	}
 }

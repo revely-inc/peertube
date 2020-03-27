@@ -4,7 +4,9 @@ import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import co.revely.peertube.api.ApiSuccessResponse
+import co.revely.peertube.api.peertube.query.CommentQuery
 import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.repository.peertube.comment.CommentRepository
 import co.revely.peertube.repository.peertube.video.VideoRepository
 import co.revely.peertube.utils.Rate
 import co.revely.peertube.utils.enqueue
@@ -18,7 +20,7 @@ import timber.log.Timber
  *
  * @author rbenjami
  */
-class VideoViewModel(private val id: String, private val videoRepository: VideoRepository) : ViewModel()
+class VideoViewModel(private val id: String, private val videoRepository: VideoRepository, private val commentRepository: CommentRepository) : ViewModel()
 {
 	var exoPlayer: SimpleExoPlayer? = null
 	var mediaSource: MediaSource? = null
@@ -27,17 +29,22 @@ class VideoViewModel(private val id: String, private val videoRepository: VideoR
 	val video = MediatorLiveData<Video>()
 
 	private val _rating = videoRepository.getMyRating(id)
-	val rating = MediatorLiveData<@Rate String>()
+
+	val comments = commentRepository.getComments(CommentQuery(id, sort = "-createdAt"))
 
 	init
 	{
-		rating.addSource(_rating) {
+		video.addSource(_rating) {
 			if (it is ApiSuccessResponse)
-				rating.value = it.body.rating
+				video.value?.copy(
+						rating = it.body.rating
+				)?.also { v -> video.value = v }
 		}
 		video.addSource(_video) {
 			if (it is ApiSuccessResponse)
-				video.value = it.body
+				video.value = it.body.copy(
+						rating = (_rating.value as? ApiSuccessResponse)?.body?.rating
+				)
 		}
 	}
 
@@ -48,25 +55,25 @@ class VideoViewModel(private val id: String, private val videoRepository: VideoR
 		exoPlayer = null
 	}
 
-	fun onLikeVideoClicked() =
+	fun onLikeVideoClicked(view: View) =
 			likeOrDislikeClicked(Rate.LIKE)
 
-	fun onDislikeVideoClicked() =
+	fun onDislikeVideoClicked(view: View) =
 			likeOrDislikeClicked(Rate.DISLIKE)
 
 	private fun likeOrDislikeClicked(@Rate clickedRating: String)
 	{
-		val r = if (rating.value == clickedRating) Rate.NONE else clickedRating
-		val likesToAdd: Long = if (rating.value == Rate.LIKE) -1L else if (clickedRating == Rate.LIKE) 1L else 0L
-		val dislikesToAdd: Long = if (rating.value == Rate.DISLIKE) -1L else if (clickedRating == Rate.DISLIKE) 1L else 0L
+		val r = if (video.value?.rating == clickedRating) Rate.NONE else clickedRating
+		val likesToAdd = if (video.value?.rating == Rate.LIKE) -1 else if (clickedRating == Rate.LIKE) 1 else 0
+		val dislikesToAdd = if (video.value?.rating == Rate.DISLIKE) -1 else if (clickedRating == Rate.DISLIKE) 1 else 0
 		videoRepository.rateVideo(id, r)
 				.enqueue { _, response, t ->
 					if (response?.isSuccessful == true)
 					{
-						rating.value = r
 						video.value = video.value?.copy(
 								likes = (video.value?.likes ?: 0) + likesToAdd,
-								dislikes = (video.value?.dislikes ?: 0) + dislikesToAdd
+								dislikes = (video.value?.dislikes ?: 0) + dislikesToAdd,
+								rating = r
 						)
 					}
 					else

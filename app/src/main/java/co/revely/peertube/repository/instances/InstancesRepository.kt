@@ -1,7 +1,7 @@
 package co.revely.peertube.repository.instances
 
-import co.revely.peertube.api.ArrayResponse
 import co.revely.peertube.api.instances.InstancesService
+import co.revely.peertube.api.peertube.response.DataList
 import co.revely.peertube.db.instances.entity.Instance
 import co.revely.peertube.repository.NetworkBoundResource
 import co.revely.peertube.utils.AppExecutors
@@ -23,8 +23,8 @@ class InstancesRepository(
 	fun getInstanceByHost(host: String) = instanceDao.loadByHost(host)
 
 	fun getInstances() =
-		object: NetworkBoundResource<List<Instance>, ArrayResponse<Instance>>(appExecutors) {
-			override fun saveCallResult(item: ArrayResponse<Instance>) = instanceDao.insert(*item.data.toTypedArray())
+		object: NetworkBoundResource<List<Instance>, DataList<Instance>>(appExecutors) {
+			override fun saveCallResult(item: DataList<Instance>) = instanceDao.insert(*item.data.toTypedArray())
 			override fun shouldFetch(data: List<Instance>?) = data == null || data.isEmpty() || instancesRateLimit.shouldFetch("instances")
 			override fun loadFromDb() = instanceDao.load()
 			override fun createCall(data: List<Instance>?) = instancesService.instances()

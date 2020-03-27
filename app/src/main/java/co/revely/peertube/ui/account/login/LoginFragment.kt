@@ -1,8 +1,8 @@
 package co.revely.peertube.ui.account.login
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentLoginBinding
@@ -24,11 +24,11 @@ class LoginFragment : LayoutFragment<FragmentLoginBinding>(R.layout.fragment_log
 	private val viewModel: LoginViewModel by sharedViewModel(parameters = { parametersOf(args.host)})
 	private val oAuthViewModel: OAuthViewModel by sharedViewModel(parameters = { parametersOf(args.host)})
 
+	override fun title() = getString(R.string.login)
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		(activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.login)
-
-		observe(oAuthViewModel.token()) {
+		observe(oAuthViewModel.token) {
 		}
 
 		login.setOnClickListener {

@@ -5,12 +5,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.motion.widget.TransitionAdapter
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
+import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.LayoutFragment
+import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.utils.*
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
@@ -26,10 +31,12 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.math.abs
 
 /**
  * Created at 17/04/2019
@@ -38,10 +45,25 @@ import org.koin.core.parameter.parametersOf
  */
 class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_video), EventListener
 {
+	private val appExecutors: AppExecutors by inject()
 	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.host, args.videoId) })
 	private val args: VideoFragmentArgs by navArgs()
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()
+	private var adapter: SubVideoListAdapter by autoCleared()
+
+	companion object
+	{
+		fun newInstance(host: String, videoId: String): VideoFragment
+		{
+			val args = Bundle()
+			args.putString("host", host)
+			args.putString("video_id", videoId)
+			val fragment = VideoFragment()
+			fragment.arguments = args
+			return fragment
+		}
+	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
@@ -52,29 +74,63 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 		}
 
-		(activity as? AppCompatActivity)?.supportActionBar?.hide()
-		initializePlayer()
-		player.requestFocus()
+		video_motion_layout.setTransitionListener(object : TransitionAdapter() {
+			override fun onTransitionChange(motionLayout: MotionLayout, startId: Int, endId: Int, progress: Float) {
+				(activity as MainActivity).main_motion_layout.progress = 1 - abs(progress)
+			}
+		})
+		close_video.setOnClickListener { activity?.also {
+			it.supportFragmentManager.beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down)
+					.remove(this).commit()
+		} }
+
+		adapter = SubVideoListAdapter(args.host, videoViewModel, appExecutors) {
+
+		}
+		sub_video_list.adapter = adapter
+		sub_video_list.layoutManager = LinearLayoutManager(context)
+		ContextCompat.getDrawable(view.context, R.drawable.line_divider)?.also {
+			sub_video_list.addItemDecoration(MarginItemDecoration(it))
+		}
+
+		initPlayer()
+		initComments()
 	}
 
-	private fun initializePlayer()
+	private fun initPlayer()
 	{
+		player.requestFocus()
 		if (videoViewModel.exoPlayer == null)
 		{
-			videoViewModel.exoPlayer = ExoPlayerFactory.newSimpleInstance(context,
-				DefaultRenderersFactory(context),
-				DefaultTrackSelector(),
-				DefaultLoadControl())
+			videoViewModel.exoPlayer = SimpleExoPlayer.Builder(player.context).build()
 			videoViewModel.exoPlayer?.playWhenReady = true
 			observe(videoViewModel.video) { onVideo(it) }
-			observe(videoViewModel.rating) { rating ->
-				likes.setDrawableTint(if (rating == Rate.LIKE) R.color.colorAccent else android.R.color.darker_gray)
-				dislikes.setDrawableTint(if (rating == Rate.DISLIKE) R.color.colorAccent else android.R.color.darker_gray)
-			}
 		}
 		videoViewModel.exoPlayer?.addListener(this)
 		player.player = videoViewModel.exoPlayer
 		player.setPlaybackPreparer { videoViewModel.exoPlayer?.retry() }
+	}
+
+	private fun initComments()
+	{
+		progress_bar.progress(true)
+		videoViewModel.comments.apply {
+			observe(pagedList) {
+				adapter.submitList(it) { sub_video_list.scrollToPosition(0) }
+				progress_bar.progress(false)
+			}
+			observe(refreshState) {
+				activity?.swipe_refresh?.isRefreshing = it == NetworkState.LOADING
+			}
+//			observe(networkState) {
+//			}
+
+			activity?.swipe_refresh?.apply {
+//				isEnabled = true
+//				setOnRefreshListener { refresh() }
+			}
+		}
 	}
 
 	private fun buildMediaSource(uri: Uri, overrideExtension: String? = null): MediaSource
@@ -93,14 +149,15 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 
 	private fun onVideo(video: Video)
 	{
+		adapter.setVideo(video)
+		binding.host = args.host
 		binding.video = video
 		if (videoViewModel.mediaSource != null)
 			return
-		video.previewPath?.also {
-			GlideApp.with(preview).load("https://${args.host}$it").into(binding.preview)
+		with(buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))) {
+			videoViewModel.mediaSource = this
+			videoViewModel.exoPlayer?.prepare(this)
 		}
-		videoViewModel.mediaSource = buildMediaSource(Uri.parse(video.files?.first()?.fileUrl))
-		videoViewModel.exoPlayer?.prepare(videoViewModel.mediaSource)
 	}
 
 	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
@@ -111,7 +168,6 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			STATE_BUFFERING -> play_pause.progress(true)
 			STATE_READY -> {
 				play_pause.progress(false)
-				preview.invisible()
 			}
 			STATE_ENDED -> {}
 			else -> throw IllegalArgumentException("Wrong playbackState: $playbackState")
@@ -132,19 +188,19 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		return false
 	}
 
-	override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
-	override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
+	override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {}
+	override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {}
 	override fun onSeekProcessed() {}
 	override fun onPlayerError(error: ExoPlaybackException)
 	{
 		if (isBehindLiveWindow(error))
-			initializePlayer()
+			initPlayer()
 	}
 	override fun onLoadingChanged(isLoading: Boolean) {}
 	override fun onPositionDiscontinuity(reason: Int) {}
 	override fun onRepeatModeChanged(repeatMode: Int) {}
 	override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
-	override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
+	override fun onTimelineChanged(timeline: Timeline, reason: Int) {}
 
 	override fun onStart()
 	{

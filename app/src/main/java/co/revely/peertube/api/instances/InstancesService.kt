@@ -2,7 +2,7 @@ package co.revely.peertube.api.instances
 
 import androidx.lifecycle.LiveData
 import co.revely.peertube.api.ApiResponse
-import co.revely.peertube.api.ArrayResponse
+import co.revely.peertube.api.peertube.response.DataList
 import co.revely.peertube.db.instances.entity.Instance
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -33,5 +33,5 @@ interface InstancesService
 			@Query("sort") sort: String? = null,
 			//Offset
 			@Query("start") start: Int? = null
-	): LiveData<ApiResponse<ArrayResponse<Instance>>>
+	): LiveData<ApiResponse<DataList<Instance>>>
 }

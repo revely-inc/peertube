@@ -8,6 +8,6 @@ import co.revely.peertube.utils.Rate
  * @author rbenjami
  */
 data class RateResponse(
-		val id: String,
+		val videoId: String,
 		@Rate val rating: String
 )

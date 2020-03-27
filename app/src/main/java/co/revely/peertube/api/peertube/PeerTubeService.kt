@@ -2,7 +2,6 @@ package co.revely.peertube.api.peertube
 
 import androidx.lifecycle.LiveData
 import co.revely.peertube.api.ApiResponse
-import co.revely.peertube.api.ArrayResponse
 import co.revely.peertube.api.peertube.response.*
 import co.revely.peertube.utils.Rate
 import co.revely.peertube.viewmodel.OAuthViewModel
@@ -11,6 +10,8 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
+import timber.log.Timber
+import java.util.*
 
 /**
  * Created at 16/04/2019
@@ -19,13 +20,17 @@ import retrofit2.http.*
  */
 interface PeerTubeService
 {
-	class OAuthInterceptor(oAuthViewModel: OAuthViewModel) : Interceptor
+	class OAuthInterceptor(val oAuthViewModel: OAuthViewModel) : Interceptor
 	{
 		private var token: OAuthToken? = null
+		private var refreshInProgress = false
 
 		init
 		{
-			oAuthViewModel.token().observeForever { token = it?.data }
+			oAuthViewModel.token.observeForever {
+				token = it?.data
+				refreshInProgress = false
+			}
 		}
 
 		override fun intercept(chain: Interceptor.Chain): Response
@@ -33,7 +38,22 @@ interface PeerTubeService
 			val builder = chain.request().newBuilder()
 
 			if (token != null)
+			{
+				if (Date().time >= token!!.expiresAt)
+				{
+					if (refreshInProgress)
+					{
+						while (refreshInProgress)
+							Thread.sleep(100)
+					}
+					else
+					{
+						refreshInProgress = true
+						oAuthViewModel.refresh()
+					}
+				}
 				builder.header("Authorization", "${token!!.tokenType} ${token!!.accessToken}")
+			}
 
 			return chain.proceed(builder.build())
 		}
@@ -42,8 +62,19 @@ interface PeerTubeService
 	@GET("users/me")
 	fun me(): LiveData<ApiResponse<User>>
 
+	@GET("users/me/videos/{id}/rating")
+	fun getRate(
+			@Path("id") id: String
+	): LiveData<ApiResponse<RateResponse>>
+
+	@GET("config/about")
+	fun configAbout(): LiveData<ApiResponse<AboutInstanceResponse>>
+
+	@GET("server/stats")
+	fun serverStats(): LiveData<ApiResponse<Stats>>
+
 	@GET("videos")
-	fun videos(
+	fun getVideos(
 		//category id of the video
 		@Query("categoryOneOf") categoryOneOf: List<Int>? = null,
 		//Number of items
@@ -64,20 +95,12 @@ interface PeerTubeService
 		@Query("tagsAllOf") tagsAllOf: List<String>? = null,
 		//tag(s) of the video
 		@Query("tagsOneOf") tagsOneOf: List<String>? = null
-	): Call<ArrayResponse<Video>>
+	): Call<DataList<Video>>
 
 	@GET("videos/{id}")
 	fun video(
 		@Path("id") id: String
 	): LiveData<ApiResponse<Video>>
-
-	@GET("config/about")
-	fun configAbout(): LiveData<ApiResponse<AboutInstanceResponse>>
-
-	@GET("users/me/videos/{id}/rating")
-	fun getRate(
-			@Path("id") id: String
-	): LiveData<ApiResponse<RateResponse>>
 
 	@FormUrlEncoded
 	@PUT("videos/{id}/rate")
@@ -85,4 +108,15 @@ interface PeerTubeService
 			@Path("id") id: String,
 			@Field("rating") @Rate rating: String
 	): Call<ResponseBody>
+
+	@GET("videos/{id}/comment-threads")
+	fun getComments(
+			@Path("id") id: String,
+			//Sort videos by criteria ("-createdAt" "-updatedAt")
+			@Query("sort") sort: String? = null,
+			//Number of items
+			@Query("count") count: Int? = null,
+			//Offset
+			@Query("start") start: Int? = null
+	): Call<DataList<Comment>>
 }

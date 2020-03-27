@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="SingleViewTouchableMotionLayout">
+		<attr name="touchable_views_ids" format="string"/>
+	</declare-styleable>
+</resources>

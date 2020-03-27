@@ -20,5 +20,5 @@ class LocalFragment : VideosFragment<FragmentLocalBinding>(R.layout.fragment_loc
 	}
 
 	override fun videos() = videosViewModel.videosLocal
-	override fun title(context: Context): String = context.getString(R.string.title_local)
+	override fun title(): String = getString(R.string.title_local)
 }

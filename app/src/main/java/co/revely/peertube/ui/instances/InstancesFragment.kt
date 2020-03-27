@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
@@ -14,7 +15,6 @@ import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.fragment_instances.*
-import org.jetbrains.anko.dip
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -43,7 +43,9 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 		}
 		instances_list.adapter = adapter
 		instances_list.layoutManager = LinearLayoutManager(context)
-		instances_list.addItemDecoration(MarginItemDecoration(context!!.dip(8)))
+		ContextCompat.getDrawable(view.context, R.drawable.line_divider)?.also {
+			instances_list.addItemDecoration(MarginItemDecoration(it))
+		}
 		progress_bar.progress(true)
 		initInstances()
 	}
