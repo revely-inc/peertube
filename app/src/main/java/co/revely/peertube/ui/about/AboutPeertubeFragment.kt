@@ -7,10 +7,6 @@ import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentAboutPeertubeBinding
 import co.revely.peertube.ui.LayoutFragment
 import kotlinx.android.synthetic.main.fragment_about_peertube.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import org.jsoup.Jsoup
-import timber.log.Timber
 
 
 /**
