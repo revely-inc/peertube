@@ -14,7 +14,7 @@ class AboutAdapter(aboutFragment: AboutFragment, val host: String) : FragmentSta
 
 	override fun createFragment(position: Int) = when(position) {
 		0 -> AboutInstanceFragment.newInstance(host)
-		1 -> AboutPeertubeFragment()
+		1 -> AboutPeertubeFragment.newInstance(host)
 		else -> throw IndexOutOfBoundsException("AboutAdapter size is $itemCount, position: $position")
 	}
 }
