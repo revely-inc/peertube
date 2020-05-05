@@ -34,21 +34,21 @@ platform :android do
 
   desc "Submit a new Internal Build to Play Store"
   lane :internal do
-    upload_to_play_store(track: 'internal', aab: 'app/release/app-release.aab')
+    upload_to_play_store(track: 'internal', aab: 'app/build/outputs/bundle/release/app-release.aab', mapping: 'app/build/outputs/mapping/release/mapping.txt')
   end
 
   desc "Submit a new Alpha Build to Play Store"
   lane :alpha do
-    upload_to_play_store(track: 'alpha', aab: 'app/release/app-release.aab')
+    upload_to_play_store(track: 'alpha', aab: 'app/build/outputs/bundle/release/app-release.aab')
   end
 
   desc "Submit a new Beta Build to Play Store"
   lane :beta do
-    upload_to_play_store(track: 'beta', aab: 'app/release/app-release.aab')
+    upload_to_play_store(track: 'beta', aab: 'app/build/outputs/bundle/release/app-release.aab')
   end
 
   desc "Submit a new Production Build to Play Store"
   lane :production do
-    upload_to_play_store(track: 'production', aab: 'app/release/app-release.aab')
+    upload_to_play_store(track: 'production', aab: 'app/build/outputs/bundle/release/app-release.aab')
   end
 end
