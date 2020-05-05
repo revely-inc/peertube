@@ -1,10 +1,13 @@
 package co.revely.peertube.api.peertube.query
 
+import androidx.annotation.Keep
+
 /**
  * Created at 30/10/2019
  *
  * @author rbenjami
  */
+@Keep
 data class CommentQuery(
 		//The video id or uuid
 		val id: String,

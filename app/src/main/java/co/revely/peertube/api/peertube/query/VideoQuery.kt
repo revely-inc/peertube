@@ -1,10 +1,13 @@
 package co.revely.peertube.api.peertube.query
 
+import androidx.annotation.Keep
+
 /**
  * Created at 2019-06-20
  *
  * @author rbenjami
  */
+@Keep
 data class VideoQuery(
 		//category id of the video
 		val categoryOneOf: List<Int>? = null,

@@ -43,19 +43,19 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 			findNavController().navigate(directions)
 		}
 		instances_list.adapter = adapter
-		instances_list.layoutManager = LinearLayoutManager(context)
 		ContextCompat.getDrawable(view.context, R.drawable.line_divider)?.also {
 			instances_list.addItemDecoration(MarginItemDecoration(it))
 		}
-		progress_bar.progress(true)
+		swipe_refresh.isRefreshing = true
+		swipe_refresh.setOnRefreshListener { instancesViewModel.refresh() }
 		initInstances()
 	}
 
 	private fun initInstances()
 	{
 		observe(instancesViewModel.instances) {
-			progress_bar.progress(false)
-			adapter.submitList(it.data)
+			swipe_refresh.isRefreshing = false
+			adapter.submitList(instancesViewModel.instances.value?.data?.filter { true })
 		}
 	}
 

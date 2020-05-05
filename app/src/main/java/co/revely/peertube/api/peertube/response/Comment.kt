@@ -1,5 +1,6 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
 import java.util.*
 
 /**
@@ -7,6 +8,7 @@ import java.util.*
  *
  * @author rbenjami
  */
+@Keep
 data class Comment(
 		val id: String?,
 		val url: String?,

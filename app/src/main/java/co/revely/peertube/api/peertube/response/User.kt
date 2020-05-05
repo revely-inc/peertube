@@ -1,10 +1,13 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
+
 /**
  * Created at 2019-10-21
  *
  * @author rbenjami
  */
+@Keep
 data class User(
 		val id: Int?,
 		val username: String?,

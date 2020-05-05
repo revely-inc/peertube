@@ -1,10 +1,13 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
+
 /**
  * Created at 26/03/2020
  *
  * @author rbenjami
  */
+@Keep
 data class Stats(
 	val totalLocalVideos: Long,
 	val totalLocalVideoViews: Long,

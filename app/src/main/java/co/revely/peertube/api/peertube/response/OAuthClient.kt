@@ -1,5 +1,6 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
@@ -10,6 +11,7 @@ import com.google.gson.annotations.SerializedName
  * @author rbenjami
  */
 @Entity(tableName = "oAuthClient")
+@Keep
 data class OAuthClient(
 		@SerializedName("client_id")
 		val id: String,

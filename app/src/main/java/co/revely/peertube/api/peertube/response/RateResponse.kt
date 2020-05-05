@@ -1,5 +1,6 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
 import co.revely.peertube.utils.Rate
 
 /**
@@ -7,6 +8,7 @@ import co.revely.peertube.utils.Rate
  *
  * @author rbenjami
  */
+@Keep
 data class RateResponse(
 		val videoId: String,
 		@Rate val rating: String

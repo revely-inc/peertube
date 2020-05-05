@@ -1,5 +1,6 @@
 package co.revely.peertube.api.peertube.response
 
+import androidx.annotation.Keep
 import co.revely.peertube.utils.Rate
 import java.util.*
 
@@ -8,6 +9,7 @@ import java.util.*
  *
  * @author rbenjami
  */
+@Keep
 data class Video(
 		val id: String,
 		val uuid: String? = null,

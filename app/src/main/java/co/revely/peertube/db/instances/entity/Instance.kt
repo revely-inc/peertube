@@ -1,5 +1,6 @@
 package co.revely.peertube.db.instances.entity
 
+import androidx.annotation.Keep
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -9,6 +10,7 @@ import androidx.room.*
  * @author rbenjami
  */
 @Entity
+@Keep
 data class Instance(
 	@PrimaryKey(autoGenerate = true)
 	val id: Long,

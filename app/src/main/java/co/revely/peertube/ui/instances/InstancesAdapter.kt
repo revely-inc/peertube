@@ -11,6 +11,7 @@ import co.revely.peertube.db.instances.entity.Instance
 import co.revely.peertube.ui.common.DataBoundListAdapter
 import co.revely.peertube.utils.AppExecutors
 import com.google.android.material.animation.ArgbEvaluatorCompat
+import timber.log.Timber
 
 /**
  * Created at 17/04/2019
@@ -23,11 +24,9 @@ class InstancesAdapter(
 ) : DataBoundListAdapter<Instance, ItemInstanceBinding>(
 	appExecutors = appExecutors,
 	diffCallback = object : DiffUtil.ItemCallback<Instance>() {
-		override fun areItemsTheSame(oldItem: Instance, newItem: Instance) =
-			oldItem.id == newItem.id
+		override fun areItemsTheSame(oldItem: Instance, newItem: Instance)= oldItem.id == newItem.id
 
-		override fun areContentsTheSame(oldItem: Instance, newItem: Instance) =
-			oldItem.name == newItem.name && oldItem.shortDescription == newItem.shortDescription
+		override fun areContentsTheSame(oldItem: Instance, newItem: Instance) = oldItem.name == newItem.name && oldItem.shortDescription == newItem.shortDescription
 	}
 ) {
 
