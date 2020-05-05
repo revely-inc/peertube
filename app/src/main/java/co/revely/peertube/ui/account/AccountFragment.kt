@@ -31,11 +31,6 @@ class AccountFragment : LayoutFragment<FragmentAccountBinding>(R.layout.fragment
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		observe(userViewModel.me()) {
-			if (it is ApiSuccessResponse && isVisible)
-				binding.user = it.body
-			else
-				findNavController().navigate(AccountFragmentDirections.actionAccountToLogin(args.host))
-		}
+
 	}
 }

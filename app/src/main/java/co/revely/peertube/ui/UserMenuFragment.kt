@@ -74,8 +74,13 @@ open class UserMenuFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): Lay
 		when (item.itemId)
 		{
 			R.id.account -> {
-				val direction = InstanceNavGraphDirections.actionGlobalNavigationAccount(host)
-				findNavController().navigate(direction)
+				observe(userViewModel.me()) {
+					val direction = if (it is ApiSuccessResponse)
+						InstanceNavGraphDirections.actionGlobalNavigationAccount(host)
+					else
+						InstanceNavGraphDirections.actionGlobalNavigationLogin(host)
+					findNavController().navigate(direction)
+				}
 			}
 			else -> return false
 		}

@@ -18,7 +18,15 @@
 
 	<action
 			android:id="@+id/action_global_navigation_account"
-			app:destination="@+id/account_nav_graph"
+			app:destination="@+id/navigation_account"
+			>
+
+		<argument android:name="host" app:argType="string" />
+	</action>
+
+	<action
+			android:id="@+id/action_global_navigation_login"
+			app:destination="@+id/navigation_login"
 			>
 
 		<argument android:name="host" app:argType="string" />
@@ -85,5 +93,31 @@
 		<argument android:name="video_id" app:argType="string" />
 	</fragment>
 
-	<include app:graph="@navigation/account_nav_graph"/>
+	<fragment
+			android:id="@+id/navigation_account"
+			android:name="co.revely.peertube.ui.account.AccountFragment"
+			android:label="@string/account"
+			tools:layout="@layout/fragment_account"
+			>
+
+		<argument android:name="host" app:argType="string" />
+
+		<action
+				android:id="@+id/action_account_to_login"
+				app:destination="@id/navigation_login"
+				>
+
+			<argument android:name="host" app:argType="string" />
+		</action>
+	</fragment>
+
+	<fragment
+			android:id="@+id/navigation_login"
+			android:name="co.revely.peertube.ui.account.login.LoginFragment"
+			android:label="@string/login"
+			tools:layout="@layout/fragment_login"
+			>
+
+		<argument android:name="host" app:argType="string" />
+	</fragment>
 </navigation>

@@ -267,3 +267,10 @@
   native <methods>;
 }
 -keep class com.frostwire.jlibtorrent.swig.** { *; }
+
+##########
+# TestFairy
+##########
+-keep class com.testfairy.** { *; }
+-dontwarn com.testfairy.**
+-keepattributes Exceptions, Signature, LineNumberTable

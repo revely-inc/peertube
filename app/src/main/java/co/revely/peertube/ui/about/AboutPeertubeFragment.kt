@@ -34,6 +34,7 @@ class AboutPeertubeFragment : LayoutFragment<FragmentAboutPeertubeBinding>(R.lay
 	{
 		web_view.webViewClient = WebViewClient()
 		web_view.settings.javaScriptEnabled = true
-		web_view.loadUrl("http://${arguments!!.getString("host")!!}/about/peertube")
+		web_view.settings.domStorageEnabled = true
+		web_view.loadUrl("https://joinpeertube.org/")
 	}
 }

@@ -9,6 +9,8 @@ import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.observe
+import co.revely.peertube.utils.progress
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf

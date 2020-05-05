@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import co.revely.peertube.utils.AppExecutors
+import timber.log.Timber
 
 /**
  * A generic RecyclerView adapter that uses Data Binding & DiffUtil.

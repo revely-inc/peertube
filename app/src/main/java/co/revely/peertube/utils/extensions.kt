@@ -1,13 +1,11 @@
 package co.revely.peertube.utils
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.res.getTextOrThrow
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe

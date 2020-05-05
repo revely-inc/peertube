@@ -17,6 +17,7 @@ import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.fragment_instances.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 /**
  * Created at 16/04/2019
@@ -53,8 +54,8 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 	private fun initInstances()
 	{
 		observe(instancesViewModel.instances) {
-			adapter.submitList(it.data)
 			progress_bar.progress(false)
+			adapter.submitList(it.data)
 		}
 	}
 

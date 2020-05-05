@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_overview.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 /**
  * Created at 2019-10-18
