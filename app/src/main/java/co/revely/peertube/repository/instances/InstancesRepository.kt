@@ -24,7 +24,7 @@ class InstancesRepository(
 
 	fun getInstances() =
 		object: NetworkBoundResource<List<Instance>, DataList<Instance>>(appExecutors) {
-			override fun saveCallResult(item: DataList<Instance>) = instanceDao.insert(*item.data.toTypedArray())
+			override fun saveCallResult(item: DataList<Instance>) = item.data?.toTypedArray()?.let { instanceDao.insert(*it) } ?: Unit
 			override fun shouldFetch(data: List<Instance>?) = data == null || data.isEmpty() || instancesRateLimit.shouldFetch("instances")
 			override fun loadFromDb() = instanceDao.load()
 			override fun createCall(data: List<Instance>?) = instancesService.instances()

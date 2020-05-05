@@ -7,5 +7,5 @@ package co.revely.peertube.api.peertube.response
  */
 data class DataList<T>(
 		val total: Int,
-		val data: List<T>
+		val data: List<T>?
 )
