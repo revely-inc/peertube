@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_overview.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 /**
  * Created at 2019-10-18
@@ -27,7 +25,7 @@ import timber.log.Timber
 abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): UserMenuFragment<DB>(layoutId)
 {
 	protected val appExecutors: AppExecutors by inject()
-	protected val videosViewModel: VideosViewModel by sharedViewModel(parameters = { parametersOf(host) })
+	protected val videosViewModel: VideosViewModel by sharedViewModel()
 
 	private var adapter: VideosAdapter by autoCleared()
 
@@ -41,16 +39,16 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): U
 
 	private fun initVideos()
 	{
-		adapter = VideosAdapter(host, appExecutors) {
+		adapter = VideosAdapter(appExecutors) {
 //			val direction = InstanceNavGraphDirections.actionGlobalNavigationVideo(
 //					host, it.id
 //			)
 //			findNavController().navigate(direction)
-			(activity as MainActivity).openVideoFragment(host, it.id)
+			(activity as MainActivity).openVideoFragment(it.id)
 		}
 		videos_list.adapter = adapter
 		videos_list.layoutManager = LinearLayoutManager(context)
-		ContextCompat.getDrawable(context!!, R.drawable.line_divider)?.also {
+		ContextCompat.getDrawable(requireContext(), R.drawable.line_divider)?.also {
 			videos_list.addItemDecoration(MarginItemDecoration(it))
 		}
 

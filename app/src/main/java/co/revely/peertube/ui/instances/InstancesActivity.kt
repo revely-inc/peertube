@@ -2,29 +2,31 @@ package co.revely.peertube.ui.instances
 
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.databinding.DataBindingUtil
 import co.revely.peertube.R
-import co.revely.peertube.databinding.FragmentInstancesBinding
+import co.revely.peertube.databinding.ActivityInstancesBinding
 import co.revely.peertube.helper.PreferencesHelper
-import co.revely.peertube.ui.LayoutFragment
-import co.revely.peertube.utils.*
-import kotlinx.android.synthetic.main.fragment_instances.*
+import co.revely.peertube.ui.MainActivity
+import co.revely.peertube.utils.AppExecutors
+import co.revely.peertube.utils.MarginItemDecoration
+import co.revely.peertube.utils.autoCleared
+import co.revely.peertube.utils.observe
+import kotlinx.android.synthetic.main.activity_instances.*
+import kotlinx.android.synthetic.main.activity_instances.swipe_refresh
+import kotlinx.android.synthetic.main.activity_instances.toolbar
+import org.jetbrains.anko.intentFor
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 /**
- * Created at 16/04/2019
+ * Created at 06/05/2020
  *
  * @author rbenjami
  */
-class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.fragment_instances)
+class InstancesActivity: AppCompatActivity()
 {
 	val appExecutors: AppExecutors by inject()
 
@@ -32,18 +34,23 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 
 	private var adapter by autoCleared<InstancesAdapter>()
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+	private lateinit var binding: ActivityInstancesBinding
+
+	override fun onCreate(savedInstanceState: Bundle?)
 	{
-		(activity as? AppCompatActivity)?.supportActionBar?.setTitle(R.string.instances)
-		setHasOptionsMenu(true)
+		super.onCreate(savedInstanceState)
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_instances)
+
+		setSupportActionBar(toolbar)
+		supportActionBar?.setTitle(R.string.instances)
 
 		adapter = InstancesAdapter(appExecutors) { instance ->
 			PreferencesHelper.defaultHost.set(instance.host)
-			val directions = InstancesFragmentDirections.actionInstancesToInstance(instance.host)
-			findNavController().navigate(directions)
+			startActivity(intentFor<MainActivity>())
+			finish()
 		}
 		instances_list.adapter = adapter
-		ContextCompat.getDrawable(view.context, R.drawable.line_divider)?.also {
+		ContextCompat.getDrawable(this, R.drawable.line_divider)?.also {
 			instances_list.addItemDecoration(MarginItemDecoration(it))
 		}
 		swipe_refresh.isRefreshing = true
@@ -55,13 +62,13 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 	{
 		observe(instancesViewModel.instances) {
 			swipe_refresh.isRefreshing = false
-			adapter.submitList(instancesViewModel.instances.value?.data?.filter { true })
+			adapter.submitList(it.data)
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
+	override fun onCreateOptionsMenu(menu: Menu): Boolean
 	{
-		inflater.inflate(R.menu.menu_instances, menu)
+		menuInflater.inflate(R.menu.menu_instances, menu)
 		val search = menu.findItem(R.id.search).actionView as SearchView
 		search.setOnQueryTextListener(object : SearchView.OnQueryTextListener
 		{
@@ -72,19 +79,11 @@ class InstancesFragment : LayoutFragment<FragmentInstancesBinding>(R.layout.frag
 				instancesViewModel.instances.value?.data?.filter {
 					it.name.contains(newText.toString(), ignoreCase = true) || it.host.contains(newText.toString(), ignoreCase = true)
 				}?.also {
-					if (isVisible)
-						adapter.submitList(it)
+					adapter.submitList(it)
 				}
 				return false
 			}
 		})
+		return true
 	}
-
-//	override fun onOptionsItemSelected(item: MenuItem): Boolean
-//	{
-//		when (item.itemId)
-//		{
-//			else -> return super.onOptionsItemSelected(item)
-//		}
-//	}
 }

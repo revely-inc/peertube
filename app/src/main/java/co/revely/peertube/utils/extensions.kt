@@ -7,6 +7,7 @@ import android.net.NetworkInfo
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -64,8 +65,8 @@ fun View.visible() { visibility = View.VISIBLE }
 fun View.invisible() { visibility = View.INVISIBLE }
 fun View.gone() { visibility = View.GONE }
 
-fun <T> Fragment.observe(liveData: LiveData<T>, onChanged: (T) -> Unit) =
-	liveData.observe(viewLifecycleOwner, onChanged)
+fun <T> LifecycleOwner.observe(liveData: LiveData<T>, onChanged: (T) -> Unit) =
+	liveData.observe(this, onChanged)
 
 fun Long.duration(): String
 {

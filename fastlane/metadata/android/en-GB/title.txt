@@ -1,1 +1,1 @@
-PeerTube
+PeerTube (unofficial)

@@ -3,6 +3,8 @@ package co.revely.peertube.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import co.revely.peertube.R
+import co.revely.peertube.helper.PreferencesHelper
+import co.revely.peertube.ui.instances.InstancesActivity
 import org.jetbrains.anko.intentFor
 
 /**
@@ -16,7 +18,9 @@ class SplashActivity : AppCompatActivity()
 	{
 		setTheme(R.style.AppTheme_Splash)
 		super.onCreate(savedInstanceState)
-		startActivity(intentFor<MainActivity>())
+		PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
+			startActivity(intentFor<MainActivity>())
+		} ?: startActivity(intentFor<InstancesActivity>())
 		finish()
 	}
 }

@@ -3,6 +3,7 @@ package co.revely.peertube.di
 import androidx.room.Room
 import co.revely.peertube.db.instances.InstancesDatabase
 import co.revely.peertube.db.peertube.PeerTubeDatabase
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.instances.InstancesRepository
 import co.revely.peertube.repository.peertube.comment.CommentRepository
 import co.revely.peertube.repository.peertube.oauth.OAuthRepository
@@ -23,17 +24,17 @@ val databaseModule = module {
 				.build()
 	}
 
-	single { (host: String) -> VideoRepository(getWithParams(host), get()) }
-	single { (host: String) -> CommentRepository(getWithParams(host), get()) }
+	single { VideoRepository(get(), get()) }
+	single { CommentRepository(get(), get()) }
 
 	single { get<InstancesDatabase>().instanceDao() }
 	single { InstancesRepository(get(), get(), get()) }
 
-	single { (host: String) -> PeerTubeDatabase.instance(get(), host) }
+	single { PeerTubeDatabase.instance(get(), PreferencesHelper.defaultHost.get()) }
 
-	single { (host: String) -> UserRepository(getWithParams(host)) }
+	single { UserRepository(get()) }
 
-	single { (host: String) -> getWithParams<PeerTubeDatabase>(host).oAuthTokenDao() }
-	single { (host: String) -> getWithParams<PeerTubeDatabase>(host).oAuthClientDao() }
-	single { (host: String) -> OAuthRepository(getWithParams(host), get(), getWithParams(host), getWithParams(host)) }
+	single { get<PeerTubeDatabase>().oAuthTokenDao() }
+	single { get<PeerTubeDatabase>().oAuthClientDao() }
+	single { OAuthRepository(get(), get(), get(), get()) }
 }

@@ -13,6 +13,7 @@ import co.revely.peertube.api.peertube.response.Comment
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.ItemCommentBinding
 import co.revely.peertube.databinding.ItemVideoHeaderBinding
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.common.DataBoundViewHolder
 import co.revely.peertube.utils.AppExecutors
 import java.security.InvalidParameterException
@@ -23,12 +24,11 @@ import java.security.InvalidParameterException
  * @author rbenjami
  */
 class SubVideoListAdapter(
-		val host: String,
 		val videoViewModel: VideoViewModel,
 		appExecutors: AppExecutors,
 		private val itemClickCallback: ((Comment) -> Unit)?
 ) : PagedListAdapter<Comment, DataBoundViewHolder<*>>(
-		AsyncDifferConfig.Builder<Comment>(object : DiffUtil.ItemCallback<Comment>() {
+		AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<Comment>() {
 			override fun areItemsTheSame(oldItem: Comment, newItem: Comment) =
 					oldItem.id == newItem.id
 
@@ -71,7 +71,7 @@ class SubVideoListAdapter(
 			}
 			is ItemCommentBinding -> {
 				binding.comment = getItem(position - OTHER_ITEM)
-				binding.host = host
+				binding.host = PreferencesHelper.defaultHost.get()
 				binding.root.setOnClickListener {
 					binding.comment?.let {
 						itemClickCallback?.invoke(it)

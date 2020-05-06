@@ -1,19 +1,15 @@
 package co.revely.peertube.ui
 
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.transition.Transition
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import co.revely.peertube.R
 import co.revely.peertube.helper.PreferencesHelper
-import co.revely.peertube.ui.instances.InstancesFragmentDirections
 import co.revely.peertube.ui.video.VideoFragment
 import co.revely.peertube.utils.invisible
 import com.google.android.material.navigation.NavigationView
@@ -40,32 +36,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 			navigation?.invisible()
 		}
 
-		if (savedInstanceState == null)
-		{
-			PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
-				val directions = InstancesFragmentDirections.actionInstancesToInstance(host)
-				navController.navigate(directions)
-			}
-		}
-
+		setupActionBarWithNavController(navController)
 		navigation.setupWithNavController(navController)
-		navigation.setOnNavigationItemSelectedListener { menuItem ->
-			if (navController.currentDestination?.id == menuItem.itemId)
-				return@setOnNavigationItemSelectedListener false
-			val args = main_nav_host_fragment?.childFragmentManager?.fragments?.getOrNull(0)?.arguments
-			args?.getString("host")?.also {
-				navController.navigate(menuItem.itemId, Bundle().apply { putString("host", it) }, navOptions { launchSingleTop = true })
-			} ?: Timber.e("Args 'host' is null")
-			return@setOnNavigationItemSelectedListener true
-		}
 	}
 
-	fun openVideoFragment(host: String, videoId: String)
+	fun openVideoFragment(videoId: String)
 	{
 		main_motion_layout.transitionToEnd()
 		supportFragmentManager.beginTransaction()
 				.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down)
-				.replace(R.id.video_fragment, VideoFragment.newInstance(host, videoId), "video_fragment")
+				.replace(R.id.video_fragment, VideoFragment.newInstance(videoId), "video_fragment")
 				.commit()
 	}
 

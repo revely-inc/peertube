@@ -32,9 +32,8 @@ class InstancesAdapter(
 
 	override fun createBinding(parent: ViewGroup): ItemInstanceBinding
 	{
-		val binding = DataBindingUtil.inflate<ItemInstanceBinding>(
+		val binding = ItemInstanceBinding.inflate(
 			LayoutInflater.from(parent.context),
-			R.layout.item_instance,
 			parent,
 			false
 		)

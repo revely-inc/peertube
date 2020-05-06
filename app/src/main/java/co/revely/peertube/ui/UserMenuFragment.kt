@@ -7,9 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
-import co.revely.peertube.InstanceNavGraphDirections
+import co.revely.peertube.MainNavGraphDirections
 import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.observe
 import co.revely.peertube.viewmodel.OAuthViewModel
@@ -27,9 +28,9 @@ import org.koin.core.parameter.parametersOf
  */
 open class UserMenuFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): LayoutFragment<DB>(layoutId)
 {
-	protected val oAuthViewModel: OAuthViewModel by sharedViewModel(parameters = { parametersOf(host) })
-	protected val userViewModel: UserViewModel by sharedViewModel(parameters = { parametersOf(host, oAuthViewModel) })
-	protected val host by lazy { arguments?.getString("host")!! }
+	protected val oAuthViewModel: OAuthViewModel by sharedViewModel()
+	protected val userViewModel: UserViewModel by sharedViewModel(parameters = { parametersOf(oAuthViewModel) })
+	protected val host by lazy { PreferencesHelper.defaultHost.get() }
 
 	private lateinit var menu: Menu
 
@@ -76,9 +77,9 @@ open class UserMenuFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): Lay
 			R.id.account -> {
 				observe(userViewModel.me()) {
 					val direction = if (it is ApiSuccessResponse)
-						InstanceNavGraphDirections.actionGlobalNavigationAccount(host)
+						MainNavGraphDirections.actionGlobalNavigationAccount()
 					else
-						InstanceNavGraphDirections.actionGlobalNavigationLogin(host)
+						MainNavGraphDirections.actionGlobalNavigationLogin()
 					findNavController().navigate(direction)
 				}
 			}

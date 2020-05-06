@@ -20,8 +20,6 @@ import kotlinx.android.synthetic.main.fragment_about.*
  */
 class AboutFragment : UserMenuFragment<FragmentAboutBinding>(R.layout.fragment_about)
 {
-	private val args: AboutFragmentArgs by navArgs()
-
 	var adapter: AboutAdapter by autoCleared()
 
 	override fun title(): String = getString(R.string.title_about)
@@ -29,7 +27,7 @@ class AboutFragment : UserMenuFragment<FragmentAboutBinding>(R.layout.fragment_a
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		activity?.navigation?.visible()
-		adapter = AboutAdapter(this, args.host)
+		adapter = AboutAdapter(this)
 		view_pager.adapter = adapter
 		TabLayoutMediator(tab_layout, view_pager) { tab, position ->
 			view_pager.setCurrentItem(tab.position, true)

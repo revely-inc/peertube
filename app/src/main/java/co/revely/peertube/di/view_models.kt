@@ -1,5 +1,6 @@
 package co.revely.peertube.di
 
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.account.login.LoginViewModel
 import co.revely.peertube.ui.instances.InstancesViewModel
 import co.revely.peertube.ui.video.VideoViewModel
@@ -16,9 +17,9 @@ import org.koin.dsl.module
  */
 val viewModelModule = module {
 	viewModel { InstancesViewModel(get()) }
-	viewModel { (host: String) -> VideosViewModel(getWithParams(host)) }
-	viewModel { (host: String, videoId: String) -> VideoViewModel(videoId, getWithParams(host), getWithParams(host)) }
-	viewModel { (host: String) -> LoginViewModel(host) }
-	viewModel { (host: String) -> OAuthViewModel(getWithParams(host)) }
-	viewModel { (host: String, oAuthViewModel: OAuthViewModel) -> UserViewModel(getWithParams(host), oAuthViewModel) }
+	viewModel { VideosViewModel(get()) }
+	viewModel { (videoId: String) -> VideoViewModel(videoId, get(), get()) }
+	viewModel { LoginViewModel(PreferencesHelper.defaultHost.get()) }
+	viewModel { OAuthViewModel(get()) }
+	viewModel { ( oAuthViewModel: OAuthViewModel) -> UserViewModel(get(), oAuthViewModel) }
 }

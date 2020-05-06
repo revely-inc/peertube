@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.ui.MainActivity
@@ -46,7 +47,7 @@ import kotlin.math.abs
 class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_video), EventListener
 {
 	private val appExecutors: AppExecutors by inject()
-	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.host, args.videoId) })
+	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.videoId) })
 	private val args: VideoFragmentArgs by navArgs()
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()
@@ -54,10 +55,9 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 
 	companion object
 	{
-		fun newInstance(host: String, videoId: String): VideoFragment
+		fun newInstance(videoId: String): VideoFragment
 		{
 			val args = Bundle()
-			args.putString("host", host)
 			args.putString("video_id", videoId)
 			val fragment = VideoFragment()
 			fragment.arguments = args
@@ -85,7 +85,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 					.remove(this).commit()
 		} }
 
-		adapter = SubVideoListAdapter(args.host, videoViewModel, appExecutors) {
+		adapter = SubVideoListAdapter(videoViewModel, appExecutors) {
 
 		}
 		sub_video_list.adapter = adapter
@@ -150,7 +150,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	private fun onVideo(video: Video)
 	{
 		adapter.setVideo(video)
-		binding.host = args.host
+		binding.host = PreferencesHelper.defaultHost.get()
 		binding.video = video
 		if (videoViewModel.mediaSource != null)
 			return

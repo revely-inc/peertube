@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.ItemVideoBinding
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.common.DataBoundPagedListAdapter
 import co.revely.peertube.utils.AppExecutors
 
@@ -17,7 +18,6 @@ import co.revely.peertube.utils.AppExecutors
  * @author rbenjami
  */
 class VideosAdapter(
-	val host: String,
 	appExecutors: AppExecutors,
 	private val itemClickCallback: ((Video) -> Unit)?
 ) : DataBoundPagedListAdapter<Video, ItemVideoBinding>(
@@ -47,7 +47,7 @@ class VideosAdapter(
 	}
 
 	override fun bind(binding: ItemVideoBinding, item: Video) {
-		binding.host = host
+		binding.host = PreferencesHelper.defaultHost.get()
 		binding.video = item
 	}
 }

@@ -20,13 +20,9 @@ class AboutPeertubeFragment : LayoutFragment<FragmentAboutPeertubeBinding>(R.lay
 
 	companion object
 	{
-		fun newInstance(host: String): AboutPeertubeFragment
+		fun newInstance(): AboutPeertubeFragment
 		{
-			val f = AboutPeertubeFragment()
-			val args = Bundle()
-			args.putString("host", host)
-			f.arguments = args
-			return f
+			return AboutPeertubeFragment()
 		}
 	}
 

@@ -1,6 +1,7 @@
 package co.revely.peertube.di
 
 import co.revely.peertube.api.peertube.PeerTubeService
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.utils.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -17,13 +18,14 @@ import timber.log.Timber
  * @author rbenjami
  */
 val peertubeModule = module {
-	single { (host: String) ->
+	single {
 		val API_VERSION = "api/v1"
 
+		val host = PreferencesHelper.defaultHost.get()
 		Retrofit.Builder()
 				.baseUrl("https://$host/${API_VERSION}/")
 				.client(OkHttpClient.Builder()
-						.addInterceptor(PeerTubeService.OAuthInterceptor(get(parameters = { parametersOf(host)})))
+						.addInterceptor(PeerTubeService.OAuthInterceptor(get()))
 						.addInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
 							override fun log(message: String) {
 								Timber.tag("OkHttp $host").d(message)

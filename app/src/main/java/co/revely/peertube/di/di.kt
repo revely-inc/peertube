@@ -27,8 +27,6 @@ import java.io.File
  *
  * @author rbenjami
  */
-inline fun <reified T> Scope.getWithParams(vararg params: Any?) = this.get<T>(parameters = { parametersOf(*params) })
-
 val appModule = module {
 	single {
 		val app = get<Application>()
