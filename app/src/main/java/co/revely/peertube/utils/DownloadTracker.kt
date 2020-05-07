@@ -191,7 +191,7 @@ class DownloadTracker(context: Context, private val dataSourceFactory: DataSourc
 
 		override fun onPrepareError(helper: DownloadHelper, e: IOException)
 		{
-			Toast.makeText(context, R.string.download_start_error, Toast.LENGTH_LONG).show()
+			Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
 			Log.e(TAG, if (e is LiveContentUnsupportedException) "Downloading live content unsupported" else "Failed to start download", e)
 		}
 

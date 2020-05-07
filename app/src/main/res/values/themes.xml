@@ -5,13 +5,19 @@
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
-		<item name="android:windowBackground">@color/colorPrimary</item>
+
+		<item name="android:windowBackground">#FFF</item>
 		<item name="android:fontFamily">@font/open_sans_regular</item>
 		<item name="android:statusBarColor">@android:color/white</item>
 		<item name="android:navigationBarColor">@android:color/white</item>
 		<item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 		<item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
 		<item name="android:textColorPrimary">@color/text_medium_emphasis</item>
+		<item name="android:textColor">@color/text_medium_emphasis</item>
+
+		<item name="appBarLayoutStyle">@style/Widget.MaterialComponents.AppBarLayout.Surface</item>
+		<item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+		<item name="materialButtonStyle">@style/Widget.MaterialComponents.Button.OutlinedButton</item>
 	</style>
 
 	<style name="AppTheme.NoActionBar">

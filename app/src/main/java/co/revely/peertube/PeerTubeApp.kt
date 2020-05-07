@@ -23,15 +23,7 @@ class PeerTubeApp : Application()
 			Bugsnag.start(this)
 
 		startKoin {
-			androidContext(this@PeerTubeApp)
-			modules(listOf(
-					appModule,
-					viewModelModule,
-					instancesModule,
-					peertubeModule,
-					oauthModule,
-					databaseModule
-			))
+			androidContext(applicationContext)
 		}
 	}
 }

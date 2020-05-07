@@ -2,6 +2,7 @@ package co.revely.peertube.ui.account
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentAccountBinding
 import co.revely.peertube.ui.LayoutFragment
@@ -24,6 +25,5 @@ class AccountFragment : LayoutFragment<FragmentAccountBinding>(R.layout.fragment
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-
 	}
 }

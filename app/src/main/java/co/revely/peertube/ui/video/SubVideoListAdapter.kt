@@ -71,7 +71,6 @@ class SubVideoListAdapter(
 			}
 			is ItemCommentBinding -> {
 				binding.comment = getItem(position - OTHER_ITEM)
-				binding.host = PreferencesHelper.defaultHost.get()
 				binding.root.setOnClickListener {
 					binding.comment?.let {
 						itemClickCallback?.invoke(it)

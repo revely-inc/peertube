@@ -15,16 +15,6 @@
 		<argument android:name="video_id" app:argType="string" />
 	</action>
 
-	<action
-			android:id="@+id/action_global_navigation_account"
-			app:destination="@+id/navigation_account"
-			/>
-
-	<action
-			android:id="@+id/action_global_navigation_login"
-			app:destination="@+id/navigation_login"
-			/>
-
 	<fragment
 			android:id="@+id/navigation_overview"
 			android:name="co.revely.peertube.ui.videos.overview.OverviewFragment"
@@ -69,24 +59,4 @@
 
 		<argument android:name="video_id" app:argType="string" />
 	</fragment>
-
-	<fragment
-			android:id="@+id/navigation_account"
-			android:name="co.revely.peertube.ui.account.AccountFragment"
-			android:label="@string/account"
-			tools:layout="@layout/fragment_account"
-			>
-
-		<action
-				android:id="@+id/action_account_to_login"
-				app:destination="@id/navigation_login"
-				/>
-	</fragment>
-
-	<fragment
-			android:id="@+id/navigation_login"
-			android:name="co.revely.peertube.ui.account.login.LoginFragment"
-			android:label="@string/login"
-			tools:layout="@layout/fragment_login"
-			/>
 </navigation>

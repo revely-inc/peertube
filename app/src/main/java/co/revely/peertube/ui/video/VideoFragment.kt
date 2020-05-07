@@ -9,7 +9,6 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
@@ -18,6 +17,7 @@ import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.utils.*
+import co.revely.peertube.viewmodel.OAuthViewModel
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.offline.DownloadHelper
@@ -28,7 +28,6 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -47,7 +46,8 @@ import kotlin.math.abs
 class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_video), EventListener
 {
 	private val appExecutors: AppExecutors by inject()
-	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.videoId) })
+	private val oAuthViewModel: OAuthViewModel by viewModel()
+	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.videoId, oAuthViewModel) })
 	private val args: VideoFragmentArgs by navArgs()
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()
@@ -89,7 +89,6 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 
 		}
 		sub_video_list.adapter = adapter
-		sub_video_list.layoutManager = LinearLayoutManager(context)
 		ContextCompat.getDrawable(view.context, R.drawable.line_divider)?.also {
 			sub_video_list.addItemDecoration(MarginItemDecoration(it))
 		}
@@ -208,7 +207,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		if (Util.SDK_INT > 23)
 		{
 			player?.onResume()
-			videoViewModel.exoPlayer?.playWhenReady = true
+			videoViewModel.onResume()
 		}
 	}
 
@@ -216,13 +215,16 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	{
 		super.onResume()
 		if (Util.SDK_INT <= 23 || videoViewModel.exoPlayer == null)
+		{
 			player?.onResume()
+			videoViewModel.onResume()
+		}
 	}
 
 	override fun onPause()
 	{
 		super.onPause()
 		player.onPause()
-		videoViewModel.exoPlayer?.playWhenReady = false
+		videoViewModel.onPause()
 	}
 }

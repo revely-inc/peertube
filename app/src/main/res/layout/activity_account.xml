@@ -4,8 +4,11 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 		xmlns:tools="http://schemas.android.com/tools"
+		android:id="@+id/coordinator"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:fitsSystemWindows="true"
+		tools:context=".ui.account.AccountActivity"
 		>
 
 	<com.google.android.material.appbar.AppBarLayout
@@ -29,15 +32,16 @@
 			android:id="@+id/swipe_refresh"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:paddingBottom="56dp"
 			app:layout_behavior="@string/appbar_scrolling_view_behavior"
 			>
 
-		<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/instances_list"
+		<fragment
+				android:id="@+id/account_nav_host_fragment"
+				android:name="androidx.navigation.fragment.NavHostFragment"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				tools:listitem="@layout/item_instance"
+				app:defaultNavHost="true"
 				/>
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,7 +18,7 @@ data class OAuthClient(
 		@SerializedName("client_secret")
 		val secret: String,
 		@PrimaryKey
-		val unique: String = "unique"
+		val host: String
 )
 {
 	@androidx.room.Dao
@@ -27,7 +27,7 @@ data class OAuthClient(
 		@Insert(onConflict = OnConflictStrategy.REPLACE)
 		fun insert(vararg oAuthTokens: OAuthClient)
 
-		@Query("SELECT * FROM oAuthClient")
-		fun load(): LiveData<OAuthClient>
+		@Query("SELECT * FROM oAuthClient WHERE host=:host")
+		fun load(host: String): LiveData<OAuthClient>
 	}
 }

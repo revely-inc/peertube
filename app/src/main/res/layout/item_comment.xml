@@ -4,9 +4,6 @@
 		<variable
 				name="comment"
 				type="co.revely.peertube.api.peertube.response.Comment"/>
-		<variable
-				name="host"
-				type="String"/>
 		<import type="android.view.View"/>
 	</data>
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,8 +19,8 @@
 			android:id="@+id/account_avatar"
 			android:layout_width="32dp"
 			android:layout_height="32dp"
-			glideUrl="@{`https://` + host + comment.account.avatar.path}"
-			glideThumbnailUrl="@{`https://` + host + `/client/assets/images/default-avatar.png`}"
+			glideUrl="@{`https://` + comment.account.host + comment.account.avatar.path}"
+			glideThumbnailUrl="@{`https://` + comment.account.host + `/client/assets/images/default-avatar.png`}"
 			glideCircleCrop="@{true}"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"

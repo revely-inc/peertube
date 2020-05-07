@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.text.format.DateUtils
 import android.text.style.TtsSpan
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -24,14 +25,6 @@ import java.util.*
  *
  * @author rbenjami
  */
-@BindingAdapter("url", "circleCrop", requireAll = false)
-fun loadImage(view: ImageView, circleCrop: Boolean, imageUrl: String)
-{
-	val builder = GlideApp.with(view.context).load(imageUrl)
-	if (circleCrop) builder.apply(RequestOptions().circleCrop())
-	builder.into(view)
-}
-
 @BindingAdapter("drawableTint")
 fun drawableTint(view: TextView, @ColorInt color: Int)
 {
@@ -91,4 +84,9 @@ fun glide(view: ImageView, url: String?, thumbnailUrl: String?, circleCrop: Bool
 					apply(RequestOptions.circleCropTransform())
 			}
 			.into(view)
+}
+
+@BindingAdapter("visible")
+fun visible(view: View, visible: Boolean) {
+	view.visibility = if (visible) View.VISIBLE else View.INVISIBLE
 }

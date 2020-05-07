@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.repository.NetworkState
+import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.ui.MainActivity
-import co.revely.peertube.ui.UserMenuFragment
 import co.revely.peertube.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_overview.*
@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  *
  * @author rbenjami
  */
-abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): UserMenuFragment<DB>(layoutId)
+abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): LayoutFragment<DB>(layoutId)
 {
 	protected val appExecutors: AppExecutors by inject()
 	protected val videosViewModel: VideosViewModel by sharedViewModel()

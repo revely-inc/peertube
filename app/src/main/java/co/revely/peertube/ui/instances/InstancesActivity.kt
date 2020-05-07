@@ -9,7 +9,9 @@ import androidx.databinding.DataBindingUtil
 import co.revely.peertube.R
 import co.revely.peertube.databinding.ActivityInstancesBinding
 import co.revely.peertube.helper.PreferencesHelper
+import co.revely.peertube.repository.Status
 import co.revely.peertube.ui.MainActivity
+import co.revely.peertube.ui.SplashActivity
 import co.revely.peertube.utils.AppExecutors
 import co.revely.peertube.utils.MarginItemDecoration
 import co.revely.peertube.utils.autoCleared
@@ -46,7 +48,7 @@ class InstancesActivity: AppCompatActivity()
 
 		adapter = InstancesAdapter(appExecutors) { instance ->
 			PreferencesHelper.defaultHost.set(instance.host)
-			startActivity(intentFor<MainActivity>())
+			startActivity(intentFor<SplashActivity>())
 			finish()
 		}
 		instances_list.adapter = adapter
@@ -61,7 +63,7 @@ class InstancesActivity: AppCompatActivity()
 	private fun initInstances()
 	{
 		observe(instancesViewModel.instances) {
-			swipe_refresh.isRefreshing = false
+			swipe_refresh.isRefreshing = it.status == Status.LOADING
 			adapter.submitList(it.data)
 		}
 	}

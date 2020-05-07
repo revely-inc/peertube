@@ -45,7 +45,7 @@ val oauthModule = module {
 							override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): OAuthClient
 							{
 								val o = json.asJsonObject
-								return OAuthClient(o.get("client_id").asString, o.get("client_secret").asString)
+								return OAuthClient(o.get("client_id").asString, o.get("client_secret").asString, host)
 							}
 						})
 						.registerTypeAdapter(OAuthToken::class.java, object : JsonDeserializer<OAuthToken>

@@ -10,9 +10,13 @@ import co.revely.peertube.repository.peertube.comment.CommentRepository
 import co.revely.peertube.repository.peertube.video.VideoRepository
 import co.revely.peertube.utils.Rate
 import co.revely.peertube.utils.enqueue
+import co.revely.peertube.viewmodel.ErrorHelper
+import co.revely.peertube.viewmodel.OAuthViewModel
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import org.jetbrains.anko.toast
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 /**
@@ -20,8 +24,13 @@ import timber.log.Timber
  *
  * @author rbenjami
  */
-class VideoViewModel(private val id: String, private val videoRepository: VideoRepository, private val commentRepository: CommentRepository) : ViewModel()
+class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthViewModel) : ViewModel(), KoinComponent
 {
+	private val videoRepository: VideoRepository by inject()
+	private val commentRepository: CommentRepository by inject()
+
+	private var playWhenReady = true
+
 	var exoPlayer: SimpleExoPlayer? = null
 	var mediaSource: MediaSource? = null
 
@@ -55,6 +64,17 @@ class VideoViewModel(private val id: String, private val videoRepository: VideoR
 		exoPlayer = null
 	}
 
+	fun onResume()
+	{
+		exoPlayer?.playWhenReady = playWhenReady
+	}
+
+	fun onPause()
+	{
+		playWhenReady = exoPlayer?.playWhenReady ?: false
+		exoPlayer?.playWhenReady = false
+	}
+
 	fun onLikeVideoClicked(view: View) =
 			likeOrDislikeClicked(Rate.LIKE)
 
@@ -63,6 +83,12 @@ class VideoViewModel(private val id: String, private val videoRepository: VideoR
 
 	private fun likeOrDislikeClicked(@Rate clickedRating: String)
 	{
+		if (!oAuthViewModel.isLogged())
+		{
+			ErrorHelper.setError(ErrorHelper.NotLogged())
+			return
+		}
+
 		val r = if (video.value?.rating == clickedRating) Rate.NONE else clickedRating
 		val likesToAdd = if (video.value?.rating == Rate.LIKE) -1 else if (clickedRating == Rate.LIKE) 1 else 0
 		val dislikesToAdd = if (video.value?.rating == Rate.DISLIKE) -1 else if (clickedRating == Rate.DISLIKE) 1 else 0

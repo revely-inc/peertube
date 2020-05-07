@@ -7,4 +7,6 @@
 	<dimen name="text_size_normal">16sp</dimen>
 	<dimen name="text_size_medium">20sp</dimen>
 	<dimen name="text_size_big">24sp</dimen>
+
+	<dimen name="nav_header_height">176dp</dimen>
 </resources>

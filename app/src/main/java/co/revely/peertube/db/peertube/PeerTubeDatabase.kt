@@ -15,7 +15,7 @@ import co.revely.peertube.api.peertube.response.OAuthToken
 @Database(entities = [
 	OAuthToken::class,
 	OAuthClient::class
-], version = 2, exportSchema = false)
+], version = 3, exportSchema = false)
 abstract class PeerTubeDatabase : RoomDatabase()
 {
 	companion object
