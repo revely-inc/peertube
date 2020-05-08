@@ -25,18 +25,6 @@ import kotlin.math.pow
  *
  * @author rbenjami
  */
-fun <T> Call<T>.enqueue(blockResponse: (Response<T>) -> Unit, blockFailure: ((Throwable) -> Unit) = { Timber.e(it) }) = enqueue(object : Callback<T> {
-	override fun onResponse(call: Call<T>, response: Response<T>) = blockResponse.invoke(response)
-	override fun onFailure(call: Call<T>, t: Throwable) = blockFailure.invoke(t)
-})
-
-fun Context.hasNetwork(): Boolean
-{
-	val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-	val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-	return activeNetwork?.isConnected ?: false
-}
-
 fun ImageView.progress(visible: Boolean)
 {
 	if (visible)
