@@ -4,11 +4,14 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.*
 import co.revely.peertube.api.peertube.response.OAuthToken
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.Resource
+import co.revely.peertube.repository.Status
 import co.revely.peertube.repository.peertube.oauth.OAuthRepository
 import co.revely.peertube.utils.AbsentLiveData
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
 /**
  * Created at 2019-10-20
@@ -42,7 +45,16 @@ class OAuthViewModel : ViewModel(), KoinComponent
 
 	init
 	{
-		token.addSource(_token) { token.value = it }
+		token.addSource(_token) {
+			token.value = it
+			Timber.i("Token: ${it?.data?.accessToken}")
+			if (it?.status == Status.SUCCESS && it.data?.accessToken != null)
+			{
+				val hostsLogged = PreferencesHelper.hostsLogged.get()
+				hostsLogged.add(PreferencesHelper.defaultHost.get())
+				PreferencesHelper.hostsLogged.set(hostsLogged)
+			}
+		}
 	}
 
 	fun refresh()

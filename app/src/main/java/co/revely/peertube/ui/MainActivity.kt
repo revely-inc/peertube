@@ -1,6 +1,5 @@
 package co.revely.peertube.ui
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +13,14 @@ import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.databinding.ActivityMainBinding
 import co.revely.peertube.databinding.NavHeaderMainBinding
+import co.revely.peertube.db.instances.entity.Instance
 import co.revely.peertube.ui.account.AccountActivity
 import co.revely.peertube.ui.instances.InstancesActivity
 import co.revely.peertube.ui.video.VideoFragment
-import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.invisible
 import co.revely.peertube.utils.observe
 import co.revely.peertube.viewmodel.ErrorHelper
+import co.revely.peertube.viewmodel.InstanceViewModel
 import co.revely.peertube.viewmodel.OAuthViewModel
 import co.revely.peertube.viewmodel.UserViewModel
 import com.bumptech.glide.request.RequestOptions
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 {
 	private val oAuthViewModel: OAuthViewModel by viewModel()
 	private val userViewModel: UserViewModel by viewModel(parameters = { parametersOf(oAuthViewModel) })
+	private val instanceViewModel: InstanceViewModel by viewModel()
 
 	private val navController : NavController by lazy { findNavController(R.id.main_nav_host_fragment) }
 	private lateinit var binding: ActivityMainBinding
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
+
 		binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 		drawerHeaderBinding = NavHeaderMainBinding.bind(binding.navView.getHeaderView(0))
 		drawerHeaderBinding.login.setOnClickListener { startActivity(intentFor<AccountActivity>()) }
@@ -78,6 +80,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 						.show()
 				error.displayed++
 			}
+		}
+		observe(instanceViewModel.configAbout) {
+			if (it is ApiSuccessResponse)
+				drawerHeaderBinding.instance = it.body.instance
 		}
 		initUser()
 	}
@@ -115,7 +121,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	override fun onNavigationItemSelected(item: MenuItem): Boolean
 	{
 		when (item.itemId) {
-			R.id.instances -> startActivity(intentFor<InstancesActivity>())
+			R.id.instances -> {
+				drawer.close()
+				startActivity(intentFor<InstancesActivity>())
+			}
 		}
 		return true
 	}

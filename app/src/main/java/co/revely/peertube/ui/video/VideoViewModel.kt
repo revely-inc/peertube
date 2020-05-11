@@ -75,14 +75,9 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 		exoPlayer?.playWhenReady = false
 	}
 
-	fun onLikeVideoClicked(view: View) =
-			likeOrDislikeClicked(Rate.LIKE)
-
-	fun onDislikeVideoClicked(view: View) =
-			likeOrDislikeClicked(Rate.DISLIKE)
-
 	private fun likeOrDislikeClicked(@Rate clickedRating: String)
 	{
+		Timber.d("POK: $clickedRating, ${oAuthViewModel.isLogged()}")
 		if (!oAuthViewModel.isLogged())
 		{
 			ErrorHelper.setError(ErrorHelper.NotLogged())
@@ -106,6 +101,13 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 						Timber.e(t)
 				}
 	}
+
+	fun onLikeVideoClicked(view: View) {
+		likeOrDislikeClicked(Rate.LIKE)
+	}
+
+	fun onDislikeVideoClicked(view: View) =
+		likeOrDislikeClicked(Rate.DISLIKE)
 
 	fun onShareVideoClicked(view: View)
 	{

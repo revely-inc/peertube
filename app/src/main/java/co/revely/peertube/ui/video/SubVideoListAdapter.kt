@@ -13,7 +13,6 @@ import co.revely.peertube.api.peertube.response.Comment
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.ItemCommentBinding
 import co.revely.peertube.databinding.ItemVideoHeaderBinding
-import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.common.DataBoundViewHolder
 import co.revely.peertube.utils.AppExecutors
 import java.security.InvalidParameterException

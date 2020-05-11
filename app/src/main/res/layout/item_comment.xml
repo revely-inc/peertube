@@ -76,7 +76,7 @@
 			android:textColor="@color/text_high_emphasis"
 			android:maxLines="5"
 			android:ellipsize="end"
-			app:html="@{comment.text}"
+			app:markdown="@{comment.text}"
 			app:layout_constraintTop_toBottomOf="@+id/author"
 			app:layout_constraintStart_toStartOf="@+id/start"
 			app:layout_constraintEnd_toEndOf="parent"

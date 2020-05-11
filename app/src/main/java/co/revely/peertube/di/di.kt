@@ -16,6 +16,9 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
+import io.noties.markwon.Markwon
+import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -68,4 +71,11 @@ val appModule = module {
 	single { DefaultDownloaderFactory(get()) }
 	single { DownloadManager(get(), get(), get<DefaultDownloaderFactory>()) }
 	single { DownloadTracker(get(), get<CacheDataSourceFactory>(), get()) }
+
+	single { Markwon
+		.builder(get())
+		.usePlugin(LinkifyPlugin.create())
+		.usePlugin(HtmlPlugin.create())
+		.build()
+	}
 }

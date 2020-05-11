@@ -74,5 +74,8 @@
 		<meta-data
 				android:name="com.bugsnag.android.API_KEY"
 				android:value="610e7b227511f6c3004dd60dafa66316"/>
-	</application>
+		<meta-data
+			android:name="preloaded_fonts"
+			android:resource="@array/preloaded_fonts" />
+    </application>
 </manifest>

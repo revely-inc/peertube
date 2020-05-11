@@ -33,6 +33,7 @@ class PreferencesHelper
 				is Float -> sharedPreferences.edit { putFloat(name, value) }
 				is Long -> sharedPreferences.edit { putLong(name, value) }
 				is Enum<*> -> sharedPreferences.edit { putString(name, value.name) }
+				is Set<*> -> sharedPreferences.edit { putStringSet(name, value as Set<String>) }
 				else -> throw UnsupportedOperationException("Not yet implemented")
 			}
 			postValue(value)
@@ -47,6 +48,7 @@ class PreferencesHelper
 				is Boolean -> sharedPreferences.getBoolean(name, defaultValue as? Boolean ?: false) as T
 				is Float -> sharedPreferences.getFloat(name, defaultValue as? Float ?: 0f) as T
 				is Long -> sharedPreferences.getLong(name, defaultValue as? Long ?: 0) as T
+				is Set<*> -> sharedPreferences.getStringSet(name, mutableSetOf()) as T
 				else -> throw UnsupportedOperationException("Not yet implemented")
 			}
 			Timber.d("Get pref $name: $r")
@@ -59,9 +61,6 @@ class PreferencesHelper
 	companion object
 	{
 		val defaultHost by lazy { Pref("DEFAULT_HOST", "") }
-
-		val clientIds by lazy { Pref("CLIENT_IDS", null as? String?) }
-		val clientSecrets by lazy { Pref("CLIENT_SECRETS", null as? String?) }
-		val token by lazy { Pref("TOKEN", null as? String?) }
+		val hostsLogged by lazy { Pref("HOSTS_LOGGED", mutableSetOf<String>()) }
 	}
 }

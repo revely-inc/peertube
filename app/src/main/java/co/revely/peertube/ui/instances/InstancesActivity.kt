@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_instances.toolbar
 import org.jetbrains.anko.intentFor
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 /**
  * Created at 06/05/2020
@@ -33,6 +34,7 @@ class InstancesActivity: AppCompatActivity()
 	val appExecutors: AppExecutors by inject()
 
 	private val instancesViewModel: InstancesViewModel by viewModel()
+	private val hostsLogged = PreferencesHelper.hostsLogged.get()
 
 	private var adapter by autoCleared<InstancesAdapter>()
 
@@ -47,6 +49,11 @@ class InstancesActivity: AppCompatActivity()
 		supportActionBar?.setTitle(R.string.instances)
 
 		adapter = InstancesAdapter(appExecutors) { instance ->
+			if (PreferencesHelper.defaultHost.get() == instance.host)
+			{
+				finish()
+				return@InstancesAdapter
+			}
 			PreferencesHelper.defaultHost.set(instance.host)
 			startActivity(intentFor<SplashActivity>())
 			finish()
@@ -64,7 +71,7 @@ class InstancesActivity: AppCompatActivity()
 	{
 		observe(instancesViewModel.instances) {
 			swipe_refresh.isRefreshing = it.status == Status.LOADING
-			adapter.submitList(it.data)
+			adapter.submitList(it.data?.sortedByDescending { it.host in hostsLogged })
 		}
 	}
 

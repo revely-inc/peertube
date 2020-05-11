@@ -12,6 +12,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		app:cardPreventCornerOverlap="true"
+		app:cardCornerRadius="0dp"
 		>
 
 	<androidx.constraintlayout.widget.ConstraintLayout
@@ -55,6 +56,16 @@
 				tools:text="co.revely.peertube"
 				app:layout_constraintBottom_toBottomOf="@+id/name"
 				app:layout_constraintStart_toEndOf="@+id/name"
+				/>
+
+		<ImageView
+				android:id="@+id/have_account"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_account_circle"
+				android:tint="@color/colorAccent"
+				app:layout_constraintBottom_toBottomOf="@+id/host"
+				app:layout_constraintEnd_toEndOf="parent"
 				/>
 
 		<TextView

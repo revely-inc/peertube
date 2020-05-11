@@ -5,7 +5,7 @@ import co.revely.peertube.ui.account.login.LoginViewModel
 import co.revely.peertube.ui.instances.InstancesViewModel
 import co.revely.peertube.ui.video.VideoViewModel
 import co.revely.peertube.ui.videos.VideosViewModel
-import co.revely.peertube.viewmodel.ErrorHelper
+import co.revely.peertube.viewmodel.InstanceViewModel
 import co.revely.peertube.viewmodel.OAuthViewModel
 import co.revely.peertube.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -23,4 +23,5 @@ val viewModelModule = module {
 	viewModel { LoginViewModel(PreferencesHelper.defaultHost.get()) }
 	viewModel { OAuthViewModel() }
 	viewModel { (oAuthViewModel: OAuthViewModel) -> UserViewModel(get(), oAuthViewModel) }
+	viewModel { InstanceViewModel() }
 }

@@ -34,6 +34,7 @@ import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.abs
@@ -46,8 +47,8 @@ import kotlin.math.abs
 class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_video), EventListener
 {
 	private val appExecutors: AppExecutors by inject()
-	private val oAuthViewModel: OAuthViewModel by viewModel()
-	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.videoId, oAuthViewModel) })
+	private val oAuthViewModel: OAuthViewModel by sharedViewModel()
+	private val videoViewModel: VideoViewModel by sharedViewModel(parameters = { parametersOf(args.videoId, oAuthViewModel) })
 	private val args: VideoFragmentArgs by navArgs()
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()

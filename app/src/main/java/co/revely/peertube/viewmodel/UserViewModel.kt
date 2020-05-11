@@ -17,7 +17,7 @@ import timber.log.Timber
  */
 class UserViewModel(userRepository: UserRepository, oAuthViewModel: OAuthViewModel) : ViewModel()
 {
-	private val me: LiveData<ApiResponse<User>?> = Transformations.switchMap(oAuthViewModel.token) {
+	private val me = Transformations.switchMap(oAuthViewModel.token) {
 		if (it?.status == Status.SUCCESS && it.data != null)
 			userRepository.me()
 		else

@@ -1,5 +1,6 @@
 package co.revely.peertube.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import co.revely.peertube.R
@@ -12,6 +13,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.context.unloadKoinModules
+
 
 /**
  * Created at 2019-06-19
@@ -34,10 +36,17 @@ class SplashActivity : AppCompatActivity()
 				databaseModule
 		)
 		unloadKoinModules(modules)
-		loadKoinModules(modules)
+		stopKoin()
+		startKoin {
+			androidContext(applicationContext)
+			loadKoinModules(modules)
+		}
 
 		PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
-			startActivity(intentFor<MainActivity>())
+			startActivity(
+				intentFor<MainActivity>()
+					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+			)
 		} ?: startActivity(intentFor<InstancesActivity>())
 		finish()
 	}

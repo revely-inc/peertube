@@ -4,20 +4,19 @@ import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.text.format.DateUtils
-import android.text.style.TtsSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.duration
 import co.revely.peertube.utils.humanReadableBigNumber
-import co.revely.peertube.view.StatView
 import com.bumptech.glide.request.RequestOptions
-import timber.log.Timber
+import io.noties.markwon.Markwon
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
 /**
@@ -41,11 +40,13 @@ fun duration(view: TextView, duration: Long)
 	view.text = duration.duration()
 }
 
-@BindingAdapter("html")
-fun html(view: TextView, html: String?)
+@BindingAdapter("markdown")
+fun markdown(view: TextView, markdown: String?)
 {
-	if (html == null) return
-	view.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+	val markwon = object: KoinComponent { val markwon: Markwon by inject() }.markwon
+
+	if (markdown != null)
+		markwon.setMarkdown(view, markdown)
 }
 
 @BindingAdapter("humanReadableDate")

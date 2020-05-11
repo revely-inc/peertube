@@ -8,7 +8,10 @@ import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.observe
+import co.revely.peertube.viewmodel.InstanceViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 /**
  * Created at 2019-06-20
@@ -17,7 +20,7 @@ import org.koin.android.ext.android.inject
  */
 class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.layout.fragment_about_instance)
 {
-	private val peerTubeService: PeerTubeService by inject()
+	private val instanceViewModel: InstanceViewModel by sharedViewModel()
 
 	override fun title(): String = getString(R.string.title_about)
 
@@ -31,11 +34,11 @@ class AboutInstanceFragment : LayoutFragment<FragmentAboutInstanceBinding>(R.lay
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		observe(peerTubeService.configAbout()) {
+		observe(instanceViewModel.configAbout) {
 			if (it is ApiSuccessResponse)
 				binding.instance = it.body.instance
 		}
-		observe(peerTubeService.serverStats()) {
+		observe(instanceViewModel.serverStats) {
 			if (it is ApiSuccessResponse)
 				binding.stats = it.body
 		}

@@ -1,6 +1,7 @@
 package co.revely.peertube.ui.instances
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import co.revely.peertube.R
 import co.revely.peertube.databinding.ItemInstanceBinding
 import co.revely.peertube.db.instances.entity.Instance
+import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.common.DataBoundListAdapter
 import co.revely.peertube.utils.AppExecutors
 import com.google.android.material.animation.ArgbEvaluatorCompat
@@ -29,6 +31,7 @@ class InstancesAdapter(
 		override fun areContentsTheSame(oldItem: Instance, newItem: Instance) = oldItem.name == newItem.name && oldItem.shortDescription == newItem.shortDescription
 	}
 ) {
+	private val hostsLogged = PreferencesHelper.hostsLogged.get()
 
 	override fun createBinding(parent: ViewGroup): ItemInstanceBinding
 	{
@@ -51,5 +54,6 @@ class InstancesAdapter(
 		val endColor = ContextCompat.getColor(binding.root.context, R.color.colorGreen)
 		val tint = ArgbEvaluatorCompat.getInstance().evaluate((binding.instance?.health ?: 0) / 100f, startColor, endColor)
 		binding.health.background.setTint(tint)
+		binding.haveAccount.visibility = if (item.host in hostsLogged) View.VISIBLE else View.INVISIBLE
 	}
 }
