@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -72,4 +73,16 @@ fun Long.humanReadableBigNumber(): String
 	val exp = (ln(this.toDouble()) / ln(unit)).toInt()
 	val pre = arrayListOf("k", "M", "Md")[exp - 1]
 	return String.format("%.1f %s", this / unit.pow(exp.toDouble()), pre)
+}
+
+fun View.showKeyboard()
+{
+	val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+	imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
+fun View.hideKeyboard()
+{
+	val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+	imm.hideSoftInputFromWindow(windowToken, 0)
 }

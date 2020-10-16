@@ -31,6 +31,8 @@
 	<string name="video_comments">Video comments</string>
 	<string name="hosted_videos">Hosted videos</string>
 	<string name="retry">Retry</string>
+	<string name="no_result_found">No result found</string>
+	<string name="no_result_found_description">Try with another keyword</string>
 	<plurals name="view_replies">
 		<item quantity="other">No reply</item>
 		<item quantity="one">View reply</item>

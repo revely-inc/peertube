@@ -90,20 +90,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 	fun openVideoFragment(videoId: String)
 	{
-		main_motion_layout.transitionToEnd()
-		supportFragmentManager.beginTransaction()
-				.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down)
-				.replace(R.id.video_fragment, VideoFragment.newInstance(videoId), "video_fragment")
-				.commit()
+		val videoFragment = supportFragmentManager.findFragmentById(R.id.video_fragment)
+		videoFragment?.also { fragment -> fragment.video_motion_layout.transitionToEnd() }
+		if ((videoFragment as? VideoFragment)?.arguments?.getString("video_id") != videoId)
+		{
+			supportFragmentManager.beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down)
+					.replace(R.id.video_fragment, VideoFragment.newInstance(videoId), "video_fragment")
+					.commit()
+		}
 	}
 
 	override fun onBackPressed()
 	{
 		supportFragmentManager.findFragmentById(R.id.video_fragment)?.also { fragment ->
-			if (fragment.video_motion_layout.currentState != fragment.video_motion_layout.endState)
+			if (fragment.video_motion_layout.currentState != fragment.video_motion_layout.startState)
 			{
-				main_motion_layout.transitionToEnd()
-				fragment.video_motion_layout.transitionToEnd()
+				main_motion_layout.transitionToStart()
+				fragment.video_motion_layout.transitionToStart()
 			}
 			else
 				super.onBackPressed()
@@ -112,10 +116,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean
 	{
-		when (item.itemId) {
-			android.R.id.home -> drawer.open()
+		if (main_nav_host_fragment.childFragmentManager.fragments[0].onOptionsItemSelected(item))
+			return true
+		return when (item.itemId) {
+			android.R.id.home -> {
+				drawer.open()
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
 		}
-		return super.onOptionsItemSelected(item)
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean

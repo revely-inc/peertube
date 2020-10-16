@@ -29,7 +29,7 @@ open class LayoutFragment<DB : ViewDataBinding>(@LayoutRes val layoutId: Int) : 
 		binding.lifecycleOwner = viewLifecycleOwner
 		(activity as? AppCompatActivity)?.apply {
 			supportActionBar?.apply {
-				title()?.also { title = it }
+				title = title()
 				show()
 			}
 			swipe_refresh?.apply {

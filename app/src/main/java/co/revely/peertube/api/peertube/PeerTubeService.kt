@@ -75,26 +75,69 @@ interface PeerTubeService
 
 	@GET("videos")
 	fun getVideos(
-		//category id of the video
-		@Query("categoryOneOf") categoryOneOf: List<Int>? = null,
-		//Number of items
-		@Query("count") count: Int? = null,
-		//Special filters (local for instance) which might require special rights:
-		@Query("filter") filter: String? = null,
-		//language id of the video
-		@Query("languageOneOf") languageOneOf: List<String>? = null,
-		//licence id of the video
-		@Query("licenceOneOf") licenceOneOf: List<String>? = null,
-		//whether to include nsfw videos, if any
-		@Query("nsfw") nsfw: Boolean? = null,
-		//Sort videos by criteria ("-name" "-duration" "-createdAt" "-publishedAt" "-views" "-likes" "-trending")
-		@Query("sort") sort: String? = null,
-		//Offset
-		@Query("start") start: Int? = null,
-		//tag(s) of the video, where all should be present in the video
-		@Query("tagsAllOf") tagsAllOf: List<String>? = null,
-		//tag(s) of the video
-		@Query("tagsOneOf") tagsOneOf: List<String>? = null
+			//category id of the video
+			@Query("categoryOneOf") categoryOneOf: List<Int>? = null,
+			//Number of items
+			@Query("count") count: Int? = null,
+			//Special filters (local for instance) which might require special rights:
+			@Query("filter") filter: String? = null,
+			//language id of the video
+			@Query("languageOneOf") languageOneOf: List<String>? = null,
+			//licence id of the video
+			@Query("licenceOneOf") licenceOneOf: List<String>? = null,
+			//whether to include nsfw videos, if any
+			@Query("nsfw") nsfw: Boolean? = null,
+			//If you don't need the total in the response
+			@Query("skipCount") skipCount: Boolean? = null,
+			//Sort videos by criteria ("-name" "-duration" "-createdAt" "-publishedAt" "-views" "-likes" "-trending")
+			@Query("sort") sort: String? = null,
+			//Offset
+			@Query("start") start: Int? = null,
+			//tag(s) of the video, where all should be present in the video
+			@Query("tagsAllOf") tagsAllOf: List<String>? = null,
+			//tag(s) of the video
+			@Query("tagsOneOf") tagsOneOf: List<String>? = null
+	): Call<DataList<Video>>
+
+	@GET("search/videos")
+	fun searchVideos(
+			@Query("search") search: String,
+			//category id of the video
+			@Query("categoryOneOf") categoryOneOf: List<Int>? = null,
+			//Number of items
+			@Query("count") count: Int? = null,
+			//Get videos that have this maximum duration
+			@Query("durationMax") durationMax: Int? = null,
+			//Get videos that have this minimum duration
+			@Query("durationMin") durationMin: Int? = null,
+			//Special filters (local for instance) which might require special rights:
+			@Query("filter") filter: String? = null,
+			//language id of the video
+			@Query("languageOneOf") languageOneOf: List<String>? = null,
+			//licence id of the video
+			@Query("licenceOneOf") licenceOneOf: List<String>? = null,
+			//whether to include nsfw videos, if any
+			@Query("nsfw") nsfw: Boolean? = null,
+			//Get videos that are originally published before this date
+			@Query("originallyPublishedEndDate") originallyPublishedEndDate: String? = null,
+			//Get videos that are originally published after this date
+			@Query("originallyPublishedStartDate") originallyPublishedStartDate: String? = null,
+			//If the administrator enabled search index support, you can override the default search target. ("local" "search-index")
+			@Query("searchTarget") searchTarget: String? = null,
+			//If you don't need the total in the response
+			@Query("skipCount") skipCount: Boolean? = null,
+			//Sort videos by criteria ("name" "-duration" "-createdAt" "-publishedAt" "-views" "-likes" "-match")
+			@Query("sort") sort: String? = null,
+			//Offset used to paginate results
+			@Query("start") start: Int? = null,
+			//Get videos that are published after this date
+			@Query("startDate") startDate: String? = null,
+			//Get videos that are published before this date
+			@Query("endDate") endDate: String? = null,
+			//tag(s) of the video, where all should be present in the video
+			@Query("tagsAllOf") tagsAllOf: List<String>? = null,
+			//tag(s) of the video
+			@Query("tagsOneOf") tagsOneOf: List<String>? = null
 	): Call<DataList<Video>>
 
 	@GET("videos/{id}")

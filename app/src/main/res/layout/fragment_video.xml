@@ -21,7 +21,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:fitsSystemWindows="true"
-		app:touchable_views_ids="player,background"
+		app:touchable_views_ids="player_controller,player,background"
 		app:layoutDescription="@xml/video_scene"
 		>
 
@@ -58,7 +58,7 @@
 			android:textColor="@color/text_high_emphasis"
 			android:maxLines="1"
 			android:ellipsize="end"
-			app:layout_constraintTop_toTopOf="@+id/close_video"
+			app:layout_constraintTop_toTopOf="@+id/background"
 			app:layout_constraintBottom_toTopOf="@+id/author"
 			app:layout_constraintStart_toEndOf="@+id/player"
 			app:layout_constraintEnd_toStartOf="@+id/close_video"
@@ -75,7 +75,7 @@
 			android:maxLines="1"
 			android:ellipsize="end"
 			app:layout_constraintTop_toBottomOf="@+id/title"
-			app:layout_constraintBottom_toBottomOf="@+id/close_video"
+			app:layout_constraintBottom_toBottomOf="@+id/background"
 			app:layout_constraintStart_toEndOf="@+id/player"
 			app:layout_constraintEnd_toStartOf="@+id/close_video"
 			/>
@@ -87,6 +87,7 @@
 			android:background="@android:color/black"
 			app:surface_type="surface_view"
 			app:auto_show="false"
+			app:use_controller="false"
 			app:layout_constraintVertical_bias="0"
 			app:layout_constraintTop_toTopOf="@+id/background"
 			app:layout_constraintBottom_toBottomOf="@+id/background"
@@ -95,16 +96,41 @@
 			app:layout_constraintDimensionRatio="16:9"
 			/>
 
-	<ImageView
-			android:id="@+id/play_pause"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:src="@drawable/ic_logo"
+<!--	<ImageView-->
+<!--			android:id="@+id/loader"-->
+<!--			android:layout_width="wrap_content"-->
+<!--			android:layout_height="wrap_content"-->
+<!--			android:src="@drawable/ic_logo"-->
+<!--			app:layout_constraintTop_toTopOf="@+id/player"-->
+<!--			app:layout_constraintBottom_toBottomOf="@+id/player"-->
+<!--			app:layout_constraintStart_toStartOf="@+id/player"-->
+<!--			app:layout_constraintEnd_toEndOf="@+id/player"-->
+<!--			/>-->
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/player_controller"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:alpha="0"
+			android:background="#55000000"
 			app:layout_constraintTop_toTopOf="@+id/player"
 			app:layout_constraintBottom_toBottomOf="@+id/player"
 			app:layout_constraintStart_toStartOf="@+id/player"
 			app:layout_constraintEnd_toEndOf="@+id/player"
-			/>
+			>
+
+		<ImageView
+				android:id="@+id/play_pause"
+				android:layout_width="64dp"
+				android:layout_height="64dp"
+				android:src="@{viewModel.playWhenReady ? @drawable/ic_pause : @drawable/ic_play}"
+				app:tint="@android:color/white"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<androidx.constraintlayout.widget.Guideline
 			android:id="@+id/start"
@@ -142,10 +168,10 @@
 			android:layout_width="56dp"
 			android:layout_height="56dp"
 			android:layout_gravity="center"
-			app:layout_constraintTop_toTopOf="@+id/sub_video_list"
-			app:layout_constraintBottom_toBottomOf="@+id/sub_video_list"
-			app:layout_constraintStart_toStartOf="@+id/sub_video_list"
-			app:layout_constraintEnd_toEndOf="@+id/sub_video_list"
+			app:layout_constraintTop_toTopOf="@+id/background"
+			app:layout_constraintBottom_toBottomOf="@+id/background"
+			app:layout_constraintStart_toStartOf="@+id/background"
+			app:layout_constraintEnd_toEndOf="@+id/background"
 			/>
 </co.revely.peertube.utils.SingleViewTouchableMotionLayout>
 </layout>

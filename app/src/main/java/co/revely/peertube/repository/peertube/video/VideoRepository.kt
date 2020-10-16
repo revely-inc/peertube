@@ -4,11 +4,12 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
 import co.revely.peertube.api.peertube.PeerTubeService
-import co.revely.peertube.api.peertube.query.VideoQuery
+import co.revely.peertube.api.peertube.response.DataList
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.utils.AppExecutors
 import co.revely.peertube.utils.Listing
 import co.revely.peertube.utils.Rate
+import retrofit2.Call
 
 /**
  * Created at 17/04/2019
@@ -26,9 +27,9 @@ class VideoRepository(
 	}
 
 	@MainThread
-	fun getVideos(videoQuery: VideoQuery?): Listing<Video>
+	fun videosListing(request: ((peerTubeService: PeerTubeService, size: Int, index: Int) -> Call<DataList<Video>>)): Listing<Video>
 	{
-		val sourceFactory = VideoDataSourceFactory(peerTubeService, videoQuery, appExecutors.networkIO())
+		val sourceFactory = DataSourceFactory(peerTubeService, appExecutors.networkIO(), request)
 		val livePagedList = sourceFactory.toLiveData(pageSize = PAGE_SIZE, fetchExecutor = appExecutors.networkIO())
 		val refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) {
 			it.initialLoad

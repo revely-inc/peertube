@@ -4,13 +4,13 @@
 		xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<Transition
-			app:constraintSetStart="@id/expanded"
-			app:constraintSetEnd="@id/collapsed"
+			app:constraintSetStart="@id/collapsed"
+			app:constraintSetEnd="@id/expanded"
 			app:duration="@android:integer/config_shortAnimTime"
 			>
 
 		<OnSwipe
-				app:dragDirection="dragDown"
+				app:dragDirection="dragUp"
 				app:touchRegionId="@+id/container"
 				/>
 		<KeyFrameSet >
@@ -18,18 +18,26 @@
 					app:motionTarget="@+id/sub_video_list"
 					app:framePosition="70"
 					android:alpha="0" />
+			<KeyAttribute
+					app:motionTarget="@+id/close_video"
+					app:framePosition="100"
+					android:alpha="0" />
+			<KeyAttribute
+					app:motionTarget="@+id/close_video"
+					app:framePosition="30"
+					android:alpha="0" />
+			<KeyAttribute
+					app:motionTarget="@+id/title"
+					app:framePosition="70"
+					android:alpha="0" />
+			<KeyAttribute
+					app:motionTarget="@+id/author"
+					app:framePosition="70"
+					android:alpha="0" />
 		</KeyFrameSet>
 	</Transition>
 
 	<ConstraintSet android:id="@+id/expanded" >
-		<Constraint
-				android:id="@+id/close_video"
-				app:layout_constraintEnd_toEndOf="@+id/background"
-				android:layout_width="48dp"
-				android:layout_height="48dp"
-				app:layout_constraintBottom_toBottomOf="@+id/player"
-				app:layout_constraintTop_toTopOf="@+id/player"
-				android:alpha="0.0" />
 	</ConstraintSet>
 
 	<ConstraintSet android:id="@+id/collapsed">
@@ -50,10 +58,11 @@
 				android:id="@+id/player"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
-				app:layout_constraintBottom_toBottomOf="@+id/background"
-				app:layout_constraintVertical_bias="0"
+				app:layout_constraintHorizontal_bias="0"
 				app:layout_constraintTop_toTopOf="@+id/background"
+				app:layout_constraintBottom_toBottomOf="@+id/background"
 				app:layout_constraintStart_toStartOf="@+id/background"
+				app:layout_constraintEnd_toEndOf="@+id/background"
 				app:layout_constraintDimensionRatio="16:9" />
 		<Constraint
 				android:id="@+id/close_video"
@@ -66,11 +75,10 @@
 				android:alpha="1.0" />
 		<Constraint
 				android:id="@+id/sub_video_list"
-				app:layout_constraintEnd_toEndOf="@+id/background"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
-				app:layout_constraintBottom_toBottomOf="@+id/background"
-				app:layout_constraintTop_toBottomOf="@+id/player"
+				app:layout_constraintTop_toBottomOf="@+id/background"
+				app:layout_constraintEnd_toEndOf="@+id/background"
 				app:layout_constraintStart_toStartOf="@+id/background"
 				android:alpha="0" />
 	</ConstraintSet>

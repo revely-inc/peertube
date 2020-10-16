@@ -1,14 +1,18 @@
 package co.revely.peertube.ui.video
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
+import co.revely.peertube.BR
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
@@ -37,6 +41,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 import kotlin.math.abs
 
 /**
@@ -48,7 +53,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 {
 	private val appExecutors: AppExecutors by inject()
 	private val oAuthViewModel: OAuthViewModel by sharedViewModel()
-	private val videoViewModel: VideoViewModel by sharedViewModel(parameters = { parametersOf(args.videoId, oAuthViewModel) })
+	private val videoViewModel: VideoViewModel by viewModel(parameters = { parametersOf(args.videoId, oAuthViewModel) })
 	private val args: VideoFragmentArgs by navArgs()
 	private val downloadTracker: DownloadTracker by inject()
 	private val dataSourceFactory: DefaultDataSourceFactory by inject()
@@ -75,9 +80,10 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 		}
 
+		video_motion_layout.transitionToEnd()
 		video_motion_layout.setTransitionListener(object : TransitionAdapter() {
 			override fun onTransitionChange(motionLayout: MotionLayout, startId: Int, endId: Int, progress: Float) {
-				(activity as MainActivity).main_motion_layout.progress = 1 - abs(progress)
+				(activity as MainActivity).main_motion_layout.progress = abs(progress)
 			}
 		})
 		close_video.setOnClickListener { activity?.also {
@@ -98,9 +104,27 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		initComments()
 	}
 
+	private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener(){
+		override fun onDown(e: MotionEvent?): Boolean
+		{
+			if (player_controller.alpha == 0f) player_controller.visibility = View.VISIBLE
+			player_controller.animate().alpha(if (player_controller.alpha == 1f) 0f else 1f).withEndAction {
+				if (player_controller.alpha == 0f) player_controller.visibility = View.INVISIBLE
+			}.start()
+			return super.onDown(e)
+		}
+	})
+
+	@SuppressLint("ClickableViewAccessibility")
 	private fun initPlayer()
 	{
 		player.requestFocus()
+		player.setOnTouchListener { _, event ->
+			return@setOnTouchListener gestureDetector.onTouchEvent(event)
+		}
+		play_pause.setOnClickListener {
+			videoViewModel.togglePlayPause()
+		}
 		if (videoViewModel.exoPlayer == null)
 		{
 			videoViewModel.exoPlayer = SimpleExoPlayer.Builder(player.context).build()
@@ -163,15 +187,15 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
 	{
 		if (isVisible.not()) return
-		when(playbackState) {
-			STATE_IDLE -> {}
-			STATE_BUFFERING -> play_pause.progress(true)
-			STATE_READY -> {
-				play_pause.progress(false)
-			}
-			STATE_ENDED -> {}
-			else -> throw IllegalArgumentException("Wrong playbackState: $playbackState")
-		}
+//		when(playbackState) {
+//			STATE_IDLE -> {}
+//			STATE_BUFFERING -> loader.progress(true)
+//			STATE_READY -> {
+//				loader.progress(false)
+//			}
+//			STATE_ENDED -> {}
+//			else -> throw IllegalArgumentException("Wrong playbackState: $playbackState")
+//		}
 	}
 
 	private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean

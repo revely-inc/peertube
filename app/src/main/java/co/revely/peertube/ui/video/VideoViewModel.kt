@@ -2,6 +2,7 @@ package co.revely.peertube.ui.video
 
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import co.revely.peertube.api.ApiSuccessResponse
 import co.revely.peertube.api.peertube.query.CommentQuery
@@ -29,10 +30,13 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 	private val videoRepository: VideoRepository by inject()
 	private val commentRepository: CommentRepository by inject()
 
-	private var playWhenReady = true
+	var playWhenReady = MutableLiveData(true)
 
 	var exoPlayer: SimpleExoPlayer? = null
 	var mediaSource: MediaSource? = null
+
+	private val _playing = MutableLiveData(true)
+	val playing = _playing
 
 	private val _video = videoRepository.getVideoById(id)
 	val video = MediatorLiveData<Video>()
@@ -66,18 +70,17 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 
 	fun onResume()
 	{
-		exoPlayer?.playWhenReady = playWhenReady
+		exoPlayer?.playWhenReady = playWhenReady.value!!
 	}
 
 	fun onPause()
 	{
-		playWhenReady = exoPlayer?.playWhenReady ?: false
+		playWhenReady.value = exoPlayer?.playWhenReady ?: false
 		exoPlayer?.playWhenReady = false
 	}
 
 	private fun likeOrDislikeClicked(@Rate clickedRating: String)
 	{
-		Timber.d("POK: $clickedRating, ${oAuthViewModel.isLogged()}")
 		if (!oAuthViewModel.isLogged())
 		{
 			ErrorHelper.setError(ErrorHelper.NotLogged())
@@ -100,6 +103,12 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 					else
 						Timber.e(t)
 				}
+	}
+
+	fun togglePlayPause()
+	{
+		exoPlayer?.playWhenReady = !(exoPlayer?.playWhenReady ?: true)
+		playWhenReady.value = exoPlayer?.playWhenReady
 	}
 
 	fun onLikeVideoClicked(view: View) {
