@@ -20,6 +20,7 @@ updateContainer:
   only:
     changes:
       - Dockerfile
+      - gradle/wrapper/gradle-wrapper.properties
 
 ensureContainer:
   extends: .updateContainerJob
