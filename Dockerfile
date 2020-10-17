@@ -7,7 +7,7 @@ ENV ANDROID_COMPILE_SDK "29"
 # Just matched `app/build.gradle`
 ENV ANDROID_BUILD_TOOLS "29.0.3"
 # Version from https://developer.android.com/studio/releases/sdk-tools
-ENV ANDROID_SDK_TOOLS "6609375_latest"
+ENV ANDROID_SDK_TOOLS "4333796"
 
 ENV ANDROID_HOME /android-sdk-linux
 ENV PATH="${PATH}:/android-sdk-linux/platform-tools/"
@@ -15,7 +15,7 @@ ENV PATH="${PATH}:/android-sdk-linux/platform-tools/"
 # install OS packages
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}.zip
+RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
 RUN unzip -d android-sdk-linux android-sdk.zip
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
