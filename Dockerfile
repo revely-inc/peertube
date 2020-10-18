@@ -18,12 +18,12 @@ RUN cd $ANDROID_SDK_ROOT
 RUN unzip -d cmdline-tools cmdline-tools.zip
 RUN export PATH=$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin/
 RUN cmdline-tools/tools/bin/sdkmanager --version
-RUN cmdline-tools/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
-RUN cmdline-tools/tools/bin/sdkmanager "platform-tools"
-RUN cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
-RUN cmdline-tools/tools/bin/sdkmanager "extra-android-m2repository"
-RUN cmdline-tools/tools/bin/sdkmanager "extra-google-google_play_services"
-RUN cmdline-tools/tools/bin/sdkmanager "extra-google-m2repository"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "platform-tools"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "extra-android-m2repository"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "extra-google-google_play_services"
+RUN echo y | cmdline-tools/tools/bin/sdkmanager "extra-google-m2repository"
 RUN export PATH=$PATH:${ANDROID_SDK_ROOT}/platform-tools/
 RUN chmod +x ./gradlew
 # temporarily disable checking for EPIPE error and use yes to accept all licenses
