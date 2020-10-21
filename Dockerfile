@@ -22,9 +22,9 @@ RUN unzip -d $ANDROID_SDK_ROOT/cmdline-tools android-sdk.zip
 RUN yes | sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
 RUN yes | sdkmanager "platform-tools"
 RUN yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
-RUN yes | sdkmanager "extra-android-m2repository"
-RUN yes | sdkmanager "extra-google-google_play_services"
-RUN yes | sdkmanager "extra-google-m2repository"
+# RUN yes | sdkmanager "extra-android-m2repository"
+# RUN yes | sdkmanager "extra-google-google_play_services"
+# RUN yes | sdkmanager "extra-google-m2repository"
 RUN chmod +x ./gradlew
   # temporarily disable checking for EPIPE error and use yes to accept all licenses
 RUN set +o pipefail
