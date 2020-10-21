@@ -27,9 +27,9 @@ RUN yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
 # RUN yes | sdkmanager "extra-google-m2repository"
 # RUN chmod +x ./gradlew
   # temporarily disable checking for EPIPE error and use yes to accept all licenses
-RUN set +o pipefail
+# RUN set +o pipefail
 RUN yes | sdkmanager --licenses
-RUN set -o pipefail
+# RUN set -o pipefail
 
 # install FastLane
 COPY Gemfile.lock .
