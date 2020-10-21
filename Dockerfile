@@ -21,16 +21,16 @@ ENV ANDROID_HOME=$PWD/android-sdk-root
 ENV PATH=$PATH:$PWD/android-sdk-root/platform-tools/
 RUN mkdir -p ~/.android/
 RUN touch ~/.android/repositories.cfg
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "platform-tools" >/dev/null
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "extra-android-m2repository" >/dev/null
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "extra-google-google_play_services" >/dev/null
-RUN echo y | android-sdk-root/tools/bin/sdkmanager "extra-google-m2repository" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "platform-tools" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "extra-android-m2repository" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "extra-google-google_play_services" >/dev/null
+RUN echo y | android-sdk-root/cmdline-tools/bin/sdkmanager "extra-google-m2repository" >/dev/null
 RUN chmod +x ./gradlew
   # temporarily disable checking for EPIPE error and use yes to accept all licenses
 RUN set +o pipefail
-RUN yes | android-sdk-root/tools/bin/sdkmanager --licenses
+RUN yes | android-sdk-root/cmdline-tools/bin/sdkmanager --licenses
 RUN set -o pipefail
 
 # install FastLane
