@@ -18,9 +18,10 @@ RUN cd $ANDROID_SDK_ROOT
 RUN unzip -d cmdline-tools cmdline-tools.zip
 ENV PATH ${PATH}:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin
 RUN yes | sdkmanager --licenses
+RUN yes | sdkmanager "emulator" "platform-tools"
+RUN yes | sdkmanager --update --channel=3
 RUN touch /root/.android/repositories.cfg
 RUN yes | sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
-RUN yes | sdkmanager "platform-tools"
 RUN yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
 RUN yes | sdkmanager "extra-android-m2repository"
 RUN yes | sdkmanager "extra-google-google_play_services"
