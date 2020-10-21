@@ -17,7 +17,6 @@ RUN wget --quiet --output-document=$ANDROID_SDK_ROOT/cmdline-tools.zip https://d
 RUN cd $ANDROID_SDK_ROOT
 RUN unzip -d cmdline-tools cmdline-tools.zip
 ENV PATH ${PATH}:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin
-RUN touch ~/.android/repositories.cfg
 RUN echo y | sdkmanager "emulator" "platform-tools" >/dev/null
 RUN echo y | sdkmanager --update --channel=3 >/dev/null
 RUN echo y | sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
