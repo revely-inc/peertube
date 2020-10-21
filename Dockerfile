@@ -16,7 +16,7 @@ ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/platform-tools/"
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
-RUN unzip -d android-sdk-root android-sdk.zip
+RUN unzip -d $ANDROID_SDK_ROOT/cmdline-tools android-sdk.zip
 RUN mkdir -p ~/.android/
 RUN touch ~/.android/repositories.cfg
 RUN echo y | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
