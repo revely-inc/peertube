@@ -15,6 +15,8 @@ ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/platform-tools/:$ANDROID_SDK_ROOT/cmdline-
 # install OS packages
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 build-essential ruby ruby-dev
+# We use this for xxd hex->binary
+RUN apt-get --quiet install --yes vim-common
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
 RUN mkdir -p ~/.android/ $ANDROID_SDK_ROOT/cmdline-tools
 RUN touch ~/.android/repositories.cfg
