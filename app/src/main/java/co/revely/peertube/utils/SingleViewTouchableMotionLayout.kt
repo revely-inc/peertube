@@ -15,8 +15,8 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
 	: MotionLayout(context, attributeSet)
 {
 	private var ids: List<Int> = emptyList()
-	private val viewsToDetectTouch: List<View> by lazy {
-		ids.map { findViewById<View>(it) }
+	private val viewsToDetectTouch: List<View?> by lazy {
+		ids.map { findViewById(it) }
 	}
 	private val viewRect = Rect()
 	private var touchStarted = false
@@ -52,7 +52,7 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
 		{
 			for (viewToDetectTouch in viewsToDetectTouch)
 			{
-				viewToDetectTouch.getHitRect(viewRect)
+				viewToDetectTouch?.getHitRect(viewRect)
 				touchStarted = viewRect.contains(event.x.toInt(), event.y.toInt())
 				if (touchStarted)
 					break

@@ -11,8 +11,8 @@ import android.view.WindowManager
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import co.revely.peertube.BR
 import co.revely.peertube.R
 import co.revely.peertube.api.peertube.response.Video
 import co.revely.peertube.databinding.FragmentVideoBinding
@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video.*
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -81,8 +82,10 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		}
 
 		video_motion_layout.transitionToEnd()
-		video_motion_layout.setTransitionListener(object : TransitionAdapter() {
-			override fun onTransitionChange(motionLayout: MotionLayout, startId: Int, endId: Int, progress: Float) {
+		video_motion_layout.setTransitionListener(object : TransitionAdapter()
+		{
+			override fun onTransitionChange(motionLayout: MotionLayout, startId: Int, endId: Int, progress: Float)
+			{
 				(activity as MainActivity).main_motion_layout.progress = abs(progress)
 			}
 		})
@@ -104,13 +107,11 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		initComments()
 	}
 
-	private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener(){
+	private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener()
+	{
 		override fun onDown(e: MotionEvent?): Boolean
 		{
-			if (player_controller.alpha == 0f) player_controller.visibility = View.VISIBLE
-			player_controller.animate().alpha(if (player_controller.alpha == 1f) 0f else 1f).withEndAction {
-				if (player_controller.alpha == 0f) player_controller.visibility = View.INVISIBLE
-			}.start()
+			if (exo_controller.isVisible) exo_controller.hide() else exo_controller.show()
 			return super.onDown(e)
 		}
 	})
@@ -118,12 +119,8 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	@SuppressLint("ClickableViewAccessibility")
 	private fun initPlayer()
 	{
-		player.requestFocus()
 		player.setOnTouchListener { _, event ->
 			return@setOnTouchListener gestureDetector.onTouchEvent(event)
-		}
-		play_pause.setOnClickListener {
-			videoViewModel.togglePlayPause()
 		}
 		if (videoViewModel.exoPlayer == null)
 		{
@@ -131,6 +128,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 			videoViewModel.exoPlayer?.playWhenReady = true
 			observe(videoViewModel.video) { onVideo(it) }
 		}
+		exo_controller.player = videoViewModel.exoPlayer
 		videoViewModel.exoPlayer?.addListener(this)
 		player.player = videoViewModel.exoPlayer
 		player.setPlaybackPreparer { videoViewModel.exoPlayer?.retry() }
@@ -184,20 +182,6 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		}
 	}
 
-	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
-	{
-		if (isVisible.not()) return
-//		when(playbackState) {
-//			STATE_IDLE -> {}
-//			STATE_BUFFERING -> loader.progress(true)
-//			STATE_READY -> {
-//				loader.progress(false)
-//			}
-//			STATE_ENDED -> {}
-//			else -> throw IllegalArgumentException("Wrong playbackState: $playbackState")
-//		}
-	}
-
 	private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean
 	{
 		if (e.type != ExoPlaybackException.TYPE_SOURCE)
@@ -212,6 +196,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		return false
 	}
 
+	override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
 	override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {}
 	override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {}
 	override fun onSeekProcessed() {}
