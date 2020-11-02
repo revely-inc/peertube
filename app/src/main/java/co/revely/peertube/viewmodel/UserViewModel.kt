@@ -1,14 +1,10 @@
 package co.revely.peertube.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import co.revely.peertube.api.ApiResponse
-import co.revely.peertube.api.peertube.response.User
 import co.revely.peertube.repository.Status
 import co.revely.peertube.repository.peertube.user.UserRepository
 import co.revely.peertube.utils.AbsentLiveData
-import timber.log.Timber
 
 /**
  * Created at 2019-10-21

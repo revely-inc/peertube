@@ -1,8 +1,8 @@
 package co.revely.peertube.di
 
-import co.revely.peertube.api.oauth.OAuthService
-import co.revely.peertube.api.peertube.response.OAuthClient
-import co.revely.peertube.api.peertube.response.OAuthToken
+import co.revely.peertube.api.OAuthService
+import co.revely.peertube.db.peertube.entity.OAuthClient
+import co.revely.peertube.db.peertube.entity.OAuthToken
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.utils.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
@@ -26,7 +26,7 @@ val oauthModule = module {
 	single {
 		val API_VERSION = "api/v1"
 
-		val host = PreferencesHelper.defaultHost.get()
+		val host = PreferencesHelper.currentHost.get()
 		Retrofit.Builder()
 				.baseUrl("https://$host/$API_VERSION/")
 				.client(OkHttpClient.Builder()

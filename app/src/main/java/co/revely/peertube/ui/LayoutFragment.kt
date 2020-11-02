@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import co.revely.peertube.R
-import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 /**
  * Created at 2019-06-20
@@ -23,20 +23,22 @@ open class LayoutFragment<DB : ViewDataBinding>(@LayoutRes val layoutId: Int) : 
 
 	open fun title(): String? = null
 
+	@Suppress("UNCHECKED_CAST")
+	fun <DB> binding() = binding as? DB
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
 		binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
 		binding.lifecycleOwner = viewLifecycleOwner
 		(activity as? AppCompatActivity)?.apply {
 			supportActionBar?.apply {
-				title = title()
+				title()?.also { title = it }
 				show()
-			}
-			swipe_refresh?.apply {
-				isEnabled = false
-				setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark)
 			}
 		}
 		return binding.root
 	}
 }
+
+fun <DB: ViewDataBinding> Fragment.binding(): DB? =
+	if (this is LayoutFragment<*>) binding() else null

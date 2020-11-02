@@ -3,7 +3,7 @@ package co.revely.peertube.viewmodel
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.*
-import co.revely.peertube.api.peertube.response.OAuthToken
+import co.revely.peertube.db.peertube.entity.OAuthToken
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.Resource
 import co.revely.peertube.repository.Status
@@ -51,7 +51,7 @@ class OAuthViewModel : ViewModel(), KoinComponent
 			if (it?.status == Status.SUCCESS && it.data?.accessToken != null)
 			{
 				val hostsLogged = PreferencesHelper.hostsLogged.get()
-				hostsLogged.add(PreferencesHelper.defaultHost.get())
+				hostsLogged.add(PreferencesHelper.currentHost.get())
 				PreferencesHelper.hostsLogged.set(hostsLogged)
 			}
 		}

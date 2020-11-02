@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import co.revely.peertube.api.peertube.response.OAuthClient
-import co.revely.peertube.api.peertube.response.OAuthToken
+import co.revely.peertube.db.peertube.entity.OAuthClient
+import co.revely.peertube.db.peertube.entity.OAuthToken
 
 /**
  * Created at 17/04/2019

@@ -52,6 +52,7 @@
 				android:name=".ui.MainActivity"
 				android:label="@string/app_name"
 				android:theme="@style/AppTheme.NoActionBar"
+				android:supportsPictureInPicture="true"
 				/>
 
 		<activity
@@ -60,16 +61,6 @@
 				android:theme="@style/AppTheme.NoActionBar"
 				android:windowSoftInputMode="adjustResize"
 				/>
-
-		<service
-				android:name=".service.VideoDownloadService"
-				android:exported="false">
-
-			<intent-filter>
-				<action android:name="com.google.android.exoplayer.downloadService.action.RESTART" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</service>
 
 		<meta-data
 				android:name="com.bugsnag.android.API_KEY"

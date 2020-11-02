@@ -3,7 +3,7 @@
 	<data>
 		<variable
 				name="video"
-				type="co.revely.peertube.api.peertube.response.Video"/>
+				type="co.revely.peertube.api.dao.VideoDao"/>
 		<variable
 				name="host"
 				type="String"/>
@@ -21,7 +21,7 @@
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:contentDescription="@string/videos"
-			glideUrl="@{`https://` + host + video.previewPath}"
+			coilUrl="@{`https://` + host + video.previewPath}"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
@@ -49,9 +49,9 @@
 			android:layout_width="32dp"
 			android:layout_height="32dp"
 			android:layout_margin="16dp"
-			glideUrl="@{`https://` + host + video.account.avatar.path}"
-			glideThumbnailUrl="@{`https://` + host + `/client/assets/images/default-avatar.png`}"
-			glideCircleCrop="@{true}"
+			coilUrl="@{`https://` + host + video.account.avatar.path}"
+			coilPlaceholderUrl="@{`https://` + host + `/client/assets/images/default-avatar.png`}"
+			coilCircleCrop="@{true}"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/thumbnails"

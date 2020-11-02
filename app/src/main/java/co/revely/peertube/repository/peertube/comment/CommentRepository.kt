@@ -3,9 +3,9 @@ package co.revely.peertube.repository.peertube.comment
 import androidx.annotation.MainThread
 import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
-import co.revely.peertube.api.peertube.PeerTubeService
-import co.revely.peertube.api.peertube.query.CommentQuery
-import co.revely.peertube.api.peertube.response.Comment
+import co.revely.peertube.api.PeerTubeService
+import co.revely.peertube.api.dto.CommentDto
+import co.revely.peertube.api.dao.CommentDao
 import co.revely.peertube.utils.AppExecutors
 import co.revely.peertube.utils.Listing
 
@@ -15,8 +15,8 @@ import co.revely.peertube.utils.Listing
  * @author rbenjami
  */
 class CommentRepository(
-	private val peerTubeService: PeerTubeService,
-	private val appExecutors: AppExecutors
+		private val peerTubeService: PeerTubeService,
+		private val appExecutors: AppExecutors
 )
 {
 	companion object
@@ -25,7 +25,7 @@ class CommentRepository(
 	}
 
 	@MainThread
-	fun getComments(commentQuery: CommentQuery): Listing<Comment>
+	fun getComments(commentQuery: CommentDto): Listing<CommentDao>
 	{
 		val sourceFactory = CommentDataSourceFactory(peerTubeService, commentQuery, appExecutors.networkIO())
 		val livePagedList = sourceFactory.toLiveData(pageSize = PAGE_SIZE, fetchExecutor = appExecutors.networkIO())

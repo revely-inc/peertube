@@ -3,10 +3,10 @@
 	<data>
 		<variable
 				name="user"
-				type="co.revely.peertube.api.peertube.response.User" />
+				type="co.revely.peertube.api.dao.UserDao" />
 		<variable
 				name="instance"
-				type="co.revely.peertube.api.peertube.response.AboutInstanceResponse.Instance" />
+				type="co.revely.peertube.api.dao.AboutInstanceDao.Instance" />
 	</data>
 <androidx.constraintlayout.widget.ConstraintLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
@@ -38,9 +38,9 @@
 			android:id="@+id/avatar"
 			android:layout_width="0dp"
 			android:layout_height="72dp"
-			app:glideUrl="@{`https://` + user.account.host + user.account.avatar.path}"
-			app:glideThumbnailUrl="@{`https://` + user.account.host + `/client/assets/images/default-avatar.png`}"
-			app:glideCircleCrop="@{true}"
+			app:coilUrl="@{`https://` + user.account.host + user.account.avatar.path}"
+			app:coilPlaceholderUrl="@{`https://` + user.account.host + `/client/assets/images/default-avatar.png`}"
+			app:coilCircleCrop="@{true}"
 			app:layout_constraintTop_toBottomOf="@+id/instance_name"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintDimensionRatio="1"

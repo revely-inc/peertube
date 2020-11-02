@@ -1,7 +1,7 @@
 package co.revely.peertube.viewmodel
 
 import androidx.lifecycle.ViewModel
-import co.revely.peertube.api.peertube.PeerTubeService
+import co.revely.peertube.api.PeerTubeService
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 

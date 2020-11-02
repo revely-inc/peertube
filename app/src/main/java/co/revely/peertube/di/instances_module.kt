@@ -1,6 +1,6 @@
 package co.revely.peertube.di
 
-import co.revely.peertube.api.instances.InstancesService
+import co.revely.peertube.api.InstancesService
 import co.revely.peertube.utils.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

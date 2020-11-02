@@ -2,9 +2,9 @@ package co.revely.peertube.repository.peertube.comment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import co.revely.peertube.api.peertube.PeerTubeService
-import co.revely.peertube.api.peertube.query.CommentQuery
-import co.revely.peertube.api.peertube.response.Comment
+import co.revely.peertube.api.PeerTubeService
+import co.revely.peertube.api.dto.CommentDto
+import co.revely.peertube.api.dao.CommentDao
 import java.util.concurrent.Executor
 
 /**
@@ -13,14 +13,14 @@ import java.util.concurrent.Executor
  * @author rbenjami
  */
 class CommentDataSourceFactory(
-		private val peerTubeService: PeerTubeService,
-		private val commentQuery: CommentQuery,
-		private val retryExecutor: Executor
-) : DataSource.Factory<Int, Comment>()
+    private val peerTubeService: PeerTubeService,
+    private val commentQuery: CommentDto,
+    private val retryExecutor: Executor
+) : DataSource.Factory<Int, CommentDao>()
 {
 	val sourceLiveData = MutableLiveData<PageKeyedCommentDataSource>()
 
-	override fun create(): DataSource<Int, Comment>
+	override fun create(): DataSource<Int, CommentDao>
 	{
 		val source = PageKeyedCommentDataSource(peerTubeService, commentQuery, retryExecutor)
 		sourceLiveData.postValue(source)

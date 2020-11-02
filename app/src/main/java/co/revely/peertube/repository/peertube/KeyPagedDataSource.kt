@@ -2,7 +2,7 @@ package co.revely.peertube.repository.peertube
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import co.revely.peertube.api.peertube.response.DataList
+import co.revely.peertube.api.DataList
 import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.utils.enqueue
 import retrofit2.Call

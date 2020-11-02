@@ -42,7 +42,7 @@ class SplashActivity : AppCompatActivity()
 			loadKoinModules(modules)
 		}
 
-		PreferencesHelper.defaultHost.get().takeIf { it.isNotBlank() }?.also { host ->
+		PreferencesHelper.currentHost.get().takeIf { it.isNotBlank() }?.also { host ->
 			startActivity(
 				intentFor<MainActivity>()
 					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

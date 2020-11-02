@@ -8,13 +8,9 @@ import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.Status
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.observe
-import co.revely.peertube.utils.progress
 import co.revely.peertube.viewmodel.ErrorHelper
 import co.revely.peertube.viewmodel.OAuthViewModel
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
-import java.lang.Error
 
 /**
  * Created at 2019-10-18
@@ -30,19 +26,19 @@ class LoginFragment : LayoutFragment<FragmentLoginBinding>(R.layout.fragment_log
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		binding.host = PreferencesHelper.defaultHost.get()
+		binding.host = PreferencesHelper.currentHost.get()
 		observe(oAuthViewModel.token) {
 			if (it?.status == Status.ERROR && it.message != null) {
 				ErrorHelper.setError(ErrorHelper.Retry {
-					oAuthViewModel.login(username.text.toString(), password.text.toString())
+					oAuthViewModel.login(binding.username.text.toString(), binding.password.text.toString())
 				})
 			}
 			else if (it?.status == Status.SUCCESS && it.data != null)
 				activity?.finish()
 		}
 
-		login.setOnClickListener {
-			oAuthViewModel.login(username.text.toString(), password.text.toString())
+		binding.login.setOnClickListener {
+			oAuthViewModel.login(binding.username.text.toString(), binding.password.text.toString())
 //			progress_bar.progress(true)
 		}
 	}

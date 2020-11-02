@@ -6,7 +6,6 @@ import android.webkit.WebViewClient
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentAboutPeertubeBinding
 import co.revely.peertube.ui.LayoutFragment
-import kotlinx.android.synthetic.main.fragment_about_peertube.*
 
 
 /**
@@ -28,9 +27,9 @@ class AboutPeertubeFragment : LayoutFragment<FragmentAboutPeertubeBinding>(R.lay
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		web_view.webViewClient = WebViewClient()
-		web_view.settings.javaScriptEnabled = true
-		web_view.settings.domStorageEnabled = true
-		web_view.loadUrl("https://joinpeertube.org/")
+		binding.webView.webViewClient = WebViewClient()
+		binding.webView.settings.javaScriptEnabled = true
+		binding.webView.settings.domStorageEnabled = true
+		binding.webView.loadUrl("https://joinpeertube.org/")
 	}
 }

@@ -9,8 +9,8 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import co.revely.peertube.R
-import co.revely.peertube.api.peertube.response.Comment
-import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.api.dao.CommentDao
+import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.databinding.ItemCommentBinding
 import co.revely.peertube.databinding.ItemVideoHeaderBinding
 import co.revely.peertube.ui.common.DataBoundViewHolder
@@ -25,13 +25,13 @@ import java.security.InvalidParameterException
 class SubVideoListAdapter(
 		val videoViewModel: VideoViewModel,
 		appExecutors: AppExecutors,
-		private val itemClickCallback: ((Comment) -> Unit)?
-) : PagedListAdapter<Comment, DataBoundViewHolder<*>>(
-		AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<Comment>() {
-			override fun areItemsTheSame(oldItem: Comment, newItem: Comment) =
+		private val itemClickCallback: ((CommentDao) -> Unit)?
+) : PagedListAdapter<CommentDao, DataBoundViewHolder<*>>(
+		AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<CommentDao>() {
+			override fun areItemsTheSame(oldItem: CommentDao, newItem: CommentDao) =
 					oldItem.id == newItem.id
 
-			override fun areContentsTheSame(oldItem: Comment, newItem: Comment) =
+			override fun areContentsTheSame(oldItem: CommentDao, newItem: CommentDao) =
 					oldItem.updatedAt == newItem.updatedAt
 		}).setBackgroundThreadExecutor(appExecutors.diskIO()).build()
 ) {
@@ -43,9 +43,9 @@ class SubVideoListAdapter(
 		const val OTHER_ITEM = 1
 	}
 
-	private var video: Video? = null
+	private var video: VideoDao? = null
 
-	fun setVideo(video: Video)
+	fun setVideo(video: VideoDao)
 	{
 		this.video = video
 		notifyItemChanged(0)

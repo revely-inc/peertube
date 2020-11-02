@@ -5,14 +5,15 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import co.revely.peertube.api.ApiSuccessResponse
-import co.revely.peertube.api.peertube.query.CommentQuery
-import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.api.dto.CommentDto
+import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.repository.peertube.comment.CommentRepository
 import co.revely.peertube.repository.peertube.video.VideoRepository
 import co.revely.peertube.utils.Rate
 import co.revely.peertube.utils.enqueue
 import co.revely.peertube.viewmodel.ErrorHelper
 import co.revely.peertube.viewmodel.OAuthViewModel
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import org.jetbrains.anko.toast
@@ -30,20 +31,18 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 	private val videoRepository: VideoRepository by inject()
 	private val commentRepository: CommentRepository by inject()
 
-	var playWhenReady = MutableLiveData(true)
-
 	var exoPlayer: SimpleExoPlayer? = null
-	var mediaSource: MediaSource? = null
+	var mediaItem: MediaItem? = null
 
 	private val _playing = MutableLiveData(true)
 	val playing = _playing
 
 	private val _video = videoRepository.getVideoById(id)
-	val video = MediatorLiveData<Video>()
+	val video = MediatorLiveData<VideoDao>()
 
 	private val _rating = videoRepository.getMyRating(id)
 
-	val comments = commentRepository.getComments(CommentQuery(id, sort = "-createdAt"))
+	val comments = commentRepository.getComments(CommentDto(id, sort = "-createdAt"))
 
 	init
 	{
@@ -66,17 +65,6 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 		super.onCleared()
 		exoPlayer?.release()
 		exoPlayer = null
-	}
-
-	fun onResume()
-	{
-		exoPlayer?.playWhenReady = playWhenReady.value!!
-	}
-
-	fun onPause()
-	{
-		playWhenReady.value = exoPlayer?.playWhenReady ?: false
-		exoPlayer?.playWhenReady = false
 	}
 
 	private fun likeOrDislikeClicked(@Rate clickedRating: String)
@@ -103,12 +91,6 @@ class VideoViewModel(private val id: String, private val oAuthViewModel: OAuthVi
 					else
 						Timber.e(t)
 				}
-	}
-
-	fun togglePlayPause()
-	{
-		exoPlayer?.playWhenReady = !(exoPlayer?.playWhenReady ?: true)
-		playWhenReady.value = exoPlayer?.playWhenReady
 	}
 
 	fun onLikeVideoClicked(view: View) {

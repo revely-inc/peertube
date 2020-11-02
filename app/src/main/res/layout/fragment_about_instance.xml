@@ -3,11 +3,11 @@
 	<data>
 		<variable
 				name="instance"
-				type="co.revely.peertube.api.peertube.response.AboutInstanceResponse.Instance"
+				type="co.revely.peertube.api.dao.AboutInstanceDao.Instance"
 				/>
 		<variable
 				name="stats"
-				type="co.revely.peertube.api.peertube.response.Stats"
+				type="co.revely.peertube.api.dao.StatsDao"
 				/>
 		<import type="android.text.format.Formatter"/>
 	</data>

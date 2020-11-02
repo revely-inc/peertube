@@ -60,7 +60,7 @@ class PreferencesHelper
 
 	companion object
 	{
-		val defaultHost by lazy { Pref("DEFAULT_HOST", "") }
+		val currentHost by lazy { Pref("CURRENT_HOST", "") }
 		val hostsLogged by lazy { Pref("HOSTS_LOGGED", mutableSetOf<String>()) }
 	}
 }

@@ -1,7 +1,7 @@
 package co.revely.peertube.repository.instances
 
-import co.revely.peertube.api.instances.InstancesService
-import co.revely.peertube.api.peertube.response.DataList
+import co.revely.peertube.api.InstancesService
+import co.revely.peertube.api.DataList
 import co.revely.peertube.db.instances.entity.Instance
 import co.revely.peertube.repository.NetworkBoundResource
 import co.revely.peertube.utils.AppExecutors
@@ -16,7 +16,8 @@ import java.util.concurrent.TimeUnit
 class InstancesRepository(
 	private val appExecutors: AppExecutors,
 	private val instanceDao: Instance.Dao,
-	private val instancesService: InstancesService)
+	private val instancesService: InstancesService
+)
 {
 	private val instancesRateLimit = RateLimiter<String>(10, TimeUnit.MINUTES)
 

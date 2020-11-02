@@ -3,7 +3,7 @@
 	<data>
 		<variable
 				name="comment"
-				type="co.revely.peertube.api.peertube.response.Comment"/>
+				type="co.revely.peertube.api.dao.CommentDao"/>
 		<import type="android.view.View"/>
 	</data>
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,7 +11,7 @@
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 		xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="@{comment.isDeleted() ? 0 : -2, default = wrap_content}"
 		android:padding="16dp"
 		>
 
@@ -19,9 +19,9 @@
 			android:id="@+id/account_avatar"
 			android:layout_width="32dp"
 			android:layout_height="32dp"
-			glideUrl="@{`https://` + comment.account.host + comment.account.avatar.path}"
-			glideThumbnailUrl="@{`https://` + comment.account.host + `/client/assets/images/default-avatar.png`}"
-			glideCircleCrop="@{true}"
+			coilUrl="@{`https://` + comment.account.host + comment.account.avatar.path}"
+			coilPlaceholderUrl="@{`https://` + comment.account.host + `/client/assets/images/default-avatar.png`}"
+			coilCircleCrop="@{true}"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			tools:src="@tools:sample/avatars"

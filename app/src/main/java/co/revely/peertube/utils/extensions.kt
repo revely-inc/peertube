@@ -1,25 +1,23 @@
 package co.revely.peertube.utils
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.text.format.DateUtils
+import android.text.style.TtsSpan
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.unit.*
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.observe
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import timber.log.Timber
 import kotlin.math.ln
 import kotlin.math.pow
-
 
 
 /**
@@ -59,10 +57,7 @@ fun <T> LifecycleOwner.observe(liveData: LiveData<T>, onChanged: (T) -> Unit) =
 
 fun Long.duration(): String
 {
-	val seconds = this % 60
-	val minutes = this / 1000 % 60
-	val hours = this / (1000 * 60) % 24
-	return if (hours != 0L) "%d:%02d:%02d".format(hours, minutes, seconds) else "%d:%02d".format(minutes, seconds)
+	return DateUtils.formatElapsedTime(this)
 }
 
 fun Long.humanReadableBigNumber(): String
@@ -86,3 +81,5 @@ fun View.hideKeyboard()
 	val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 	imm.hideSoftInputFromWindow(windowToken, 0)
 }
+
+val View.globalVisibleRect: Rect? get() = Rect().also { getGlobalVisibleRect(it) }

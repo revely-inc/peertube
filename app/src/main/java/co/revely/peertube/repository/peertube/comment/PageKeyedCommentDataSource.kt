@@ -1,8 +1,8 @@
 package co.revely.peertube.repository.peertube.comment
 
-import co.revely.peertube.api.peertube.PeerTubeService
-import co.revely.peertube.api.peertube.query.CommentQuery
-import co.revely.peertube.api.peertube.response.Comment
+import co.revely.peertube.api.PeerTubeService
+import co.revely.peertube.api.dto.CommentDto
+import co.revely.peertube.api.dao.CommentDao
 import co.revely.peertube.repository.peertube.PageKeyedDataSource
 import java.util.concurrent.Executor
 
@@ -12,10 +12,10 @@ import java.util.concurrent.Executor
  * @author rbenjami
  */
 class PageKeyedCommentDataSource(
-		private val peerTubeService: PeerTubeService,
-		private val commentQuery: CommentQuery,
-		retryExecutor: Executor
-) : PageKeyedDataSource<Comment>(retryExecutor) {
+    private val peerTubeService: PeerTubeService,
+    private val commentQuery: CommentDto,
+    retryExecutor: Executor
+) : PageKeyedDataSource<CommentDao>(retryExecutor) {
 
 	override fun loadInitialRequest(params: LoadInitialParams<Int>) =
 		peerTubeService.getComments(

@@ -30,7 +30,7 @@ val databaseModule = module {
 	single { get<InstancesDatabase>().instanceDao() }
 	single { InstancesRepository(get(), get(), get()) }
 
-	single { PeerTubeDatabase.instance(get(), PreferencesHelper.defaultHost.get()) }
+	single { PeerTubeDatabase.instance(get(), PreferencesHelper.currentHost.get()) }
 
 	single { UserRepository(get()) }
 

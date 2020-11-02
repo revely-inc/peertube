@@ -3,7 +3,7 @@
 	<data>
 		<variable
 				name="video"
-				type="co.revely.peertube.api.peertube.response.Video"/>
+				type="co.revely.peertube.api.dao.VideoDao"/>
 		<variable
 				name="viewModel"
 				type="co.revely.peertube.ui.video.VideoViewModel"/>

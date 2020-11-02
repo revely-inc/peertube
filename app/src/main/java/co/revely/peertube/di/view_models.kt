@@ -20,7 +20,7 @@ val viewModelModule = module {
 	viewModel { InstancesViewModel(get()) }
 	viewModel { VideosViewModel(get()) }
 	viewModel { (videoId: String, oAuthViewModel: OAuthViewModel) -> VideoViewModel(videoId, oAuthViewModel) }
-	viewModel { LoginViewModel(PreferencesHelper.defaultHost.get()) }
+	viewModel { LoginViewModel(PreferencesHelper.currentHost.get()) }
 	viewModel { OAuthViewModel() }
 	viewModel { (oAuthViewModel: OAuthViewModel) -> UserViewModel(get(), oAuthViewModel) }
 	viewModel { InstanceViewModel() }

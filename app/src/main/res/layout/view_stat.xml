@@ -22,7 +22,7 @@
 			android:layout_height="0dp"
 			android:adjustViewBounds="true"
 			android:paddingBottom="8dp"
-			android:tint="@color/colorPrimaryVeryLightDarker"
+			app:tint="@color/colorPrimaryVeryLightDarker"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@+id/horizontal_mid"

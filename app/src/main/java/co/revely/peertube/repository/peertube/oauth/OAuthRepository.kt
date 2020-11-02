@@ -1,8 +1,8 @@
 package co.revely.peertube.repository.peertube.oauth
 
-import co.revely.peertube.api.oauth.OAuthService
-import co.revely.peertube.api.peertube.response.OAuthClient
-import co.revely.peertube.api.peertube.response.OAuthToken
+import co.revely.peertube.api.OAuthService
+import co.revely.peertube.db.peertube.entity.OAuthClient
+import co.revely.peertube.db.peertube.entity.OAuthToken
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.NetworkBoundResource
 import co.revely.peertube.utils.AppExecutors
@@ -44,7 +44,7 @@ class OAuthRepository(
 			object : NetworkBoundResource<OAuthClient, OAuthClient>(appExecutors) {
 				override fun saveCallResult(item: OAuthClient) = oAuthClientDao.insert(item)
 				override fun shouldFetch(data: OAuthClient?) = data == null
-				override fun loadFromDb() = oAuthClientDao.load(PreferencesHelper.defaultHost.get())
+				override fun loadFromDb() = oAuthClientDao.load(PreferencesHelper.currentHost.get())
 				override fun createCall(data: OAuthClient?) = oAuthService.getClient()
 			}.asLiveData()
 }

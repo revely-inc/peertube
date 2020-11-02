@@ -5,11 +5,10 @@ import android.view.View
 import co.revely.peertube.R
 import co.revely.peertube.databinding.FragmentAboutBinding
 import co.revely.peertube.ui.LayoutFragment
+import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.utils.autoCleared
 import co.revely.peertube.utils.visible
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_about.*
 
 /**
  * Created at 2019-06-20
@@ -24,11 +23,11 @@ class AboutFragment : LayoutFragment<FragmentAboutBinding>(R.layout.fragment_abo
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		activity?.navigation?.visible()
+		(activity as MainActivity).binding.navigation.visible()
 		adapter = AboutAdapter(this)
-		view_pager.adapter = adapter
-		TabLayoutMediator(tab_layout, view_pager) { tab, position ->
-			view_pager.setCurrentItem(tab.position, true)
+		binding.viewPager.adapter = adapter
+		TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+			binding.viewPager.setCurrentItem(tab.position, true)
 			if (position == 0) tab.setText(R.string.instance)
 			if (position == 1) tab.setText(R.string.app_name)
 		}.attach()

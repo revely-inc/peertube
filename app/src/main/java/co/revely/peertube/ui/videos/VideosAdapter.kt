@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import co.revely.peertube.R
-import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.databinding.ItemVideoBinding
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.ui.common.DataBoundPagedListAdapter
@@ -19,14 +19,14 @@ import co.revely.peertube.utils.AppExecutors
  */
 class VideosAdapter(
 	appExecutors: AppExecutors,
-	private val itemClickCallback: ((Video) -> Unit)?
-) : DataBoundPagedListAdapter<Video, ItemVideoBinding>(
+	private val itemClickCallback: ((VideoDao) -> Unit)?
+) : DataBoundPagedListAdapter<VideoDao, ItemVideoBinding>(
 	appExecutors = appExecutors,
-	diffCallback = object : DiffUtil.ItemCallback<Video>() {
-		override fun areItemsTheSame(oldItem: Video, newItem: Video) =
+	diffCallback = object : DiffUtil.ItemCallback<VideoDao>() {
+		override fun areItemsTheSame(oldItem: VideoDao, newItem: VideoDao) =
 			oldItem.id == newItem.id
 
-		override fun areContentsTheSame(oldItem: Video, newItem: Video) =
+		override fun areContentsTheSame(oldItem: VideoDao, newItem: VideoDao) =
 			oldItem.updatedAt == newItem.updatedAt
 	}
 ) {
@@ -46,8 +46,8 @@ class VideosAdapter(
 		return binding
 	}
 
-	override fun bind(binding: ItemVideoBinding, item: Video) {
-		binding.host = PreferencesHelper.defaultHost.get()
+	override fun bind(binding: ItemVideoBinding, item: VideoDao) {
+		binding.host = PreferencesHelper.currentHost.get()
 		binding.video = item
 	}
 }

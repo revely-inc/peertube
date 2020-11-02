@@ -1,12 +1,11 @@
 package co.revely.peertube.di
 
-import co.revely.peertube.api.peertube.PeerTubeService
+import co.revely.peertube.api.PeerTubeService
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.utils.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,7 +20,7 @@ val peertubeModule = module {
 	single {
 		val API_VERSION = "api/v1"
 
-		val host = PreferencesHelper.defaultHost.get()
+		val host = PreferencesHelper.currentHost.get()
 		Retrofit.Builder()
 				.baseUrl("https://$host/${API_VERSION}/")
 				.client(OkHttpClient.Builder()

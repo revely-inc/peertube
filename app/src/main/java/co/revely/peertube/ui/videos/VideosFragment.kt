@@ -4,26 +4,24 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import co.revely.peertube.MainNavGraphDirections
 import co.revely.peertube.R
-import co.revely.peertube.api.peertube.response.Video
+import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.utils.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_overview.*
-import kotlinx.android.synthetic.main.fragment_overview.progress_bar
-import kotlinx.android.synthetic.main.fragment_overview.videos_list
-import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 /**
  * Created at 2019-10-18
@@ -32,16 +30,22 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  */
 abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): LayoutFragment<DB>(layoutId)
 {
+	private var adapter: VideosAdapter by autoCleared()
+	private lateinit var videosList: RecyclerView
+	private lateinit var progressBar: ImageView
+	private var noResultFoundError: Group? = null
+
 	protected val appExecutors: AppExecutors by inject()
 	protected val videosViewModel: VideosViewModel by sharedViewModel()
 
-	private var adapter: VideosAdapter by autoCleared()
-
-	protected abstract fun videos(): Listing<Video>?
+	protected abstract fun videos(): Listing<VideoDao>?
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		activity?.navigation?.visible()
+		videosList = view.findViewById(R.id.videos_list)
+		progressBar = view.findViewById(R.id.progress_bar)
+		noResultFoundError = view.findViewById(R.id.no_result_found_error)
+
 		setHasOptionsMenu(true)
 		initVideos()
 	}
@@ -49,42 +53,38 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): L
 	private fun initVideos()
 	{
 		adapter = VideosAdapter(appExecutors) {
-//			val direction = InstanceNavGraphDirections.actionGlobalNavigationVideo(
-//					host, it.id
-//			)
-//			findNavController().navigate(direction)
 			(activity as MainActivity).openVideoFragment(it.id)
 		}
-		videos_list.adapter = adapter
-		videos_list.layoutManager = LinearLayoutManager(context)
+		videosList.adapter = adapter
+		videosList.layoutManager = LinearLayoutManager(context)
 		ContextCompat.getDrawable(requireContext(), R.drawable.line_divider)?.also {
-			videos_list.addItemDecoration(MarginItemDecoration(it))
+			videosList.addItemDecoration(MarginItemDecoration(it))
 		}
 
-		progress_bar.progress(true)
+		progressBar.progress(true)
 		updateVideos()
 	}
 
 	fun updateVideos()
 	{
-		no_result_found_error?.invisible()
+		noResultFoundError?.invisible()
 		videos()?.apply {
 			observe(pagedList) {
 				if (it.isEmpty())
-					no_result_found_error?.visible()
+					noResultFoundError?.visible()
 				adapter.submitList(it)
-				progress_bar.progress(false)
+				progressBar.progress(false)
 			}
 			observe(refreshState) {
-				activity?.swipe_refresh?.isRefreshing = it == NetworkState.LOADING
+				(activity as MainActivity).binding.swipeRefresh.isRefreshing = it == NetworkState.LOADING
 			}
 //			observe(networkState) {
 //			}
 
-			activity?.swipe_refresh?.apply {
-				isEnabled = true
-				setOnRefreshListener { refresh() }
-			}
+//			(activity as MainActivity).binding.swipeRefresh.apply {
+//				isEnabled = true
+//				setOnRefreshListener { refresh() }
+//			}
 		}
 	}
 

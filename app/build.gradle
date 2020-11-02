@@ -1,12 +1,9 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
-apply plugin: 'androidx.navigation.safeargs.kotlin'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+}
 
 //apply plugin: 'com.bugsnag.android.gradle'
 
@@ -28,12 +25,12 @@ else {
 }
 
 android {
-    buildToolsVersion "29.0.3"
-    compileSdkVersion 29
+//    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
     defaultConfig {
         applicationId "co.revely.peertube"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode Integer.valueOf(System.env.VERSION_CODE ?: 1)
         // Manually bump the semver version part of the string as necessary
         versionName "1.0.0-${System.env.VERSION_SHA}"
@@ -45,9 +42,6 @@ android {
         buildConfigField("String", "oauth_redirect_uri", "${secretProperties['oauth_redirect_uri']}")
         buildConfigField("String", "google_project_id", "${secretProperties['google_project_id']}" ?: "null")
     }
-//    buildFeatures {
-//        compose true
-//    }
     signingConfigs {
         release {
             // You need to specify either an absolute path or include the
@@ -60,6 +54,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        compose true
     }
     buildTypes {
         release {
@@ -75,6 +70,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        useIR = true
+    }
+    composeOptions {
+        kotlinCompilerVersion "$kotlin_version"
+        kotlinCompilerExtensionVersion '1.0.0-alpha06'
     }
 }
 
@@ -101,10 +101,18 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.compose.ui:ui:1.0.0-alpha06'
+    implementation 'androidx.ui:ui-tooling:1.0.0-alpha06'
+    implementation 'androidx.compose.foundation:foundation:1.0.0-alpha06'
+    implementation 'androidx.compose.material:material:1.0.0-alpha06'
+//    implementation 'androidx.compose.material:material-icons-core:1.0.0-alpha05'
+//    implementation 'androidx.compose.material:material-icons-extended:1.0.0-alpha05'
+    implementation "androidx.compose.runtime:runtime:1.0.0-alpha06"
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-alpha06'
 
     implementation 'com.google.android.material:material:1.3.0-alpha03'
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
@@ -114,18 +122,19 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation "dev.chrisbanes.accompanist:accompanist-coil:0.3.2"
+    implementation 'org.jsoup:jsoup:1.13.1'
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.1'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.12.1'
 
 //    implementation "com.github.TorrentStream:TorrentStream-Android:2.6.1"
 
     implementation 'com.bugsnag:bugsnag-android:5.0.0'
 
-    implementation 'org.jetbrains.anko:anko-commons:0.10.8'
+    implementation 'org.jetbrains.anko:anko-commons:0.10.8' // TODO Remove anko
 
-    implementation 'io.noties.markwon:core:4.4.0'
-    implementation 'io.noties.markwon:linkify:4.4.0'
-    implementation 'io.noties.markwon:html:4.4.0'
+    implementation 'io.noties.markwon:core:4.6.0'
+    implementation 'io.noties.markwon:linkify:4.6.0'
+    implementation 'io.noties.markwon:html:4.6.0'
 }

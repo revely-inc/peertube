@@ -10,19 +10,14 @@ import co.revely.peertube.R
 import co.revely.peertube.databinding.ActivityInstancesBinding
 import co.revely.peertube.helper.PreferencesHelper
 import co.revely.peertube.repository.Status
-import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.ui.SplashActivity
 import co.revely.peertube.utils.AppExecutors
 import co.revely.peertube.utils.MarginItemDecoration
 import co.revely.peertube.utils.autoCleared
 import co.revely.peertube.utils.observe
-import kotlinx.android.synthetic.main.activity_instances.*
-import kotlinx.android.synthetic.main.activity_instances.swipe_refresh
-import kotlinx.android.synthetic.main.activity_instances.toolbar
 import org.jetbrains.anko.intentFor
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 /**
  * Created at 06/05/2020
@@ -45,32 +40,32 @@ class InstancesActivity: AppCompatActivity()
 		super.onCreate(savedInstanceState)
 		binding = DataBindingUtil.setContentView(this, R.layout.activity_instances)
 
-		setSupportActionBar(toolbar)
+		setSupportActionBar(binding.toolbar)
 		supportActionBar?.setTitle(R.string.instances)
 
 		adapter = InstancesAdapter(appExecutors) { instance ->
-			if (PreferencesHelper.defaultHost.get() == instance.host)
+			if (PreferencesHelper.currentHost.get() == instance.host)
 			{
 				finish()
 				return@InstancesAdapter
 			}
-			PreferencesHelper.defaultHost.set(instance.host)
+			PreferencesHelper.currentHost.set(instance.host)
 			startActivity(intentFor<SplashActivity>())
 			finish()
 		}
-		instances_list.adapter = adapter
+		binding.instancesList.adapter = adapter
 		ContextCompat.getDrawable(this, R.drawable.line_divider)?.also {
-			instances_list.addItemDecoration(MarginItemDecoration(it))
+			binding.instancesList.addItemDecoration(MarginItemDecoration(it))
 		}
-		swipe_refresh.isRefreshing = true
-		swipe_refresh.setOnRefreshListener { instancesViewModel.refresh() }
+		binding.swipeRefresh.isRefreshing = true
+		binding.swipeRefresh.setOnRefreshListener { instancesViewModel.refresh() }
 		initInstances()
 	}
 
 	private fun initInstances()
 	{
 		observe(instancesViewModel.instances) {
-			swipe_refresh.isRefreshing = it.status == Status.LOADING
+			binding.swipeRefresh.isRefreshing = it.status == Status.LOADING
 			adapter.submitList(it.data?.sortedByDescending { it.host in hostsLogged })
 		}
 	}

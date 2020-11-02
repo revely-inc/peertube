@@ -3,7 +3,7 @@
 	<data>
 		<variable
 				name="video"
-				type="co.revely.peertube.api.peertube.response.Video"/>
+				type="co.revely.peertube.api.dao.VideoDao"/>
 		<variable
 				name="host"
 				type="String" />
@@ -124,17 +124,15 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			/>
 
-	<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/sub_video_list"
+	<androidx.compose.ui.platform.ComposeView
+			android:id="@+id/sub_video_items"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:background="?attr/colorSurface"
-			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			app:layout_constraintTop_toBottomOf="@+id/player"
 			app:layout_constraintBottom_toBottomOf="@+id/background"
 			app:layout_constraintStart_toStartOf="@+id/background"
 			app:layout_constraintEnd_toEndOf="@+id/background"
-			tools:listitem="@layout/item_comment"
 			/>
 
 	<ImageView

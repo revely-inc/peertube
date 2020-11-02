@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.View
 import co.revely.peertube.R
 import co.revely.peertube.api.ApiSuccessResponse
-import co.revely.peertube.api.peertube.PeerTubeService
 import co.revely.peertube.databinding.FragmentAboutInstanceBinding
 import co.revely.peertube.ui.LayoutFragment
 import co.revely.peertube.utils.observe
 import co.revely.peertube.viewmodel.InstanceViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 /**
  * Created at 2019-06-20

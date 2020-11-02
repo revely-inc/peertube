@@ -8,16 +8,19 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.core.text.HtmlCompat
+import androidx.core.view.updateLayoutParams
 import androidx.databinding.BindingAdapter
-import co.revely.peertube.utils.GlideApp
 import co.revely.peertube.utils.duration
 import co.revely.peertube.utils.humanReadableBigNumber
-import com.bumptech.glide.request.RequestOptions
+import coil.load
+import coil.transform.CircleCropTransformation
 import io.noties.markwon.Markwon
+import org.commonmark.parser.Parser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 import java.util.*
+
 
 /**
  * Created at 17/04/2019
@@ -52,7 +55,7 @@ fun markdown(view: TextView, markdown: String?)
 @BindingAdapter("humanReadableDate")
 fun humanReadableDate(view: TextView, date: Date)
 {
-	view.text = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
+	view.text = DateUtils.getRelativeTimeSpanString(date.time)
 }
 
 @SuppressLint("SetTextI18n")
@@ -68,26 +71,30 @@ fun joinToString(view: TextView, list: List<String>?, separator: String?, prefix
 	view.text = list?.joinToString(separator ?: " ") { "${prefix ?: ""}$it${suffix ?: ""}" } ?: ""
 }
 
-@BindingAdapter("glideUrl", "glideThumbnailUrl", "glideCircleCrop", requireAll = false)
-fun glide(view: ImageView, url: String?, thumbnailUrl: String?, circleCrop: Boolean?)
+@BindingAdapter("coilUrl", "coilPlaceholderUrl", "coilCircleCrop", requireAll = false)
+fun coil(view: ImageView, url: String?, placeholderUrl: String?, circleCrop: Boolean?)
 {
-	GlideApp.with(view)
-			.load(url)
-			.apply {
-				if (thumbnailUrl != null)
-					thumbnail(GlideApp.with(view)
-							.load(thumbnailUrl).apply {
-								if (circleCrop == true)
-									apply(RequestOptions.circleCropTransform())
-							}
-					)
+	view.load(url) {
+		crossfade(true)
+		if (circleCrop == true)
+			transformations(CircleCropTransformation())
+		target({ view.load(it) }, {
+			view.load(placeholderUrl) {
+				crossfade(true)
 				if (circleCrop == true)
-					apply(RequestOptions.circleCropTransform())
+					transformations(CircleCropTransformation())
 			}
-			.into(view)
+		}, { view.load(it) { crossfade(true) } })
+	}
 }
 
 @BindingAdapter("visible")
 fun visible(view: View, visible: Boolean) {
 	view.visibility = if (visible) View.VISIBLE else View.INVISIBLE
 }
+
+@BindingAdapter("android:layout_width")
+fun layoutWidth(view: View, layoutWidth: Int) = view.updateLayoutParams { width = layoutWidth }
+
+@BindingAdapter("android:layout_height")
+fun layoutHeight(view: View, layoutHeight: Int) = view.updateLayoutParams { height = layoutHeight }

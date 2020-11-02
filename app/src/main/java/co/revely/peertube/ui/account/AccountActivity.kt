@@ -2,15 +2,16 @@ package co.revely.peertube.ui.account
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import co.revely.peertube.R
+import co.revely.peertube.databinding.ActivityAccountBinding
 import co.revely.peertube.utils.observe
 import co.revely.peertube.viewmodel.ErrorHelper
 import co.revely.peertube.viewmodel.OAuthViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_account.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -21,6 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AccountActivity: AppCompatActivity()
 {
 	private val oAuthViewModel: OAuthViewModel by viewModel()
+	private lateinit var binding: ActivityAccountBinding
 
 	private val navController by lazy {
 		findNavController(R.id.account_nav_host_fragment).apply {
@@ -33,8 +35,8 @@ class AccountActivity: AppCompatActivity()
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_account)
-		setSupportActionBar(toolbar)
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_account)
+		setSupportActionBar(binding.toolbar)
 
 		setupActionBarWithNavController(navController, AppBarConfiguration(setOf(
 				R.id.navigation_account, R.id.navigation_login
@@ -47,7 +49,7 @@ class AccountActivity: AppCompatActivity()
 		observe(ErrorHelper.error) { error ->
 			if (error.displayed == 0)
 			{
-				Snackbar.make(coordinator, error.title, Snackbar.LENGTH_LONG)
+				Snackbar.make(binding.coordinator, error.title, Snackbar.LENGTH_LONG)
 						.setAction(error.actionText) { error.action(this) }
 						.show()
 				error.displayed++
