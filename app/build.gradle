@@ -89,7 +89,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.5.0-alpha04'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
     implementation 'androidx.room:room-runtime:2.2.5'
@@ -105,8 +105,8 @@ dependencies {
     implementation 'androidx.ui:ui-tooling:1.0.0-alpha06'
     implementation 'androidx.compose.foundation:foundation:1.0.0-alpha06'
     implementation 'androidx.compose.material:material:1.0.0-alpha06'
-//    implementation 'androidx.compose.material:material-icons-core:1.0.0-alpha05'
-//    implementation 'androidx.compose.material:material-icons-extended:1.0.0-alpha05'
+    implementation 'androidx.compose.material:material-icons-core:1.0.0-alpha06'
+    implementation 'androidx.compose.material:material-icons-extended:1.0.0-alpha06'
     implementation "androidx.compose.runtime:runtime:1.0.0-alpha06"
     implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-alpha06'
 
@@ -116,9 +116,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    implementation 'org.koin:koin-androidx-scope:2.1.0'
-    implementation 'org.koin:koin-androidx-viewmodel:2.1.0'
-    implementation 'org.koin:koin-androidx-ext:2.1.0'
+    implementation 'org.koin:koin-androidx-scope:2.1.5'
+    implementation 'org.koin:koin-androidx-viewmodel:2.1.5'
+    implementation 'org.koin:koin-androidx-ext:2.1.5'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 

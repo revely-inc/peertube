@@ -114,7 +114,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 		{
 			videoViewModel.exoPlayer = SimpleExoPlayer.Builder(binding.player.context).build()
 			videoViewModel.exoPlayer?.playWhenReady = true
-			observe(videoViewModel.video) { onVideo(it) }
+			observe(videoViewModel.video.data) { onVideo(it) }
 		}
 		binding.exoController.player = videoViewModel.exoPlayer
 		videoViewModel.exoPlayer?.addListener(this)
@@ -126,8 +126,7 @@ class VideoFragment : LayoutFragment<FragmentVideoBinding>(R.layout.fragment_vid
 	{
 		binding.progressBar.progress(true)
 		videoViewModel.comments.apply {
-			observe(pagedList) {
-//				adapter.submitList(it) { binding.subVideoList.scrollToPosition(0) }
+			observe(data) {
 				binding.progressBar.progress(false)
 			}
 			observe(refreshState) {

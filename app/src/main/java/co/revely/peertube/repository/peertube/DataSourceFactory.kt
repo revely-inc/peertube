@@ -1,4 +1,4 @@
-package co.revely.peertube.repository.peertube.video
+package co.revely.peertube.repository.peertube
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource

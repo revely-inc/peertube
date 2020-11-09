@@ -14,6 +14,8 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.commonmark.parser.Parser
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
@@ -44,3 +46,5 @@ val appModule = module {
 
 	single { Parser.builder().build() }
 }
+
+inline fun <reified T> injectValue(): Lazy<T> = lazy { object: KoinComponent { val value by inject<T>() }.value }

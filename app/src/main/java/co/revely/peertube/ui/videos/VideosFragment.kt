@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.revely.peertube.MainNavGraphDirections
 import co.revely.peertube.R
+import co.revely.peertube.api.ApiDataList
 import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.repository.NetworkState
 import co.revely.peertube.ui.LayoutFragment
@@ -21,7 +22,6 @@ import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.utils.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 /**
  * Created at 2019-10-18
@@ -38,7 +38,7 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): L
 	protected val appExecutors: AppExecutors by inject()
 	protected val videosViewModel: VideosViewModel by sharedViewModel()
 
-	protected abstract fun videos(): Listing<VideoDao>?
+	protected abstract fun videos(): ApiDataList<VideoDao>?
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
@@ -69,7 +69,7 @@ abstract class VideosFragment<DB : ViewDataBinding>(@LayoutRes layoutId: Int): L
 	{
 		noResultFoundError?.invisible()
 		videos()?.apply {
-			observe(pagedList) {
+			observe(data) {
 				if (it.isEmpty())
 					noResultFoundError?.visible()
 				adapter.submitList(it)

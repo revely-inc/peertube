@@ -24,8 +24,8 @@ val databaseModule = module {
 				.build()
 	}
 
-	single { VideoRepository(get(), get()) }
-	single { CommentRepository(get(), get()) }
+	single { VideoRepository(get()) }
+	single { CommentRepository(get()) }
 
 	single { get<InstancesDatabase>().instanceDao() }
 	single { InstancesRepository(get(), get(), get()) }

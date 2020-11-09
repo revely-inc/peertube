@@ -14,7 +14,7 @@ import co.revely.peertube.api.dao.VideoDao
 import co.revely.peertube.databinding.FragmentSearchBinding
 import co.revely.peertube.ui.MainActivity
 import co.revely.peertube.ui.videos.VideosFragment
-import co.revely.peertube.utils.Listing
+import co.revely.peertube.api.ApiDataList
 import co.revely.peertube.utils.hideKeyboard
 import co.revely.peertube.utils.progress
 
@@ -27,7 +27,7 @@ import co.revely.peertube.utils.progress
 class SearchFragment : VideosFragment<FragmentSearchBinding>(R.layout.fragment_search)
 {
 	private val handler = Handler()
-	private var videosByQuery: Listing<VideoDao>? = null
+	private var videosByQuery: ApiDataList<VideoDao>? = null
 
 	override fun videos() = videosByQuery
 

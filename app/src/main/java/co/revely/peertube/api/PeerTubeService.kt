@@ -59,7 +59,7 @@ interface PeerTubeService
 	@GET("users/me/videos/{id}/rating")
 	fun getRate(
 			@Path("id") id: String
-	): LiveData<ApiResponse<RateDao>>
+	): Call<RateDao>
 
 	@GET("config/about")
 	fun configAbout(): LiveData<ApiResponse<AboutInstanceDao>>
@@ -137,7 +137,12 @@ interface PeerTubeService
 	@GET("videos/{id}")
 	fun video(
 		@Path("id") id: String
-	): LiveData<ApiResponse<VideoDao>>
+	): Call<VideoDao>
+
+	@GET("videos/{id}/description")
+	fun videoDescription(
+		@Path("id") id: String
+	): Call<DescriptionDao>
 
 	@FormUrlEncoded
 	@PUT("videos/{id}/rate")

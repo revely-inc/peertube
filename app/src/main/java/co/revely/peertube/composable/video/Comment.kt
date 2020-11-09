@@ -28,6 +28,7 @@ import co.revely.peertube.api.dao.CommentDao
 import co.revely.peertube.composable.Markdown
 import co.revely.peertube.composable.PeertubeTheme
 import co.revely.peertube.composable.appendMarkdownChildren
+import co.revely.peertube.composable.commentPreview
 import co.revely.peertube.helper.PreferencesHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
 import timber.log.Timber
@@ -83,38 +84,6 @@ fun Comment(
 		}
 	}
 }
-
-private val commentPreview = CommentDao(
-	id = "214",
-	url = "https://video.obermui.de/videos/watch/f8a4b32d-0bf1-48ed-af9f-d8c5d87efedb/comments/2306",
-	text = "doesnt work with   LibreELEC 9.0.1 (Leia) = Kodi v18.1  at the moment!!",
-	threadId = "214",
-	inReplyToCommentId = null,
-	videoId = "45",
-	createdAt = Date(),
-	updatedAt = Date(),
-	deletedAt = null,
-	isDeleted = false,
-	totalRepliesFromVideoAuthor = 0,
-	totalReplies = 0,
-	account = AccountDao(
-		name = "root",
-		host = "video.obermui.de",
-		id = "1477",
-		hostRedundancyAllowed = false,
-		followingCount = 11,
-		followersCount = 0,
-		createdAt = Date(),
-		updatedAt = Date(),
-		displayName = "root",
-		description = null,
-		avatar = AvatarDao(
-			path = "/lazy-static/avatars/d544dcc1-85ca-463c-a5f6-b15d6c2ad7a4.png",
-			createdAt = Date(),
-			updatedAt = Date()
-		)
-	)
-)
 
 @Preview
 @Composable

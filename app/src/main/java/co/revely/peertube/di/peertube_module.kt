@@ -25,11 +25,7 @@ val peertubeModule = module {
 				.baseUrl("https://$host/${API_VERSION}/")
 				.client(OkHttpClient.Builder()
 						.addInterceptor(PeerTubeService.OAuthInterceptor(get()))
-						.addInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-							override fun log(message: String) {
-								Timber.tag("OkHttp $host").d(message)
-							}
-						}).apply {
+						.addInterceptor(HttpLoggingInterceptor { message -> Timber.tag("OkHttp $host").d(message) }.apply {
 							level = HttpLoggingInterceptor.Level.BODY
 						})
 						.build())

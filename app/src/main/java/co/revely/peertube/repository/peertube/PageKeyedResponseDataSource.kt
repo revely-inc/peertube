@@ -1,8 +1,7 @@
-package co.revely.peertube.repository.peertube.video
+package co.revely.peertube.repository.peertube
 
 import co.revely.peertube.api.PeerTubeService
 import co.revely.peertube.api.DataList
-import co.revely.peertube.repository.peertube.PageKeyedDataSource
 import retrofit2.Call
 import java.util.concurrent.Executor
 
