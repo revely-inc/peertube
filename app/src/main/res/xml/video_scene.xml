@@ -5,6 +5,7 @@
 
 	<Transition
 			app:constraintSetStart="@id/collapsed"
+			app:layoutDuringTransition="ignoreRequest"
 			app:constraintSetEnd="@id/expanded"
 			app:duration="@android:integer/config_shortAnimTime"
 			>

@@ -47,7 +47,7 @@ fun Comment(
 )
 {
 	Column(
-			modifier = modifier.background(MaterialTheme.colors.surface).padding(16.dp)
+			modifier = modifier.background(PeertubeTheme.colors.surface).padding(16.dp)
 	) {
 		comment.account?.also { account ->
 			Row(verticalAlignment = Alignment.CenterVertically) {

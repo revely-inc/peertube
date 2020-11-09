@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.NodeVisitor
+import timber.log.Timber
 
 
 /**
@@ -31,8 +32,7 @@ fun Html(html: String, handleLink: (String) -> Unit) {
     val italic = SpanStyle(fontStyle = FontStyle.Italic)
     val underline = SpanStyle(textDecoration = TextDecoration.Underline)
     val link = SpanStyle(
-        textDecoration = TextDecoration.Underline,
-        color = MaterialTheme.colors.primaryVariant
+        textDecoration = TextDecoration.Underline
     )
 
     val paragraph = ParagraphStyle()
@@ -106,7 +106,7 @@ fun Html(html: String, handleLink: (String) -> Unit) {
 
     ClickableText(
         formattedString,
-        style = MaterialTheme.typography.body1,
+        style = PeertubeTheme.typography.body1,
         onClick = { offset ->
             formattedString
                 .getStringAnnotations(start = offset, end = offset)

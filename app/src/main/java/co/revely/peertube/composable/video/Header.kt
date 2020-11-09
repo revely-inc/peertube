@@ -47,7 +47,7 @@ fun Header(
 )
 {
 	ConstraintLayout(
-		modifier = modifier.fillMaxWidth().padding(16.dp).background(MaterialTheme.colors.background)
+		modifier = modifier.fillMaxWidth().padding(16.dp).background(PeertubeTheme.colors.background)
 	) {
 		val (
 			title,

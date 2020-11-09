@@ -1,11 +1,9 @@
 package co.revely.peertube.composable
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Typography
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposableContract
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -132,4 +130,34 @@ fun PeertubeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
 		typography = PeertubeTypography,
 		content = content
 	)
+}
+
+/**
+ * Contains functions to access the current theme values provided at the call site's position in
+ * the hierarchy.
+ */
+object PeertubeTheme {
+	/**
+	 * Retrieves the current [Colors] at the call site's position in the hierarchy.
+	 */
+	@Composable
+	@ComposableContract(readonly = true)
+	val colors: Colors
+		get() = if (isSystemInDarkTheme()) DarkColors else LightColors
+
+	/**
+	 * Retrieves the current [Typography] at the call site's position in the hierarchy.
+	 */
+	@Composable
+	@ComposableContract(readonly = true)
+	val typography: Typography
+		get() = PeertubeTypography
+
+	/**
+	 * Retrieves the current [Shapes] at the call site's position in the hierarchy.
+	 */
+	@Composable
+	@ComposableContract(readonly = true)
+	val shapes: Shapes
+		get() = MaterialTheme.shapes
 }

@@ -33,7 +33,6 @@ import org.commonmark.node.*
 import org.commonmark.node.Paragraph
 import org.commonmark.parser.Parser
 import org.intellij.lang.annotations.Language
-import timber.log.Timber
 
 /**
  * These functions will render a tree of Markdown nodes parsed with CommonMark.
@@ -75,12 +74,12 @@ fun MDDocument(document: Document, modifier: Modifier = Modifier) {
 @Composable
 fun MDHeading(heading: Heading, modifier: Modifier = Modifier) {
 	val style = when (heading.level) {
-		1 -> MaterialTheme.typography.h1
-		2 -> MaterialTheme.typography.h2
-		3 -> MaterialTheme.typography.h3
-		4 -> MaterialTheme.typography.h4
-		5 -> MaterialTheme.typography.h5
-		6 -> MaterialTheme.typography.h6
+		1 -> PeertubeTheme.typography.h1
+		2 -> PeertubeTheme.typography.h2
+		3 -> PeertubeTheme.typography.h3
+		4 -> PeertubeTheme.typography.h4
+		5 -> PeertubeTheme.typography.h5
+		6 -> PeertubeTheme.typography.h6
 		else -> {
 			// Invalid header...
 			MDBlockChildren(heading)
@@ -91,7 +90,7 @@ fun MDHeading(heading: Heading, modifier: Modifier = Modifier) {
 	val padding = if (heading.parent is Document) 8.dp else 0.dp
 	Box(modifier.padding(bottom = padding)) {
 		val text = annotatedString {
-			appendMarkdownChildren(heading, MaterialTheme.colors)
+			appendMarkdownChildren(heading, PeertubeTheme.colors)
 		}
 		MarkdownText(text, style)
 	}
@@ -106,11 +105,11 @@ fun MDParagraph(paragraph: Paragraph, modifier: Modifier = Modifier) {
 		val padding = if (paragraph.parent is Document) 8.dp else 0.dp
 		Box(modifier = modifier.padding(bottom = padding)) {
 			val styledText = annotatedString {
-				pushStyle(MaterialTheme.typography.body1.toSpanStyle())
-				appendMarkdownChildren(paragraph, MaterialTheme.colors)
+				pushStyle(PeertubeTheme.typography.body1.toSpanStyle())
+				appendMarkdownChildren(paragraph, PeertubeTheme.colors)
 				pop()
 			}
-			MarkdownText(styledText, MaterialTheme.typography.body1)
+			MarkdownText(styledText, PeertubeTheme.typography.body1)
 		}
 	}
 }
@@ -127,12 +126,12 @@ fun MDBulletList(bulletList: BulletList, modifier: Modifier = Modifier) {
 	val marker = bulletList.bulletMarker
 	MDListItems(bulletList, modifier = modifier) {
 		val text = annotatedString {
-			pushStyle(MaterialTheme.typography.body1.toSpanStyle())
+			pushStyle(PeertubeTheme.typography.body1.toSpanStyle())
 			append("$marker ")
-			appendMarkdownChildren(it, MaterialTheme.colors)
+			appendMarkdownChildren(it, PeertubeTheme.colors)
 			pop()
 		}
-		MarkdownText(text, MaterialTheme.typography.body1, modifier)
+		MarkdownText(text, PeertubeTheme.typography.body1, modifier)
 	}
 }
 
@@ -142,12 +141,12 @@ fun MDOrderedList(orderedList: OrderedList, modifier: Modifier = Modifier) {
 	val delimiter = orderedList.delimiter
 	MDListItems(orderedList, modifier) {
 		val text = annotatedString {
-			pushStyle(MaterialTheme.typography.body1.toSpanStyle())
+			pushStyle(PeertubeTheme.typography.body1.toSpanStyle())
 			append("${number++}$delimiter ")
-			appendMarkdownChildren(it, MaterialTheme.colors)
+			appendMarkdownChildren(it, PeertubeTheme.colors)
 			pop()
 		}
-		MarkdownText(text, MaterialTheme.typography.body1, modifier)
+		MarkdownText(text, PeertubeTheme.typography.body1, modifier)
 	}
 }
 
@@ -178,7 +177,7 @@ fun MDListItems(
 
 @Composable
 fun MDBlockQuote(blockQuote: BlockQuote, modifier: Modifier = Modifier) {
-	val color = MaterialTheme.colors.onBackground
+	val color = PeertubeTheme.colors.onBackground
 	Box(modifier = modifier.drawBehind {
 		drawLine(
 			color = color,
@@ -189,10 +188,10 @@ fun MDBlockQuote(blockQuote: BlockQuote, modifier: Modifier = Modifier) {
 	}.padding(start = 16.dp, top = 4.dp, bottom = 4.dp)) {
 		val text = annotatedString {
 			pushStyle(
-				MaterialTheme.typography.body1.toSpanStyle()
+				PeertubeTheme.typography.body1.toSpanStyle()
 					.plus(SpanStyle(fontStyle = FontStyle.Italic))
 			)
-			appendMarkdownChildren(blockQuote, MaterialTheme.colors)
+			appendMarkdownChildren(blockQuote, PeertubeTheme.colors)
 			pop()
 		}
 		Text(text, modifier)
@@ -222,6 +221,14 @@ fun MDThematicBreak(thematicBreak: ThematicBreak, modifier: Modifier = Modifier)
 }
 
 @Composable
+fun MDHtml(htmlBlock: HtmlBlock, modifier: Modifier = Modifier) {
+	val uriHandler = UriHandlerAmbient.current
+	Html(html = htmlBlock.literal) {
+		uriHandler.openUri(it)
+	}
+}
+
+@Composable
 fun MDBlockChildren(parent: Node) {
 	var child = parent.firstChild
 	while (child != null) {
@@ -235,6 +242,7 @@ fun MDBlockChildren(parent: Node) {
 			is Image -> MDImage(child)
 			is BulletList -> MDBulletList(child)
 			is OrderedList -> MDOrderedList(child)
+			is HtmlBlock -> MDHtml(child)
 		}
 		child = child.next
 	}
@@ -317,7 +325,7 @@ fun MarkdownPreview()
 	val root = parser.parse(MIXED_MD) as Document
 	PeertubeTheme {
 		ScrollableColumn(
-			modifier = Modifier.background(MaterialTheme.colors.background)
+			modifier = Modifier.background(PeertubeTheme.colors.background)
 		) {
 			MDDocument(root)
 		}

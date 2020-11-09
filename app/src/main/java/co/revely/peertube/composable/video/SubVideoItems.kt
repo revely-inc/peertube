@@ -17,6 +17,7 @@ import co.revely.peertube.composable.PeertubeTheme
 import co.revely.peertube.composable.Video
 import co.revely.peertube.ui.video.VideoViewModel
 import co.revely.peertube.viewmodel.OAuthViewModel
+import timber.log.Timber
 
 /**
  * Created at 29/10/2020
